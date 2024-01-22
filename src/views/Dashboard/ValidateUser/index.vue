@@ -1,26 +1,26 @@
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue'
-import EndValidate from "@/components/ValidateUserActive/endValidate.vue"
-import ValidateDocument from "@/components/validateUserActive/validateDocument.vue"
-import ValidatePhoto from "@/components/validateUserActive/validatePhoto.vue"
-import ValidateBank from "@/components/validateUserActive/validateBank.vue"
-import {userUserStore} from '@/stores/user'
-import { mapState } from "pinia"
+  import { computed, ref, watch, onMounted } from 'vue';
+  import EndValidate from "@/components/ValidateUserActive/endValidate.vue";
+  import ValidateDocument from "@/components/validateUserActive/validateDocument.vue";
+  import ValidatePhoto from "@/components/validateUserActive/validatePhoto.vue";
+  import ValidateBank from "@/components/validateUserActive/validateBank.vue";
+  import {userUserStore} from '@/stores/user';
+  import { mapState } from "pinia"
 
-const userStore = userUserStore()
-const sectionActive = ref(1)
-const sections = ref(3)
+  const userStore = userUserStore()
+  const sectionActive = ref(1)
+  const sections = ref(3)
 
-const newlva = computed(() => userStore.getStateUser)
+  const newlva = computed(() => userStore.getStateUser)
 
-onMounted(async () => {
-  const staeValidate = newlva.value
-  sectionActive.value = parseInt(staeValidate)
-})
+  onMounted(async () => {
+    const staeValidate = newlva.value
+    sectionActive.value = parseInt(staeValidate)
+  })
 
-const clickPass1 = (value) => {
-  sectionActive.value = value
-}
+  const clickPass1 = (value) => {
+    sectionActive.value = value
+  }
 
 </script>
 
