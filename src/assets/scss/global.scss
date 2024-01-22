@@ -1,0 +1,39 @@
+@forward  "variables" ;
+
+@font-face {
+	font-family: 'Archivo-Bold';
+	font-style: normal;
+	src: local('Archivo-Bold'), url(../fonts/Archivo-Bold.ttf) format('truetype');
+}
+@font-face {
+	font-family: 'Archivo-Regular';
+	font-style: normal;
+	src: local('Archivo-Regular'), url(../fonts/Archivo-Regular.ttf) format('truetype');
+}
+@font-face {
+	font-family: 'Archivo-SemiBold';
+	font-style: normal;
+	src: local('Archivo-SemiBold'), url(../fonts/Archivo-SemiBold.ttf) format('truetype');
+}
+
+body {
+	font-family: 'Archivo-Regular';
+}
+
+btn-send{
+	font-size: 22px !important;
+	text-transform: capitalize !important;
+	border-radius: 18px !important;
+	margin-top: 64px;
+}
+
+.cont-mcas{
+  padding-left: 250px;
+  z-index: 999999;
+  position: relative;
+  padding-top: 143px;
+  z-index: 0;
+	&-inter{
+		padding-top: 70px;
+	}
+}
