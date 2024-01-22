@@ -1,6 +1,6 @@
 <script setup>
   import { computed, ref, watch, onMounted } from 'vue';
-  import EndValidate from "@/components/ValidateUserActive/endValidate.vue";
+  import EndValidate from "@/components/validateUserActive/endValidate.vue";
   import ValidateDocument from "@/components/validateUserActive/validateDocument.vue";
   import ValidatePhoto from "@/components/validateUserActive/validatePhoto.vue";
   import ValidateBank from "@/components/validateUserActive/validateBank.vue";
