@@ -1,5 +1,5 @@
 <script>
-import FinishValidate from "@/components/ValidateUserActive/finishValidate.vue"
+import EndValidate from "@/components/ValidateUserActive/endValidate.vue"
 import ValidateDocument from "@/components/validateUserActive/validateDocument.vue"
 import ValidatePhoto from "@/components/validateUserActive/validatePhoto.vue"
 import ValidateBank from "@/components/validateUserActive/validateBank.vue"
@@ -8,7 +8,7 @@ import { mapState } from "pinia"
 
 export default {
   components: {
-    FinishValidate,
+    EndValidate,
     ValidateDocument,
     ValidatePhoto,
     ValidateBank
@@ -69,7 +69,7 @@ export default {
         v-if="sectionActive === 3"
         @send-data="clickPass1(4)"
       />
-      <FinishValidate
+      <EndValidate
         v-if="sectionActive === 4"
       />
     </div>
