@@ -1,3 +1,35 @@
+<template>
+  <div>
+    <div class="content-section-validate">
+      <div :class="`content-section-active ${'active'+sectionActive}`">
+        <div class="d-flex" v-for="(item, index) in sections" :key="index">
+          <div :class="`item ${sectionActive == (index+1) ? 'active' : sectionActive === 4 ? 'active-global' : ''}`">{{ index + 1 }}</div>
+          <div :class="`circle-pass ${'active'+(index+1)}`" v-if="sections - 1 !== index">
+            <div></div><div></div><div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <ValidateDocument 
+        v-if="sectionActive === 1"
+        @send-data="clickPass1(2)"
+      />
+      <ValidatePhoto 
+        v-if="sectionActive === 2"
+        @send-data="clickPass1(3)"
+      />
+      <ValidateBank 
+        v-if="sectionActive === 3"
+        @send-data="clickPass1(4)"
+      />
+      <EndValidate
+        v-if="sectionActive === 4"
+      />
+    </div>
+  </div>
+</template>
+
 <script>
 import EndValidate from "@/components/ValidateUserActive/endValidate.vue"
 import ValidateDocument from "@/components/validateUserActive/validateDocument.vue"
@@ -43,38 +75,6 @@ export default {
   },
 }
 </script>
-
-<template>
-  <div>
-    <div class="content-section-validate">
-      <div :class="`content-section-active ${'active'+sectionActive}`">
-        <div class="d-flex" v-for="(item, index) in sections" :key="index">
-          <div :class="`item ${sectionActive == (index+1) ? 'active' : sectionActive === 4 ? 'active-global' : ''}`">{{ index + 1 }}</div>
-          <div :class="`circle-pass ${'active'+(index+1)}`" v-if="sections - 1 !== index">
-            <div></div><div></div><div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <ValidateDocument 
-        v-if="sectionActive === 1"
-        @send-data="clickPass1(2)"
-      />
-      <ValidatePhoto 
-        v-if="sectionActive === 2"
-        @send-data="clickPass1(3)"
-      />
-      <ValidateBank 
-        v-if="sectionActive === 3"
-        @send-data="clickPass1(4)"
-      />
-      <EndValidate
-        v-if="sectionActive === 4"
-      />
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .content-section-active {
