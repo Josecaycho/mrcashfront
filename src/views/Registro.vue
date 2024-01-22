@@ -134,7 +134,7 @@ const PDRules = [
 		<v-row class="contents-row" no-gutters>
 			<div class="icon-float">
 				<a href="/login">
-					<img :class="!responsive ? `mb-8` : `mb-8`" src="@/assets/images/logo.png" alt="logo">
+					<img :class="!responsive ? `mb-8` : `mb-8`" src="@/assets/images/Logo.png" alt="logo">
 				</a>
 			</div>
 			<v-col cols="7" v-if="!responsive">
