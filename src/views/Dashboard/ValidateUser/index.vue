@@ -1,17 +1,17 @@
 <script>
+import FinishValidate from "@/components/ValidateUserActive/finishValidate.vue"
 import ValidateDocument from "@/components/validateUserActive/validateDocument.vue"
 import ValidatePhoto from "@/components/validateUserActive/validatePhoto.vue"
 import ValidateBank from "@/components/validateUserActive/validateBank.vue"
-import FinishValidate from "@/components/ValidateUserActive/finishValidate.vue"
 import {userUserStore} from '@/stores/user'
 import { mapState } from "pinia"
 
 export default {
   components: {
+    FinishValidate,
     ValidateDocument,
     ValidatePhoto,
-    ValidateBank,
-    FinishValidate
+    ValidateBank
   },
 
   data() {
