@@ -1,3 +1,29 @@
+<script setup>
+import { computed, ref, watch, onMounted } from 'vue'
+import EndValidate from "@/components/ValidateUserActive/endValidate.vue"
+import ValidateDocument from "@/components/validateUserActive/validateDocument.vue"
+import ValidatePhoto from "@/components/validateUserActive/validatePhoto.vue"
+import ValidateBank from "@/components/validateUserActive/validateBank.vue"
+import {userUserStore} from '@/stores/user'
+import { mapState } from "pinia"
+
+const userStore = userUserStore()
+const sectionActive = ref(1)
+const sections = ref(3)
+
+const newlva = computed(() => userStore.getStateUser)
+
+onMounted(async () => {
+  const staeValidate = newlva.value
+  sectionActive.value = parseInt(staeValidate)
+})
+
+const clickPass1 = (value) => {
+  sectionActive.value = value
+}
+
+</script>
+
 <template>
   <div>
     <div class="content-section-validate">
@@ -29,52 +55,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import EndValidate from "@/components/ValidateUserActive/endValidate.vue"
-import ValidateDocument from "@/components/validateUserActive/validateDocument.vue"
-import ValidatePhoto from "@/components/validateUserActive/validatePhoto.vue"
-import ValidateBank from "@/components/validateUserActive/validateBank.vue"
-import {userUserStore} from '@/stores/user'
-import { mapState } from "pinia"
-
-export default {
-  components: {
-    EndValidate,
-    ValidateDocument,
-    ValidatePhoto,
-    ValidateBank
-  },
-
-  data() {
-    return {
-      validateValidateUser1: false,
-      validateValidateUser2: false,
-      validateValidateUser3: false,
-      sectionActive: 1,
-      sections: 3,
-    }
-  },
-
-  computed: {
-    ...mapState(userUserStore, ['getStateUser']),
-    newlva () {
-      return this.getStateUser
-    }
-  },
-
-  async mounted() {
-    const staeValidate = this.newlva
-    this.sectionActive = parseInt(staeValidate)
-  },
-
-  methods: {
-    clickPass1(value) {
-      this.sectionActive = value
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .content-section-active {

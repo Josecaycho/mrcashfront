@@ -9,7 +9,7 @@ import axios from 'axios'
 import piniaPluginPersistedState from "pinia-plugin-persistedstate"
 
 window.axios = axios
-window.axios.defaults.baseURL = 'http://localhost:4000'
+window.axios.defaults.baseURL = 'http://54.166.130.134:3002'
 window.axios.defaults.headers.common['Accept'] = 'application/json'
 window.axios.defaults.headers.common['Content-Type'] = 'application/json'
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
