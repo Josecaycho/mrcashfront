@@ -30,7 +30,7 @@ export const userAuthStore = defineStore('auth', {
 		},
 		async registro(form){
 			try {
-				const result = await axios.post('/api/crear-usuario', form)
+				const result = await axios.post('/api/crearUsuario', form)
 				if (result.data.success) {
 					return result.data
 				}
