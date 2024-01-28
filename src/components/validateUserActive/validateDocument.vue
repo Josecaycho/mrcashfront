@@ -98,25 +98,25 @@ export default {
 
 
 <template>
-  <div>
+  <v-container>
     <div class="text-center cl-title">Validación de Identidad</div>
     <div class="text-center cl-subtitle">Recuerda tener a la mano tu documento de identidad</div>
     <div>
       <v-row>
-        <v-col>
+        <v-col class="d-flex justify-center align-center">
           <div class="contn-files">
             <div class="btn-open-files">
-              <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta la foto del lado frontal de tu documento <img class="cuadros-top" src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
+              <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''"><span>Adjunta la foto del lado frontal de tu documento </span><img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
               <input type="file" @change="createBase64ImageF" style="display:none" id="upload1" accept="image/png, image/jpeg">
             </div>
             <img src="@/assets/images/dnifrontal.png" alt="" v-if="mostrarImg.img1 === null">
             <img v-else :src="`data:image/png;base64,${mostrarImg.img1}`" alt="" width="370" height="235">
           </div>
         </v-col>
-        <v-col>
+        <v-col class="d-flex justify-center align-center">
           <div  class="contn-files">
             <div class="btn-open-files">
-              <label for="upload2" :class="errorImgs.img2 ? 'err-img' : ''">Adjunta la foto del lado posterior de tu documento <img class="cuadros-top" src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
+              <label for="upload2" :class="errorImgs.img2 ? 'err-img' : ''"><span>Adjunta la foto del lado posterior de tu documento</span> <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
               <input type="file" @change="createBase64ImageP" style="display:none" id="upload2" accept="image/png, image/jpeg">
             </div>
             <img src="@/assets/images/dniposterior.png" alt="" v-if="mostrarImg.img2 === null">
@@ -128,7 +128,7 @@ export default {
     <div class="text-center">
       <v-btn class="btn-send" :loading="loading" color="#70BA44" :width="!responsive ? `330` : `241`" :height="!responsive ? `70` : `51`" @click="continuar()">Continuar</v-btn>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <style lang="scss" scoped>
@@ -145,11 +145,11 @@ export default {
 }
 
 .contn-files {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 25px;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
+  // flex-wrap: wrap;
+  // gap: 25px;
+  // align-items: center;
+  // justify-content: center;
 }
 .btn-open-files{
   color: #0081A2;
@@ -164,6 +164,8 @@ export default {
     justify-content: center;
     gap: 40px;
     align-items: center;
+    position: relative;
+    cursor: pointer;
      &.err-img{
       border: red;
       color: red;

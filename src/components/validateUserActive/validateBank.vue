@@ -11,7 +11,7 @@
                 <div>
                   <label for="" class="color-green">Seleccione una entidad financiera</label>
                   <v-select
-                    v-model="form1.bank"
+                    v-model="form1.mrc_bank_id"
                     :items="banks"
                     variant="outlined"
                     class="ip-form"
@@ -35,7 +35,7 @@
                 <div>
                   <label for="" class="color-green">Selecciona Tipo de cuenta</label>
                   <v-select
-                    v-model="form1.typeAccount"
+                    v-model="form1.mrc_type_account_id"
                     :items="typeAccounts"
                     variant="outlined"
                     class="ip-form"
@@ -51,7 +51,7 @@
                 <div>
                   <label for="" class="color-green">Ingrese Numero de cuenta</label>
                   <v-text-field 
-                    v-model="form1.numberAccount"
+                    v-model="form1.alias_account"
                     variant="outlined" 
                     label="" 
                     class="ip-form"
@@ -121,7 +121,7 @@ import {userUserStore} from '@/stores/user'
 
 export default {
   setup(props, ctx) {
-    const form1 = ref({bank: null, typeAccount: null, numberAccount: '', aliasAccount: ''})
+    const form1 = ref({id: null, mrc_bank_id: null, mrc_type_account_id: null, number_account: '', alias_account: ''})
     const formBank = ref(null)
     const loading = ref(null)
     const userStore = userUserStore()

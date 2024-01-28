@@ -5,7 +5,6 @@ import { useRouter, useRoute } from 'vue-router'
 const authStore = userAuthStore()
 const activeitem = ref(1)
 const route = useRoute()
-console.log(route)
 const navUser = [
   {
     img: 'new-orden',
@@ -94,6 +93,10 @@ const getImageUrl = (name) => {
   .btn-logout{
     font-family: 'Archivo-Bold';
     text-transform: capitalize;
+  }
+
+  @media screen and (max-width: 600px) {
+    display: none;
   }
 }
 </style>

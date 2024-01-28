@@ -44,6 +44,26 @@ export const userUserStore = defineStore ('user', {
       } catch (error) {
         
       }
+    },
+    async getListBanksUser (form) {
+      try {
+        const result = await axios.get(`/api/listBanksUser`)
+        if (result.data.success) {
+          return result.data
+        }
+      } catch (error) {
+        
+      }
+    }, 
+    async deleteBankUser (form) {
+      try {
+        const result = await axios.get(`/api/deleteBankUser/${form}`)
+        if (result.data.success) {
+          return result.data
+        }
+      } catch (error) {
+        
+      }
     }
   },
   persist: {

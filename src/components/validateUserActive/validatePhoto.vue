@@ -87,7 +87,7 @@ export default {
         <v-col>
           <div class="contn-files">
             <div class="btn-open-files">
-              <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta la foto del lado frontal de tu documento <img class="cuadros-top" src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
+              <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta la foto del lado frontal de tu documento <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
               <input type="file" @change="createBase64ImageF" style="display:none" id="upload1" accept="image/png, image/jpeg">
             </div>
             <img src="@/assets/images/dnifrontal.png" alt="" v-if="mostrarImg.img1 === null">

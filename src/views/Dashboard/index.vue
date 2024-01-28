@@ -6,7 +6,7 @@ const { user } = storeToRefs(authStore);
 
 </script>
 <template>
-  <div class="cont-mcas">
+  <div class="cont-mcas-das">
     <v-container>
       <v-row>
         <v-col class="cont-letter">

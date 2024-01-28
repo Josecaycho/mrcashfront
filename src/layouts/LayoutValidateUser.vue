@@ -20,6 +20,7 @@ const router = useRouter()
       color="#146489"
       flat
       height="71"
+      floating="true"
     >
       <template v-slot:prepend>
         <v-btn class="btn-logout" color="#fff" variant="text" v-if="authStore.isLogged" @click="authStore.logout()">
@@ -44,7 +45,7 @@ const router = useRouter()
         <img class="circle-top" src="@/assets/svg/circle-blue.svg" alt="cuadors">
         <img class="circle-btn" src="@/assets/svg/circle-green.svg" alt="cuadors">
       </div>
-      <div class="cont-mcas">
+      <div class="cont-mcas-validate">
         <router-view/>
       </div>
     </v-main>
