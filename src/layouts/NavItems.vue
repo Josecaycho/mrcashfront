@@ -36,12 +36,12 @@ const getImageUrl = (name) => {
 <template>
   <div class="nav-mr">
     <div class="item-nav" :class="route.name === item.view ? 'active': ''" v-for="(item, index) in navUser" :key="index">
-      <a :href="`/dashboard/${item.view}`">
+      <router-link :to="`/dashboard/${item.view}`">
         <div>
           <img :src="getImageUrl(`${item.img}${route.name === item.view  ? '-active': ''}.svg`)" alt="">
           <p>{{ item.name }}</p>
         </div>
-      </a>
+      </router-link >
     </div>
     <v-divider class="border-opacity-100" :thickness="3" color="#fff"></v-divider>
     <v-btn class="btn-logout mt-5" color="#fff" variant="text" v-if="authStore.isLogged" @click="authStore.logout()">

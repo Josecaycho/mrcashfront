@@ -12,51 +12,72 @@ export default {
     const loading = ref(false)
     const userStore = userUserStore()
 
+    const viewImage = reactive({
+      imgview1: null,
+      imgview2: null
+    })
+
+    const fileSend = ref()
+
     const mostrarImg = reactive({
       type: 1,
       img1: null,
-      img2: null,
+      img2: null
     })
     const errorImgs = reactive({
       img1: false,
       img2: false
     })
 
-    const createBase64ImageF = (event) => {
+    const createBase64ImageF = async (event) => {
       const file = event.target.files
+      fileSend.value = file[0]
+      console.log(file)
       base64Frontal.value = file[0]
       const reader = new FileReader()
       reader.readAsDataURL(file[0])
       reader.onload = () => {
         const base64 =  reader.result
-        mostrarImg.img1 = base64.split(',')[1]
+        viewImage.imgview1 = base64.split(',')[1]
         errorImgs.img1 = false
       }
       reader.onerror = (error) => reject(error)
+      sendImageS3(1)
     }
 
     const createBase64ImageP = (event) => {
 
       const file = event.target.files
+      fileSend.value = file[0]
       base64Frontal.value = file[0]
       const reader = new FileReader()
       reader.readAsDataURL(file[0])
       reader.onload = () => {
         const base64 =  reader.result
-        mostrarImg.img2 = base64.split(',')[1]
+        viewImage.imgview2 = base64.split(',')[1]
         errorImgs.img2 = false
       }
       reader.onerror = (error) => reject(error)
+      sendImageS3(2)
+    }
+
+    const sendImageS3 = async (type) => {
+      const formData = new FormData()
+      formData.append('file', fileSend.value)
+      const result = await userStore.sendImage(formData)
+      if(result.success) 
+        if(type === 1)
+          mostrarImg.img1 = result.data.Key
+        else mostrarImg.img2 = result.data.Key
     }
 
     const continuar = async () => {
-      if(mostrarImg.img1 === null) {
+      if(viewImage.imgview1 === null) {
         errorImgs.img1 = true
       }
-      if(mostrarImg.img2 === null) {
+      if(viewImage.imgview === null) {
         errorImgs.img2 = true
       }
-
       if(!errorImgs.img1 && !errorImgs.img2) {
         loading.value = true
         const result = await userStore.sendValidate(mostrarImg)
@@ -79,7 +100,9 @@ export default {
       mostrarImg,
       errorImgs,
       continuar,
-      loading
+      loading,
+      viewImage,
+      sendImageS3
     }
   },
   data() {
@@ -107,20 +130,20 @@ export default {
           <div class="contn-files">
             <div class="btn-open-files">
               <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''"><span>Adjunta la foto del lado frontal de tu documento </span><img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
-              <input type="file" @change="createBase64ImageF" style="display:none" id="upload1" accept="image/png, image/jpeg">
+              <input type="file" @change="createBase64ImageF" style="display:none" name="file" id="upload1" accept="image/png, image/jpeg">
             </div>
-            <img src="@/assets/images/dnifrontal.png" alt="" v-if="mostrarImg.img1 === null">
-            <img v-else :src="`data:image/png;base64,${mostrarImg.img1}`" alt="" width="370" height="235">
+            <img src="@/assets/images/dnifrontal.png" alt="" v-if="viewImage.imgview1 === null">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370" height="235">
           </div>
         </v-col>
         <v-col class="d-flex justify-center align-center">
           <div  class="contn-files">
             <div class="btn-open-files">
               <label for="upload2" :class="errorImgs.img2 ? 'err-img' : ''"><span>Adjunta la foto del lado posterior de tu documento</span> <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
-              <input type="file" @change="createBase64ImageP" style="display:none" id="upload2" accept="image/png, image/jpeg">
+              <input type="file" @change="createBase64ImageP" style="display:none" name="file2" id="upload2" accept="image/png, image/jpeg">
             </div>
-            <img src="@/assets/images/dniposterior.png" alt="" v-if="mostrarImg.img2 === null">
-            <img v-else :src="`data:image/png;base64,${mostrarImg.img2}`" alt="" width="370" height="235">
+            <img src="@/assets/images/dniposterior.png" alt="" v-if="viewImage.imgview2 === null">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview2}`" alt="" width="370" height="235">
           </div>
         </v-col>
       </v-row>

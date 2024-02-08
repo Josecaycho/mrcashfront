@@ -1,5 +1,11 @@
 @forward  "variables" ;
 
+$green: #A9D1C7;
+$blue: #0081A2;
+$green2: #70BA44;
+$blue2: #146489;
+$blue3: #0085AE;
+
 @font-face {
 	font-family: 'Archivo-Bold';
 	font-style: normal;
@@ -39,6 +45,7 @@ btn-send{
 
   @media screen and (max-width: 600px) {
     padding-left: 0;
+    padding-top: 50px;
   }
 }
 
@@ -51,6 +58,16 @@ btn-send{
 	&-inter{
 		padding-top: 70px;
 	}
+}
+
+.title-views {
+  font-size: 36px;
+  font-family: 'Archivo-SemiBold';
+  color: $blue2;
+  margin-bottom: 60px;
+  @media screen and (max-width: 600px) {
+    font-size: 27px;
+  }
 }
 
 /* HTML: <div class="loader"></div> */
@@ -71,4 +88,35 @@ btn-send{
 
 .color-green{
   color: #00ACAC;
+}
+
+.color-blue{
+  color: $blue2;
+}
+
+
+.v-text-field .v-field {	
+  border: 1.5px solid $green;
+  border-radius: 18px;
+  color: $blue;
+  font-family: 'Archivo-SemiBold';
+  padding-left: 5px;
+  height: 54px;
+  box-shadow: rgba(50, 50, 93, 0.2) 0px 3px 5px 0px, rgba(0, 0, 0, 0.1) -1px 0px 3px -1px;
+  background: white;
+}
+
+.route-enter-from{
+  opacity: 0;
+  transform: translateX(100px);
+}
+.route-enter-active{
+  transition: all 0.3s ease-out;
+}
+.route-leave-to{
+  opacity: 0;
+  transform: translateX(-100px);
+}
+.route-leave-active{
+  transition: all 0.3s ease-in;    
 }

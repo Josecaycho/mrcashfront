@@ -8,8 +8,14 @@ export const userAuthStore = defineStore('auth', {
 	state: () => ({
 		user: null,
 		token: null,
-		isLogged: true
+		isLogged: true,
+		banks: null
 	}),
+	getters: {
+		getUser(state) { 
+      return state.user
+    }
+	},
 	actions: {
 		async login (form) {
 			try {
@@ -17,6 +23,8 @@ export const userAuthStore = defineStore('auth', {
 				const data = {...form, password: password}
 				const result = await axios.post('/api/login', data)
 				if (result.data.success) {
+					const banks = await axios.get('/api/banks')
+					this.banks = banks.data.data
 					this.token = result.data.data.token
 					this.user = result.data.data
 					localStorage.setItem('token', JSON.stringify(result.data.data.token));
@@ -72,12 +80,27 @@ export const userAuthStore = defineStore('auth', {
 			}
 		},
 
+		async updateDataUser(form) {
+			try {
+				const result = await axios.post(`/api/updateUser`, form)
+				if (result.data.success) {
+					return result.data
+				}
+			} catch (error) {
+				
+			}
+		},
+
 		logout() {
 			this.user = null
 			this.token = null
 			this.isLogged = false
+			this.banks = null
 			this.router.push('/login')
 		},
+		setUser (payload) {
+			this.user = {...this.user, ...payload}
+		}
 	},
 	persist: {
     storage: sessionStorage, // data in sessionStorage is cleared when the page session ends.

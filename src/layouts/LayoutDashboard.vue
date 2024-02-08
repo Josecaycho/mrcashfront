@@ -49,7 +49,11 @@ onMounted(async () => {
       </div>
       <NavItems  />
       <div>
-        <router-view/>
+        <router-view v-slot="{ Component }">
+          <transition name="route" mode="out-in">
+            <component :is="Component"></component>
+          </transition>
+        </router-view>
       </div>
     </v-main>
   </v-layout>

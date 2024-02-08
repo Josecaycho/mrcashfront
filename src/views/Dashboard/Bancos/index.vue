@@ -89,10 +89,10 @@ const setData = (data) => {
   errorMoney.value = true
   headline.value = null
   addBank.value = false
-  dialog.value = true
   form1.value = data
   money.value = data.type_money
   headline.value = data.account_holder === 1 ? true : false
+  dialog.value = true
 }
 
 const addNewBank = () => {
@@ -383,7 +383,7 @@ const deleteData = async (data) => {
                   class="btn-send" 
                   color="#0085AE" 
                   :height="!responsive ? `70` : `51`" 
-                  @click="dialog = false"
+                  @click="dialog = false, getData()"
                 >
                   Cancelar
                 </v-btn>
@@ -407,12 +407,6 @@ const deleteData = async (data) => {
 
 
 <style lang="scss">
-.title-views {
-  font-size: 36px;
-  font-family: 'Archivo-SemiBold';
-  color: $blue2;
-  margin-bottom: 60px;
-}
 
 .content{
   &-title{

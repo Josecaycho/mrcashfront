@@ -46,7 +46,11 @@ const router = useRouter()
         <img class="circle-btn" src="@/assets/svg/circle-green.svg" alt="cuadors">
       </div>
       <div class="cont-mcas-validate">
-        <router-view/>
+        <router-view v-slot="{ Component }">
+          <transition name="route" mode="out-in">
+            <component :is="Component"></component>
+          </transition>
+        </router-view>
       </div>
     </v-main>
   </v-layout>

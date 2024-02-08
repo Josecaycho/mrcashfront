@@ -4,7 +4,11 @@
       <v-main class="relative">
         <img class="cuadros-top" src="@/assets/svg/cuadros-top.svg" alt="cuadors">
         <img class="cuadros-btn" src="@/assets/svg/cuadros-btn.svg" alt="cuadors">
-        <router-view/>
+        <router-view v-slot="{ Component }">
+          <transition name="route" mode="out-in">
+            <component :is="Component"></component>
+          </transition>
+        </router-view>
       </v-main>
     </component>
   </v-app>

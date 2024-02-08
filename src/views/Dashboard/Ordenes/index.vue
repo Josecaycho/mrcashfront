@@ -1,5 +1,296 @@
+<script setup>
+import Loading from '@/components/General/Loading.vue'
+import { userUserStore } from '@/stores/user'
+import { onMounted, ref } from 'vue'
+const userStore = userUserStore()
+const loading = ref(false)
+const dialog = ref(false)
+
+const ordenes = ref([])
+const orden = ref({})
+
+onMounted(async () => {
+  await listOrders()
+})
+
+const listOrders = async () => {
+  loading.value = true
+  const result = await userStore.listOrders()
+  if(result.success) {
+    ordenes.value = result.data
+    loading.value = false
+
+  }
+}
+
+const getDate = (data) => {
+  let dt = new Date(data)
+  let day = dt.getDate()
+  let month = dt.getMonth()
+  let year = dt.getFullYear()
+  return `${day}/${month + 1}/${year}`
+}
+
+const openDialog = (data) => {
+  orden.value = data
+  dialog.value = true
+}
+
+const getImage = (img) => {
+  return new URL(`../../../assets/svg/banks/${img}-logo.svg`, import.meta.url).href
+}
+
+</script>
+
 <template>
-  <div>
-    ordnes
+  <div class="cont-mcas cont-mcas-inter">
+    <v-container>
+      <div class="title-views text-center">
+        Ordenes de Pago
+      </div>
+      <div class="content-order" v-if="!loading">
+        <v-row class="content-order-list">
+          <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
+            <div class="content-order-list-item">
+              <div class="content-order-list-item-title">
+                <v-row>
+                  <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center transaction">
+                    Transaccion: <b class="ml-3">{{ item.codigo }}</b>
+                  </v-col>
+                  <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-end align-center date">
+                    {{ getDate(item.create_date) }}
+                  </v-col>
+                </v-row>
+              </div>
+              <div class="content-order-list-item-content">
+                <div>
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                      <div class="content-order-list-item-content-text green-text">Monto Devuelto</div>
+                    </v-col>
+                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                      <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_receive}` }}</div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                      <div class="content-order-list-item-content-text green-text">Monto Enviado</div>
+                    </v-col>
+                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                      <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_send}` }}</div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                      <div class="text-center">
+                        <div class="green-text comission"> {{ `Comision (${item.percentage}%)` }}</div>
+                        <div class="blue-text comission-number">{{ `S/  ${item.monto_comision}` }}</div>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                      <div class="state-order">
+                        {{ item.state === 1 || item.state === 2 || item.state === 3 || item.state === 4 ? 'Pendiente' : 'Pagado'}}
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <div class="text-center mt-8">
+                    <v-btn
+                      color="#00ACAC"
+                      @click="openDialog(item)"
+                    >
+                      <template v-slot:prepend>
+                        <v-icon >mdi-eye</v-icon>
+                      </template>
+                      Ver detalle
+                    </v-btn>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+      <Loading v-else />
+    </v-container>
+    <v-dialog
+      v-model="dialog"
+      width="450"
+    >
+      <v-card class="content-modal-order">
+        <v-card-text>
+          <div>
+            <div>
+              <div class="content-order-list-item-title">
+                <div class="icon-close" @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                  Close
+                </div>
+                <v-row>
+                  <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center transaction">
+                    Transaccion: <b class="ml-3">{{ orden.codigo }}</b>
+                  </v-col>
+                  <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-end align-center date">
+                    {{ getDate(orden.create_date) }}
+                  </v-col>
+                </v-row>
+              </div>
+              <div class="content-modal-order-info">
+                <div class="w-100 d-flex justify-center align-center mt-5 mb-7 text-center">
+                  <div>
+                    <div class="black-text monto_receive">{{ `S/ ${orden.monto_receive}` }}</div>
+                    <div class="grees-text">Monto de devolución</div>
+                  </div>
+                </div>
+                <v-row>
+                  <v-col cols="6" lg="6">
+                    <div class="grees-text">Monto enviado</div>
+                    <div class="black-text">{{ `S/ ${orden.monto_send}` }}</div>
+                  </v-col>
+                  <v-col cols="6" lg="6">
+                    <div class="grees-text">Banco Origen</div>
+                    <img width="100" class="mr-3" :src="getImage(orden.dataBank.icon)" />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="6" lg="6">
+                    <div class="grees-text">{{ `Comision (${orden.percentage}%)` }}</div>
+                    <div class="black-text">{{ `S/ ${orden.monto_send}` }}</div>
+                  </v-col>
+                  <v-col cols="6" lg="6">
+                    <div class="grees-text">Banco Destino</div>
+                    <img width="100" class="mr-3" :src="getImage(orden.bankUser.bank.icon)" />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="6" lg="6">
+                    <div class="grees-text">N° de cuenta</div>
+                    <div class="black-text">{{ orden.number_account }}</div>
+                  </v-col>
+                  <v-col cols="6" lg="6">
+                    <div class="grees-text">Cód. Transferencia</div>
+                    <div class="black-text">{{ orden.number_operation }}</div>
+                  </v-col>
+                </v-row>
+                <div class="w-100 d-flex justify-center align-center mt-5">
+                  <div class="state-order modal-order">
+                    {{ orden.state === 1 || orden.state === 2 || orden.state === 3 || orden.state === 4 ? 'Pendiente' : 'Pagado'}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
-</template>
+</template> 
+<style lang="scss">
+.content-order {
+  &-list{
+    &-item{
+      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
+      border-radius: 0 0 15px 15px;
+      &-title{
+        background: #00ACAC;
+        height: 68px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        color: #fff;
+        padding: 24px;
+        @media screen and (max-width: 600px) {
+          height: auto;
+        }
+        .transaction{
+          @media screen and (max-width: 600px) {
+            font-size: 20px;
+          } 
+        }
+        .date{
+          @media screen and (max-width: 600px) {
+            justify-content: center !important;
+            font-size: 18px;
+          } 
+        }
+      }
+      &-content{
+        padding: 30px;
+        background: #fff;
+        &-text{
+          font-size: 17px;
+          // @media screen and (max-width: 600px) {
+          //   font-size: 14px;
+          // }
+        }
+        &-number{
+          font-size: 28px;
+          @media screen and (max-width: 600px) {
+            font-size: 32px;
+          }
+        }
+        .comission{
+          font-size: 17px;
+          &-number{
+            font-size: 18px;
+          }
+        }
+      }
+      button{
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+.green-text{
+  color: #00ACAC
+}
+.blue-text{
+  color: #146489;
+}
+.black-text{
+  color: #000;
+  font-size: 20px;
+}
+.grees-text{
+  color: #929090;
+  font-size: 17px;
+}
+.state-order{
+  height: 31px;
+  width: 100px;
+  background: #DBD200;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  &.modal-order{
+    width: 153px;
+    height: 53px;
+    font-size: 22px;
+  }
+}
+.content-modal-order{
+  border-radius: 15px !important;
+  .icon-close{
+    position: absolute;
+    top: 80px;
+    color: white;
+    right: 15px;
+    background: red;
+    padding: 2px 10px;
+    font-size: 14px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .v-card-text{
+    padding: 0 !important;
+  }
+  &-info{
+    padding: 25px;
+  }
+  .monto_receive{
+    font-size: 36px;
+  }
+}
+</style>
+
