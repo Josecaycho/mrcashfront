@@ -9,8 +9,8 @@ const banks = ref([])
 const accounts = ref([])
 const formRegister = ref(null)
 const initialState = {
-  send: "",
-  bank: "",
+  send: '',
+  bank: '',
   bankUser: null,
   comision: 0,
   receive: ''
@@ -24,17 +24,30 @@ const loadinfImage = ref(false)
 const loadinfImageConfirm = ref(false)
 const loading = ref(false)
 const errorImgs = ref(false)
+const disabledCalculo = ref(false)
 
 onMounted(() => {
   banks.value = authStore.banks
   accounts.value = authStore.user.dataBank
 })
 
-const calculate = () => {
-  let calculate = form.send - (form.send * parseFloat(authStore.user.comision)/100)
-  let comision = form.send * parseFloat(authStore.user.comision)/100
-  form.comision = comision
-  form.receive = calculate
+const calculate = (type) => {
+  if(type === 1) {
+    let calculate = form.send - (form.send * parseFloat(authStore.user.comision)/100)
+    let comision = form.send * parseFloat(authStore.user.comision)/100
+    form.comision = comision
+    form.receive = calculate
+  }else {
+    let calculate = parseFloat(form.receive) + (form.receive * parseFloat(authStore.user.comision)/100)
+    let comision = form.receive * parseFloat(authStore.user.comision)/100
+    form.comision = comision
+    form.send = calculate
+  }
+}
+
+const revertCalculate = () => {
+  Object.assign(form, initialState);
+  disabledCalculo.value = !disabledCalculo.value
 }
 
 const sendRegister	= async () => {
@@ -116,20 +129,22 @@ const finishOrder = async() => {
       </div>
       <div class="content-generate-orden" v-if="!finalizar">
         <v-form ref="formRegister" class="d-flex align-center justify-center">
-          <v-card max-width="500" width="500">
+          <v-card class="card-content" max-width="500" width="500">
             <v-row>
               <v-col cols="12">
-                <div class="w-100">
+                <div class="w-100 content-input-changes">
                   <label for="" class="color-green">Envías</label>
                   <v-text-field 
                     v-model="form.send"
                     prefix="S/"
-                    variant="outlined" 
+                    variant="outlined"
+                    :disabled="disabledCalculo"
                     label="" 
                     class="ip-form"
-                    @keyup="calculate()"
+                    @keyup="calculate(1)"
                     :rules="numberRules"
                   ></v-text-field>
+                  <v-icon v-if="disabledCalculo" class="icon-revert" color="#00ACAC" @click="revertCalculate()">mdi-autorenew</v-icon>
                 </div>
               </v-col>
               <v-col cols="12">
@@ -147,16 +162,18 @@ const finishOrder = async() => {
                 </div>
               </v-col>
               <v-col cols="12">
-                <div class="w-100">
+                <div class="w-100 content-input-changes">
                   <label for="" class="color-green">Recibes</label>
                   <v-text-field 
                     v-model="form.receive"
-                    disabled
+                    :disabled="!disabledCalculo"
                     prefix="S/"
                     variant="outlined" 
                     label="" 
                     class="ip-form"
+                    @keyup="calculate(2)"
                   ></v-text-field>
+                  <v-icon v-if="!disabledCalculo" class="icon-revert" color="#00ACAC" @click="revertCalculate()">mdi-autorenew</v-icon>
                 </div>
               </v-col>
               <v-col cols="12">
@@ -225,7 +242,7 @@ const finishOrder = async() => {
         </div>
         <v-container>
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12" lg="6">
               <div class="list-detail-bank">
                 <h2 class="mb-5">Sigue los siguientes pasos:</h2>
                 <ul>
@@ -239,7 +256,7 @@ const finishOrder = async() => {
                 </ul>
               </div>
             </v-col>
-            <v-col cols="6" class="d-flex justify-center align-center">
+            <v-col cols="12" lg="6" class="d-flex justify-center align-center">
               <div>
                 <div class="title-file">Si ya realizaste el pago</div>
                 <div class="content-info-file" :class="errorImgs ? 'err-img' : ''" @click="openFile()">
@@ -278,7 +295,17 @@ const finishOrder = async() => {
 .content-generate-orden{
   .v-card{
     box-shadow: none;
-    .v-text-field .v-field {	
+    background: transparent;
+    .content-input-changes{
+      position: relative;
+      .icon-revert{
+        position: absolute;
+        transform: translateX(-50%);
+        top: 40px;
+        right: 0;
+      }
+    }
+    .v-text-field .v-field {
       font-size: 20px;
     }
     .v-field__input, .v-text-field__prefix{
@@ -345,6 +372,9 @@ const finishOrder = async() => {
     font-size: 20px;
     text-align: center;
     margin-bottom: 30px;
+    @media screen and (max-width: 600px){
+      color: #00ACAC;
+    }
   }
   .content-info-file{
     background: rgba(155, 210, 201, 0.2);

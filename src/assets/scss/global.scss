@@ -37,7 +37,7 @@ btn-send{
   padding-left: 150px;
   z-index: 999999;
   position: relative;
-  padding-top: 143px;
+  padding-top: 70px;
   z-index: 0;
 	&-inter{
 		padding-top: 70px;
@@ -119,4 +119,15 @@ btn-send{
 }
 .route-leave-active{
   transition: all 0.3s ease-in;    
+}
+
+
+.v-card.card-content{
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 10px !important;
+  @media screen and (max-width: 600px){
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }

@@ -18,17 +18,12 @@ onMounted(() => {
   dataUser.value.emailv = authStore.user.email
   dataUser.value.nombresv = authStore.user.nombres
   dataUser.value.apellidosv = authStore.user.apellidos
-  generateUrlImage()
 })
 
 const editUser = () => {
   disabled.value = false
 }
 
-const generateUrlImage = async () => {
-  const dni_frontal = await userStore.generateUrlImage({img: authStore.user.dni_frontal})
-  const dnir_later = await userStore.generateUrlImage({img: authStore.user.dnir_later})
-}
 
 const saveUser = async () => {
   try {
@@ -71,67 +66,69 @@ const lastNameRules = [
       <div class="title-views text-center">
         Datos Personales
       </div>
-      <div class="content-perfil">
-        <v-row>
-          <v-col cols="6">
-            <v-form ref="formRegister1">
-              <div class="content-info-form">
-                <div>
-                  <label class="color-green">DNI</label>
-                  <v-text-field
-                    v-model="dataUser.dniv"
-                    variant="outlined"
-                    class="ip-form"
-                    :disabled="disabledDNI"
-                    :rules="dniRules" 
-                  ></v-text-field>
+      <div class="content-perfil d-flex align-center justify-center">
+        <v-card class="card-content" max-width="1152" width="1152">
+          <v-row>
+            <v-col cols="12" lg="6">
+              <v-form ref="formRegister1">
+                <div class="content-info-form">
+                  <div>
+                    <label class="color-green">DNI</label>
+                    <v-text-field
+                      v-model="dataUser.dniv"
+                      variant="outlined"
+                      class="ip-form"
+                      :disabled="disabledDNI"
+                      :rules="dniRules" 
+                    ></v-text-field>
+                  </div>
+                  <div>
+                    <label class="color-green">Correo</label>
+                    <v-text-field 
+                      v-model="dataUser.emailv"
+                      variant="outlined"
+                      class="ip-form"
+                      :rules="emailRules" 
+                      :disabled="disabled"
+                    ></v-text-field>
+                  </div>
+                  <div>
+                    <label class="color-green">Nombres</label>
+                    <v-text-field 
+                      v-model="dataUser.nombresv"
+                      variant="outlined"
+                      class="ip-form"
+                      :disabled="disabled"
+                      :rules="nameRules" 
+                    ></v-text-field>
+                  </div>
+                  <div>
+                    <label class="color-green">Apellidos</label>
+                    <v-text-field 
+                      v-model="dataUser.apellidosv"
+                      :rules="lastNameRules"
+                      variant="outlined"
+                      class="ip-form"
+                      :disabled="disabled"
+                    ></v-text-field>
+                  </div>
                 </div>
-                <div>
-                  <label class="color-green">Correo</label>
-                  <v-text-field 
-                    v-model="dataUser.emailv"
-                    variant="outlined"
-                    class="ip-form"
-                    :rules="emailRules" 
-                    :disabled="disabled"
-                  ></v-text-field>
+                <div class="content-info-btn">
+                  <v-btn class="btn-send" v-if="disabled" color="#00ACAC" @click="editUser">Editar</v-btn>
+                  <v-btn class="btn-send" v-if="!disabled" color="#00ACAC" @click="disabled = !disabled">Cancelar</v-btn>
+                  <v-btn class="btn-send" v-if="!disabled" color="#70BA44" @click="saveUser">Guardar</v-btn>
                 </div>
-                <div>
-                  <label class="color-green">Nombres</label>
-                  <v-text-field 
-                    v-model="dataUser.nombresv"
-                    variant="outlined"
-                    class="ip-form"
-                    :disabled="disabled"
-                    :rules="nameRules" 
-                  ></v-text-field>
-                </div>
-                <div>
-                  <label class="color-green">Apellidos</label>
-                  <v-text-field 
-                    v-model="dataUser.apellidosv"
-                    :rules="lastNameRules"
-                    variant="outlined"
-                    class="ip-form"
-                    :disabled="disabled"
-                  ></v-text-field>
-                </div>
+              </v-form>
+            </v-col>
+            <v-col cols="6">
+              <div class="d-inline-block text-center w-100">
+                <!-- <img :src="`${routeImg}/${authStore.user.dni_frontal}`" width="400" />
+                <br>
+                <img :src="`${routeImg}/${authStore.user.dnir_later}`" width="400" /> -->
               </div>
-              <div class="content-info-btn">
-                <v-btn class="btn-send" v-if="disabled" color="#00ACAC" @click="editUser">Editar</v-btn>
-                <v-btn class="btn-send" v-if="!disabled" color="#00ACAC" @click="disabled = !disabled">Cancelar</v-btn>
-                <v-btn class="btn-send" v-if="!disabled" color="#70BA44" @click="saveUser">Guardar</v-btn>
-              </div>
-            </v-form>
-          </v-col>
-          <v-col cols="6">
-            <div class="d-inline-block text-center w-100">
-              <img :src="`${routeImg}/${authStore.user.dni_frontal}`" width="400" />
-              <br>
-              <img :src="`${routeImg}/${authStore.user.dnir_later}`" width="400" />
-            </div>
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
       </div>
       <Loading v-if="false"/>
     </v-container>
@@ -159,6 +156,11 @@ const lastNameRules = [
     width: 236px;
     height: 70px;
     border-radius: 18px;
+  }
+  @media screen and (max-width: 600px){
+    display: grid;
+    justify-content: center;
+    gap: 15px;
   }
 }
 </style>

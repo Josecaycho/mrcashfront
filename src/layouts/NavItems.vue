@@ -54,7 +54,7 @@ const getImageUrl = (name) => {
 
 <style lang="scss" scoped>
 .nav-mr{
-  position: absolute;
+  position: fixed;
   left: 43px;
   top: 101px;
   background: #00ACAC;

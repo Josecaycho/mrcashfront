@@ -3,7 +3,9 @@ import Loading from '@/components/General/Loading.vue'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useDisplay } from 'vuetify'
 import {userUserStore} from '@/stores/user'
+import { userAuthStore } from '@/stores/auth'
 const userStore = userUserStore()
+const authStore = userAuthStore()
 const { mobile } = useDisplay()
 const responsive = computed(() => mobile.value)
 const addBank = ref(false)
@@ -14,15 +16,8 @@ const banksUser = ref([])
 const firstContent = ref(true)
 const dialog = ref(false)
 
-const banks = [
-  {name: "Banco Internacional del Perú", id: 1, icon: 'interbank'},
-  {name: "Banco de Credito del Peru", id: 2, icon: 'bcp'}
-]
-const typeAccounts = [
-  {name: "Ahorro", id: 1},
-  {name: "Cuenta Ahorro", id: 2},
-  {name: "Cuenta Corriente", id: 3},
-]
+const banks = ref([])
+const typeAccounts = ref([])
 const money = ref(null)
 const headline = ref(null)
 const errorMoney = ref(true)
@@ -45,6 +40,8 @@ const headlineRules = [
 ]
 
 onMounted(async () => {
+  banks.value = authStore.banks
+  typeAccounts.value = authStore.typeAccounts
   getData()
 })
 
@@ -118,162 +115,164 @@ const deleteData = async (data) => {
         Cuentas bancarias
       </div>
       <div class="content-" v-if="!firstContent">
-        <v-row>
-          <v-col cols="12" lg="6" v-for="(bank, i) in banksUser" :key="i">
-            <div class="content">
-              <label class="content-title">{{ bank.alias_account }}</label>
-              <div class="content-info">
-                <v-row >
-                  <v-col cols="12" lg="7">
-                    <div class="content-info-first">
-                      <img width="25" height="25" class="mr-3" :src="getImage(bank.bank_icon)" />
-                      <p>{{ bank.bank }}</p>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="5">
-                    <div class="content-info-first-account d-flex align-center">
-                      <p>{{ `${bank.money} - ${bank.type_account}` }}</p>
-                    </div>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="6">
-                    <div>{{ bank.number_account }}</div>
-                  </v-col>
-                  <v-col cols="6">
-                    <div class="d-flex justify-end align-center">
-                      <v-icon @click="setData(bank)">mdi-pencil-box-outline</v-icon>
-                      <v-icon @click="deleteData(bank)">mdi-delete</v-icon>
-                    </div>
-                  </v-col>
-                </v-row>
+        <v-card class="card-content" max-width="1152" width="1152">
+          <v-row>
+            <v-col cols="12" lg="6" v-for="(bank, i) in banksUser" :key="i">
+              <div class="content">
+                <label class="content-title">{{ bank.alias_account }}</label>
+                <div class="content-info">
+                  <v-row >
+                    <v-col cols="12" lg="7">
+                      <div class="content-info-first">
+                        <img width="25" height="25" class="mr-3" :src="getImage(bank.bank_icon)" />
+                        <p>{{ bank.bank }}</p>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" lg="5">
+                      <div class="content-info-first-account d-flex align-center">
+                        <p>{{ `${bank.money} - ${bank.type_account}` }}</p>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6">
+                      <div>{{ bank.number_account }}</div>
+                    </v-col>
+                    <v-col cols="6">
+                      <div class="d-flex justify-end align-center">
+                        <v-icon @click="setData(bank)">mdi-pencil-box-outline</v-icon>
+                        <v-icon @click="deleteData(bank)" v-if="banksUser.length > 1">mdi-delete</v-icon>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
               </div>
-            </div>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" lg="6">
-            <label></label>
-            <div v-if="!addBank" class="content-info content-info-add" @click="addNewBank()">
-              <div>Agregar nueva cuenta</div>
-              <v-icon>mdi-plus-circle-outline</v-icon>
-            </div>
-            <div v-if="addBank" class="content-info content-info-form">
-              <v-form ref="formBank">
-                <div class="section-banks">
-                    <v-row>
-                      <v-col cols="12">
-                        <div class="w-100">
-                          <div>
-                            <label class="color-green">Seleccione una entidad financiera</label>
-                            <v-select
-                              v-model="form1.mrc_bank_id"
-                              :items="banks"
-                              variant="outlined"
-                              class="ip-form"
-                              item-title="name"
-                              :rules="bankRules"
-                              item-value="id"
-                            >
-                              <template #item="{ item, props }">
-                                <v-list-item v-bind="props">
-                                  <template #title>
-                                    <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name}}</div>
-                                  </template>
-                                </v-list-item>
-                              </template>
-                            </v-select>
+            </v-col>
+          </v-row>
+          <v-row v-if="banksUser.length < 11">
+            <v-col cols="12" lg="6">
+              <label></label>
+              <div v-if="!addBank" class="content-info content-info-add" @click="addNewBank()">
+                <div>Agregar nueva cuenta</div>
+                <v-icon>mdi-plus-circle-outline</v-icon>
+              </div>
+              <div v-if="addBank" class="content-info content-info-form">
+                <v-form ref="formBank">
+                  <div class="section-banks">
+                      <v-row>
+                        <v-col cols="12">
+                          <div class="w-100">
+                            <div>
+                              <label class="color-green">Seleccione una entidad financiera</label>
+                              <v-select
+                                v-model="form1.mrc_bank_id"
+                                :items="banks"
+                                variant="outlined"
+                                class="ip-form"
+                                item-title="name_bank"
+                                :rules="bankRules"
+                                item-value="id"
+                              >
+                                <template #item="{ item, props }">
+                                  <v-list-item v-bind="props">
+                                    <template #title>
+                                      <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
+                                    </template>
+                                  </v-list-item>
+                                </template>
+                              </v-select>
+                            </div>
                           </div>
-                        </div>
-                      </v-col>
-                      <v-col cols="12">
-                        <div class="w-100">
-                          <div>
-                            <label class="color-green">Selecciona Tipo de cuenta</label>
-                            <v-select
-                              v-model="form1.mrc_type_account_id"
-                              :items="typeAccounts"
-                              variant="outlined"
-                              class="ip-form"
-                              item-title="name"
-                              :rules="typeAccountRules"
-                              item-value="id"
-                            ></v-select>
+                        </v-col>
+                        <v-col cols="12">
+                          <div class="w-100">
+                            <div>
+                              <label class="color-green">Selecciona Tipo de cuenta</label>
+                              <v-select
+                                v-model="form1.mrc_type_account_id"
+                                :items="typeAccounts"
+                                variant="outlined"
+                                class="ip-form"
+                                item-title="account_name"
+                                :rules="typeAccountRules"
+                                item-value="id"
+                              ></v-select>
+                            </div>
                           </div>
-                        </div>
-                      </v-col>
-                      <v-col cols="12">
-                        <div class="w-100">
-                          <div>
-                            <label class="color-green">Ingrese Numero de cuenta</label>
-                            <v-text-field 
-                              v-model="form1.number_account"
-                              variant="outlined"
-                              class="ip-form"
-                              :rules="numberRules"
-                            ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <div class="w-100">
+                            <div>
+                              <label class="color-green">Ingrese Numero de cuenta</label>
+                              <v-text-field 
+                                v-model="form1.number_account"
+                                variant="outlined"
+                                class="ip-form"
+                                :rules="numberRules"
+                              ></v-text-field>
+                            </div>
                           </div>
-                        </div>
-                      </v-col>
-                      <v-col cols="12">
-                        <div class="w-100">
-                          <div>
-                            <label class="color-green">Agrégale un alias a tu cuenta</label>
-                            <v-text-field 
-                              v-model="form1.alias_account"
-                              variant="outlined"
-                              class="ip-form"
-                              :rules="aliasAccountRules"
-                            ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <div class="w-100">
+                            <div>
+                              <label class="color-green">Agrégale un alias a tu cuenta</label>
+                              <v-text-field 
+                                v-model="form1.alias_account"
+                                variant="outlined"
+                                class="ip-form"
+                                :rules="aliasAccountRules"
+                              ></v-text-field>
+                            </div>
                           </div>
-                        </div>
-                      </v-col>
-                    </v-row>
-                    <div class="section-type-account">
-                      <div @click="money = 1, errorMoney = true" :class="money === 1 && errorMoney ? 'type-account active' : !errorMoney ? 'type-account error' : 'type-account' "><v-icon size="17" class="mr-1" v-if="money === 1">mdi-check-circle-outline</v-icon>Soles</div>
-                      <div @click="money = 2, errorMoney = true" :class="money === 2 && errorMoney ? 'type-account active' : !errorMoney ? 'type-account error' : 'type-account' "><v-icon size="17" class="mr-1" v-if="money === 2">mdi-check-circle-outline</v-icon>Dolares</div>
-                    </div>
-                </div>
-                <div class="d-flex justify-center align-center mt-7">
-                  <div>
-                    <v-checkbox
-                      v-model="headline"
-                      color="#61C028"
-                      :rules="headlineRules"
-                      :class="`${headline !== null && !headline ? 'rd-pex error' : 'rd-pex'}`"
-                      hide-details
-                    >
-                      <template v-slot:label>
-                        <div>
-                          <span class="dl-underline" href="" :style="`${headline !== null && !headline ? 'color:red' : 'color: #0085AE'}`">Declaro que soy el(la) titular de la cuenta.</span>
-                        </div>
-                      </template>
-                    </v-checkbox>
+                        </v-col>
+                      </v-row>
+                      <div class="section-type-account">
+                        <div @click="money = 1, errorMoney = true" :class="money === 1 && errorMoney ? 'type-account active' : !errorMoney ? 'type-account error' : 'type-account' "><v-icon size="17" class="mr-1" v-if="money === 1">mdi-check-circle-outline</v-icon>Soles</div>
+                        <div @click="money = 2, errorMoney = true" :class="money === 2 && errorMoney ? 'type-account active' : !errorMoney ? 'type-account error' : 'type-account' "><v-icon size="17" class="mr-1" v-if="money === 2">mdi-check-circle-outline</v-icon>Dolares</div>
+                      </div>
                   </div>
-                </div>
-                <div class="btn-add-bank d-flex justify-center align-center text-center">
-                  <v-btn 
-                    class="btn-send" 
-                    color="#0085AE" 
-                    :height="!responsive ? `70` : `51`" 
-                    @click="addBank = false"
-                  >
-                    Cancelar
-                  </v-btn>
-                  <v-btn 
-                    class="btn-send" 
-                    :loading="loading" 
-                    color="#70BA44" 
-                    :height="!responsive ? `70` : `51`" 
-                    @click="continuar"
-                  >
-                    Finalizar
-                  </v-btn>
-                </div>
-              </v-form>
-            </div>
-          </v-col>
-        </v-row>
+                  <div class="d-flex justify-center align-center mt-7">
+                    <div>
+                      <v-checkbox
+                        v-model="headline"
+                        color="#61C028"
+                        :rules="headlineRules"
+                        :class="`${headline !== null && !headline ? 'rd-pex error' : 'rd-pex'}`"
+                        hide-details
+                      >
+                        <template v-slot:label>
+                          <div>
+                            <span class="dl-underline" href="" :style="`${headline !== null && !headline ? 'color:red' : 'color: #0085AE'}`">Declaro que soy el(la) titular de la cuenta.</span>
+                          </div>
+                        </template>
+                      </v-checkbox>
+                    </div>
+                  </div>
+                  <div class="btn-add-bank d-flex justify-center align-center text-center">
+                    <v-btn 
+                      class="btn-send" 
+                      color="#0085AE" 
+                      :height="!responsive ? `70` : `51`" 
+                      @click="addBank = false"
+                    >
+                      Cancelar
+                    </v-btn>
+                    <v-btn 
+                      class="btn-send" 
+                      :loading="loading" 
+                      color="#70BA44" 
+                      :height="!responsive ? `70` : `51`" 
+                      @click="continuar"
+                    >
+                      Finalizar
+                    </v-btn>
+                  </div>
+                </v-form>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card>
       </div>
       <Loading v-else />
     </v-container>
@@ -298,14 +297,14 @@ const deleteData = async (data) => {
                             :items="banks"
                             variant="outlined"
                             class="ip-form"
-                            item-title="name"
+                            item-title="name_bank"
                             :rules="bankRules"
                             item-value="id"
                           >
                             <template #item="{ item, props }">
                               <v-list-item v-bind="props">
                                 <template #title>
-                                  <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name}}</div>
+                                  <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
                                 </template>
                               </v-list-item>
                             </template>
@@ -322,7 +321,7 @@ const deleteData = async (data) => {
                             :items="typeAccounts"
                             variant="outlined"
                             class="ip-form"
-                            item-title="name"
+                            item-title="account_name"
                             :rules="typeAccountRules"
                             item-value="id"
                           ></v-select>
@@ -409,6 +408,9 @@ const deleteData = async (data) => {
 <style lang="scss">
 
 .content{
+    .v-input.ip-form{
+      width: 100%;
+    }
   &-title{
     color: #00ACAC;
     font-size: 17px;

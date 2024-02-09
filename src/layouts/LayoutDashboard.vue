@@ -29,6 +29,7 @@ onMounted(async () => {
       color="#146489"
       flat
       height="71"
+      class="app-bar-fixed"
     >
       <template v-slot:append>
         <div class="mr-10 info-user" v-if="user">
@@ -61,6 +62,10 @@ onMounted(async () => {
 
 
 <style lang="scss">
+.app-bar-fixed{
+  position: fixed !important;
+  z-index: 999999999 !important;
+}
 .v-main{
   position: relative;
   img{
@@ -87,6 +92,10 @@ onMounted(async () => {
       bottom: 0;
       right: 0;
       animation: EntrarLeft .9s ease;
+      @media screen and (max-width: 600px){
+        bottom: -200px;
+        right: -200px;
+      }
     }
   }
   @keyframes EntrarLeft {

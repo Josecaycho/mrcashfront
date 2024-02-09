@@ -15,14 +15,14 @@
                     :items="banks"
                     variant="outlined"
                     class="ip-form"
-                    item-title="name"
+                    item-title="name_bank"
                     :rules="bankRules"
                     item-value="id"
                   >
                     <template #item="{ item, props }">
                       <v-list-item v-bind="props">
                         <template #title>
-                          <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name}}</div>
+                          <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
                         </template>
                       </v-list-item>
                     </template>
@@ -39,7 +39,7 @@
                     :items="typeAccounts"
                     variant="outlined"
                     class="ip-form"
-                    item-title="name"
+                    item-title="account_name"
                     :rules="typeAccountRules"
                     item-value="id"
                   ></v-select>
@@ -51,7 +51,7 @@
                 <div>
                   <label for="" class="color-green">Ingrese Numero de cuenta</label>
                   <v-text-field 
-                    v-model="form1.alias_account"
+                    v-model="form1.number_account"
                     variant="outlined" 
                     label="" 
                     class="ip-form"
@@ -65,7 +65,7 @@
                 <div>
                   <label for="" class="color-green">Agrégale un alias a tu cuenta</label>
                   <v-text-field 
-                    v-model="form1.aliasAccount"
+                    v-model="form1.alias_account"
                     variant="outlined" 
                     label="" 
                     class="ip-form"
@@ -115,26 +115,21 @@
 </template>
 
 <script>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useDisplay } from 'vuetify'
 import {userUserStore} from '@/stores/user'
+import { userAuthStore } from '@/stores/auth'
 
 export default {
   setup(props, ctx) {
     const form1 = ref({id: null, mrc_bank_id: null, mrc_type_account_id: null, number_account: '', alias_account: ''})
     const formBank = ref(null)
     const loading = ref(null)
+    const authStore = userAuthStore()
     const userStore = userUserStore()
 
-    const banks = [
-      {name: "Banco Internacional del Perú", id: 1, icon: 'interbank'},
-      {name: "Banco de Credito del Peru", id: 2, icon: 'bcp'}
-    ]
-    const typeAccounts = [
-      {name: "Ahorro", id: 1},
-      {name: "Cuenta Ahorro", id: 2},
-      {name: "Cuenta Corriente", id: 3},
-    ]
+    const banks = ref([])
+    const typeAccounts = ref([])
     const money = ref(null)
     const headline = ref(null)
     const errorMoney = ref(true)
@@ -184,6 +179,11 @@ export default {
     const getImage = (img) => {
       return new URL(`../../assets/svg/banks/${img}.svg`, import.meta.url).href
     }
+
+    onMounted(() => {
+      banks.value = authStore.banks
+      typeAccounts.value = authStore.typeAccounts
+    })
 
     return {
       form1,

@@ -2,6 +2,7 @@
 import { computed, reactive, ref, watch } from "vue";
 import { useDisplay } from 'vuetify'
 import {userUserStore} from '@/stores/user'
+import { userAuthStore } from '@/stores/auth'
 
 export default {
   emits: ['sendData'],
@@ -11,7 +12,11 @@ export default {
     const base64Frontal = ref()
     const loading = ref(false)
     const userStore = userUserStore()
-
+    const authStore = userAuthStore()
+    const fileSend = ref()
+    const viewImage = reactive({
+      imgview1: null
+    })
     const mostrarImg = reactive({
       type: 2,
       img1: null,
@@ -20,26 +25,36 @@ export default {
     const errorImgs = reactive({
       img1: false
     })
-
+    
     const createBase64ImageF = (event) => {
       const file = event.target.files
+      fileSend.value = file[0]
       base64Frontal.value = file[0]
       const reader = new FileReader()
       reader.readAsDataURL(file[0])
       reader.onload = () => {
         const base64 =  reader.result
-        mostrarImg.img1 = base64.split(',')[1]
+        viewImage.imgview1 = base64.split(',')[1]
         errorImgs.img1 = false
       }
       reader.onerror = (error) => reject(error)
+      sendImageS3()
+    }
+
+    const sendImageS3 = async (type) => {
+      const formData = new FormData()
+      formData.append('file', fileSend.value)
+      const result = await userStore.sendImage(formData)
+      if(result.success) 
+        mostrarImg.img1 = `dni/${authStore.user.dni}/${result.data.Key}`
     }
 
     const continuar = async () => {
-      if(mostrarImg.img1 === null) {
+      if(mostrarImg.imgview1 === null) {
         errorImgs.img1 = true
       }
 
-      if(!errorImgs.img1 && !errorImgs.img2) {
+      if(!errorImgs.imgview1 && !errorImgs.img2) {
         loading.value = true
         const result = await userStore.sendValidate(mostrarImg)
         
@@ -60,7 +75,9 @@ export default {
       mostrarImg,
       errorImgs,
       continuar,
-      loading
+      loading,
+      sendImageS3,
+      viewImage
     }
   },
   data() {
@@ -90,8 +107,8 @@ export default {
               <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta la foto del lado frontal de tu documento <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
               <input type="file" @change="createBase64ImageF" style="display:none" id="upload1" accept="image/png, image/jpeg">
             </div>
-            <img src="@/assets/images/dnifrontal.png" alt="" v-if="mostrarImg.img1 === null">
-            <img v-else :src="`data:image/png;base64,${mostrarImg.img1}`" alt="" width="370" height="235">
+            <img src="@/assets/images/dnifrontal.png" alt="" v-if="viewImage.imgview1 === null">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370" height="235">
           </div>
         </v-col>
       </v-row>

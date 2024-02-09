@@ -48,67 +48,69 @@ const getImage = (img) => {
       <div class="title-views text-center">
         Ordenes de Pago
       </div>
-      <div class="content-order" v-if="!loading">
-        <v-row class="content-order-list">
-          <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
-            <div class="content-order-list-item">
-              <div class="content-order-list-item-title">
-                <v-row>
-                  <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center transaction">
-                    Transaccion: <b class="ml-3">{{ item.codigo }}</b>
-                  </v-col>
-                  <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-end align-center date">
-                    {{ getDate(item.create_date) }}
-                  </v-col>
-                </v-row>
-              </div>
-              <div class="content-order-list-item-content">
-                <div>
+      <div class="content-order d-flex align-center justify-center" v-if="!loading">
+        <v-card class="card-content" max-width="1152" width="1152">
+          <v-row class="content-order-list">
+            <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
+              <div class="content-order-list-item">
+                <div class="content-order-list-item-title">
                   <v-row>
-                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                      <div class="content-order-list-item-content-text green-text">Monto Devuelto</div>
+                    <v-col cols="12" lg="8" md="8" sm="8" class="d-flex justify-center align-center transaction">
+                      Transaccion: <b class="ml-3">{{ item.codigo }}</b>
                     </v-col>
-                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                      <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_receive}` }}</div>
+                    <v-col cols="12" lg="4" md="4" sm="4" class="d-flex justify-end align-center date">
+                      {{ getDate(item.create_date) }}
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                      <div class="content-order-list-item-content-text green-text">Monto Enviado</div>
-                    </v-col>
-                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                      <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_send}` }}</div>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                      <div class="text-center">
-                        <div class="green-text comission"> {{ `Comision (${item.percentage}%)` }}</div>
-                        <div class="blue-text comission-number">{{ `S/  ${item.monto_comision}` }}</div>
-                      </div>
-                    </v-col>
-                    <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                      <div class="state-order">
-                        {{ item.state === 1 || item.state === 2 || item.state === 3 || item.state === 4 ? 'Pendiente' : 'Pagado'}}
-                      </div>
-                    </v-col>
-                  </v-row>
-                  <div class="text-center mt-8">
-                    <v-btn
-                      color="#00ACAC"
-                      @click="openDialog(item)"
-                    >
-                      <template v-slot:prepend>
-                        <v-icon >mdi-eye</v-icon>
-                      </template>
-                      Ver detalle
-                    </v-btn>
+                </div>
+                <div class="content-order-list-item-content">
+                  <div>
+                    <v-row>
+                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                        <div class="content-order-list-item-content-text green-text">Monto Devuelto</div>
+                      </v-col>
+                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                        <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_receive}` }}</div>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                        <div class="content-order-list-item-content-text green-text">Monto Enviado</div>
+                      </v-col>
+                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                        <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_send}` }}</div>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                        <div class="text-center">
+                          <div class="green-text comission"> {{ `Comision (${item.percentage}%)` }}</div>
+                          <div class="blue-text comission-number">{{ `S/  ${item.monto_comision}` }}</div>
+                        </div>
+                      </v-col>
+                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                        <div class="state-order">
+                          {{ item.state === 1 || item.state === 2 || item.state === 3 || item.state === 4 ? 'Pendiente' : 'Pagado'}}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    <div class="text-center mt-8">
+                      <v-btn
+                        color="#00ACAC"
+                        @click="openDialog(item)"
+                      >
+                        <template v-slot:prepend>
+                          <v-icon >mdi-eye</v-icon>
+                        </template>
+                        Ver detalle
+                      </v-btn>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
+        </v-card>
       </div>
       <Loading v-else />
     </v-container>

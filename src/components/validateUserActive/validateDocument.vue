@@ -2,6 +2,7 @@
 import { computed, reactive, ref, watch } from "vue";
 import { useDisplay } from 'vuetify'
 import {userUserStore} from '@/stores/user'
+import { userAuthStore } from '@/stores/auth'
 
 export default {
   emits: ['sendData'],
@@ -11,6 +12,7 @@ export default {
     const base64Frontal = ref()
     const loading = ref(false)
     const userStore = userUserStore()
+    const authStore = userAuthStore()
 
     const viewImage = reactive({
       imgview1: null,
@@ -32,7 +34,6 @@ export default {
     const createBase64ImageF = async (event) => {
       const file = event.target.files
       fileSend.value = file[0]
-      console.log(file)
       base64Frontal.value = file[0]
       const reader = new FileReader()
       reader.readAsDataURL(file[0])
@@ -67,18 +68,19 @@ export default {
       const result = await userStore.sendImage(formData)
       if(result.success) 
         if(type === 1)
-          mostrarImg.img1 = result.data.Key
-        else mostrarImg.img2 = result.data.Key
+          mostrarImg.img1 = `dni/${authStore.user.dni}/${result.data.Key}`
+        else mostrarImg.img2 = `dni/${authStore.user.dni}/${result.data.Key}`
     }
 
     const continuar = async () => {
       if(viewImage.imgview1 === null) {
         errorImgs.img1 = true
       }
-      if(viewImage.imgview === null) {
+      if(viewImage.imgview2 === null) {
         errorImgs.img2 = true
       }
       if(!errorImgs.img1 && !errorImgs.img2) {
+        console.log(mostrarImg)
         loading.value = true
         const result = await userStore.sendValidate(mostrarImg)
         

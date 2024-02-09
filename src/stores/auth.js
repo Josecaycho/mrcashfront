@@ -9,7 +9,8 @@ export const userAuthStore = defineStore('auth', {
 		user: null,
 		token: null,
 		isLogged: true,
-		banks: null
+		banks: null,
+		typeAccounts: null
 	}),
 	getters: {
 		getUser(state) { 
@@ -24,7 +25,9 @@ export const userAuthStore = defineStore('auth', {
 				const result = await axios.post('/api/login', data)
 				if (result.data.success) {
 					const banks = await axios.get('/api/banks')
+					const typeAccounts = await axios.get('/api/typeAccounts')
 					this.banks = banks.data.data
+					this.typeAccounts = typeAccounts.data.data
 					this.token = result.data.data.token
 					this.user = result.data.data
 					localStorage.setItem('token', JSON.stringify(result.data.data.token));
