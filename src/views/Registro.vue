@@ -2,9 +2,11 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { userAuthStore } from '@/stores/auth'
+import { userUserStore } from '@/stores/user'
 import { useDisplay } from 'vuetify'
 import CryptoJS from 'crypto-js'
 const authStore = userAuthStore()
+const userStore = userUserStore()
 const form1 = ref({dni: '', nombres: '', apellidos: ''})
 const form2 = ref({email: '', phone: ''})
 const password = ref('')
@@ -57,6 +59,7 @@ const sendRegisterFinal = async () => {
 	if (valid2.valid) {
 		const result = await authStore.registro(data)
 		if (result.success) {
+			sendEmail()
 			setTimeout(() => {
 				router.push('/login')
 			}, 5000);
@@ -76,6 +79,22 @@ const sendRegisterFinal = async () => {
 		} else politicData.value = politicData.value
 
 	}
+}
+
+const sendEmail = async () => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App 7aa9ecb42803ef00443bf73621d03741-f818b535-0585-4a49-9145-f5093c621211'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeancavar89@gmail.com>')
+  formData.append('subject', 'Proceso de Registro de nuevo Usuario')
+  formData.append('to', `{"to":"${form2.value.email}","placeholders":{"firstName":"${form1.value.apellidos}"}}`)
+  formData.append('html', `
+    <div>
+    <div style="width:100%; text-align: center;">
+      <h1 style="color:#146489">Bienvenido ${form1.value.nombres} </h1>
+      <div style="color: #00ACAC;">El registro de su nueva cuenta esta en proceso de validacion, inicie session con sus credenciales registradas para terminar su proceso de registro.</div>
+    </div>
+  `);
+  userStore.sendEmail(formData)
 }
 
 const retroceder = async () => {

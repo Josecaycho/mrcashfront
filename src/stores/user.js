@@ -4,7 +4,8 @@ import { userAuthStore } from '@/stores/auth';
 
 export const userUserStore = defineStore ('user', {
   state: () => ({
-		userState: null
+		userState: null,
+    tokenSend: null
 	}),
 	getters: {
 		getStateUser(state) { 
@@ -134,6 +135,22 @@ export const userUserStore = defineStore ('user', {
         
       }
     },
+    async sendEmail (form) {
+      try {
+        const config = {headers: {
+          'Content-Type': 'multipart/form-data'
+        }}
+        const result = await axios.post(`https://qgz8k3.api.infobip.com/email/3/send`, form, config)
+        if (result.status === 200) {
+          localStorage.removeItem("tokenEmail")
+        }
+      } catch (error) {
+        
+      }
+    },
+    setTokenEmail (payload) {
+			this.tokenSend = payload
+		}
   },
   persist: {
     storage: sessionStorage, // data in sessionStorage is cleared when the page session ends.

@@ -7,6 +7,7 @@ const authStore = userAuthStore()
 const userStore = userUserStore()
 const banks = ref([])
 const accounts = ref([])
+const newAccounts = ref([])
 const formRegister = ref(null)
 const initialState = {
   send: '',
@@ -29,6 +30,7 @@ const disabledCalculo = ref(false)
 onMounted(() => {
   banks.value = authStore.banks
   accounts.value = authStore.user.dataBank
+  newAccounts.value = authStore.user.dataBank
 })
 
 const calculate = (type) => {
@@ -112,11 +114,41 @@ const finishOrder = async() => {
     loading.value = true
     const result = await userStore.finalyOrder(codigo.value)
     if ( result.success) {
+      sendEmail(form)
       loading.value = false
       finalizar.value = false
       Object.assign(form, initialState);
     }
   }
+}
+
+const sendEmail = async (data) => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App 7aa9ecb42803ef00443bf73621d03741-f818b535-0585-4a49-9145-f5093c621211'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeancavar89@gmail.com>')
+  formData.append('subject', 'Creacion de Nueva Orden')
+  formData.append('to', `{"to":"${authStore.user.email}","placeholders":{"firstName":"${authStore.user.apellidos}"}}`)
+  formData.append('text', `Se a creado una nueva orden con numero de transaccion ${codigo.value}`)
+  formData.append('html', `
+    <div>
+    <div style="width:100%; text-align: center;">
+      <h1 style="color:#146489">Nueva orden generada</h1>
+      <div style="color: #00ACAC;">Se a creado una nueva orden con numero de transaccion <b> ${codigo.value} </b></div>
+      <div style="font-size: 25px;margin-top: 20px;">
+        <div>Monto Enviado: S/ ${data.send}</div>
+        <div>Monto a Recibir: S/ ${data.receive}</div>
+      </div>
+    </div>
+  `);
+  userStore.sendEmail(formData)
+}
+
+const getFilterAccountUser = async(data) => {
+  const newAccountsValue = accounts.value.filter(dl => dl.mrc_bank_id === data.id)
+  console.log(newAccountsValue)
+  if(newAccountsValue.length > 0)
+    newAccounts.value = newAccountsValue
+  else newAccounts.value = accounts.value
 }
 
 </script>
@@ -191,7 +223,7 @@ const finishOrder = async() => {
                     <template #item="{ item, props }">
                       <v-list-item v-bind="props">
                         <template #title>
-                          <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
+                          <div @click="getFilterAccountUser(item.raw)" class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
                         </template>
                       </v-list-item>
                     </template>
@@ -203,7 +235,7 @@ const finishOrder = async() => {
                   <label for="" class="color-green">Seleccione su numero de cuenta</label>
                   <v-select
                     v-model="form.bankUser"
-                    :items="accounts"
+                    :items="newAccounts"
                     variant="outlined"
                     class="ip-form"
                     :item-title="item => item.alias_account +' - '+ item.number_account"

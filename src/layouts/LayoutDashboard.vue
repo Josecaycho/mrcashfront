@@ -32,7 +32,7 @@ onMounted(async () => {
       class="app-bar-fixed"
     >
       <template v-slot:append>
-        <div class="mr-10 info-user" v-if="user">
+        <div class="info-user" v-if="user">
           Bienvenido: {{ `${user.nombres} ${user.apellidos}` }}
           <div>
             <v-icon size="22" class="icon-user">mdi-account</v-icon>
@@ -122,6 +122,10 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   gap: 15px;
+  margin-right: 40px !important;
+  @media screen and (max-width: 600px){
+    margin-right: 0 !important;
+  }
   .icon-user{
     border: 1px solid #fff;
     border-radius: 50%;

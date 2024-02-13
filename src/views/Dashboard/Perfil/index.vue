@@ -27,17 +27,31 @@ const editUser = () => {
 
 const saveUser = async () => {
   try {
+    console.log('sss')
 		const valid1 = await formRegister1.value.validate()
+    console.log(valid1)
     if (valid1.valid) {
       const result = await authStore.updateDataUser(dataUser.value)
+      console.log(result)
       if (result.success) {
         disabled.value = true
         authStore.setUser(result.data[0])
+        sendEmail()
       }
     }
   } catch (error) {
       
   }
+}
+
+const sendEmail = async () => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App 7aa9ecb42803ef00443bf73621d03741-f818b535-0585-4a49-9145-f5093c621211'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeancavar89@gmail.com>')
+  formData.append('subject', 'Modificacion de Perfil de usuario')
+  formData.append('to', `{"to":"${authStore.user.email}","placeholders":{"firstName":"${authStore.user.apellidos}"}}`)
+  formData.append('text', 'Perfil Modificado')
+  userStore.sendEmail(formData)
 }
 
 const dniRules = [

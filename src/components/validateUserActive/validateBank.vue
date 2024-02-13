@@ -22,7 +22,7 @@
                     <template #item="{ item, props }">
                       <v-list-item v-bind="props">
                         <template #title>
-                          <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
+                          <div @click="getTypesAccount(item.raw)" class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
                         </template>
                       </v-list-item>
                     </template>
@@ -42,7 +42,15 @@
                     item-title="account_name"
                     :rules="typeAccountRules"
                     item-value="id"
-                  ></v-select>
+                  >
+                    <template #item="{ item, props }">
+                      <v-list-item v-bind="props">
+                        <template #title>
+                          <div @click="searchLimit(item.raw)" class="d-flex justify-star align-center">{{item.raw.account_name}}</div>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-select>
                 </div>
               </div>
             </v-col>
@@ -133,6 +141,8 @@ export default {
     const money = ref(null)
     const headline = ref(null)
     const errorMoney = ref(true)
+
+    const limitNumber = ref(0)
         
     const bankRules = [
       v => !!v || 'Seleccionar un banco'
@@ -145,7 +155,8 @@ export default {
     ]
     const numberRules = [
       v => Number.isInteger(Number(v)) || 'Solo numeros',
-      v => !!v || 'Ingresa un numero de cuenta'
+      v => !!v || 'Ingresa un numero de cuenta',
+      v => v.length <= limitNumber.value || `Maximo ${limitNumber.value} caracteres.`
     ]
     const headlineRules = [
       v =>!!v || 'Campos obligatorios'
@@ -180,9 +191,18 @@ export default {
       return new URL(`../../assets/svg/banks/${img}.svg`, import.meta.url).href
     }
 
+    const getTypesAccount = async (data) =>{
+      typeAccounts.value = await data.typesAccounts
+      form1.value.mrc_type_account_id = null
+      form1.value.number_account = ''
+    } 
+
+    const searchLimit = async (data) => {
+      limitNumber.value = await data.digits
+      form1.value.number_account = ''
+    }
     onMounted(() => {
       banks.value = authStore.banks
-      typeAccounts.value = authStore.typeAccounts
     })
 
     return {
@@ -202,7 +222,9 @@ export default {
       headlineRules,
       responsive,
       getImage,
-      continuar
+      continuar,
+      getTypesAccount,
+      searchLimit
     }
   }
 }

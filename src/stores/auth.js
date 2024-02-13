@@ -25,9 +25,8 @@ export const userAuthStore = defineStore('auth', {
 				const result = await axios.post('/api/login', data)
 				if (result.data.success) {
 					const banks = await axios.get('/api/banks')
-					const typeAccounts = await axios.get('/api/typeAccounts')
+					// const typeAccounts = await axios.get('/api/typeAccounts')
 					this.banks = banks.data.data
-					this.typeAccounts = typeAccounts.data.data
 					this.token = result.data.data.token
 					this.user = result.data.data
 					localStorage.setItem('token', JSON.stringify(result.data.data.token));
@@ -84,6 +83,7 @@ export const userAuthStore = defineStore('auth', {
 		},
 
 		async updateDataUser(form) {
+			console.log('sss')
 			try {
 				const result = await axios.post(`/api/updateUser`, form)
 				if (result.data.success) {
@@ -103,6 +103,9 @@ export const userAuthStore = defineStore('auth', {
 		},
 		setUser (payload) {
 			this.user = {...this.user, ...payload}
+		},
+		setBank (payload) {
+			this.user.dataBank = payload
 		}
 	},
 	persist: {

@@ -1,9 +1,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { userAuthStore } from '@/stores/auth'
+import { userUserStore } from '@/stores/user'
 import { useRouter, useRoute } from 'vue-router'
 import CryptoJS from 'crypto-js'
 const authStore = userAuthStore()
+const userStore = userUserStore()
 const formRestore = ref(null)
 const password = ref('')
 const confirmPassword = ref('')
@@ -43,16 +45,33 @@ const sendLogin	= async () => {
 		loading.value = true
 		let dataSend = {
 			password: encyptPasswordAES(password.value, 'SECRET_PASSWORD'),
-			token: tokenRoute.value
+			token: tokenRoute.value.replace(/['"]+/g, '')
 		}
 		const result = await authStore.restorePassword(dataSend)
 		if (result.success) {
+			sendEmail(result.data.email)
 			loading.value = false
 			setTimeout(() => {
 				router.push('/dashboard')
 			}, 3000);
     }
 	}
+}
+
+const sendEmail = async (email) => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App 7aa9ecb42803ef00443bf73621d03741-f818b535-0585-4a49-9145-f5093c621211'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeancavar89@gmail.com>')
+  formData.append('subject', 'Proceso de Recuperacion de Contraseña')
+  formData.append('to', `{"to":"${email}"}}`)
+  formData.append('html', `
+    <div>
+    <div style="width:100%; text-align: center;">
+			<h1 style="color:#146489">Recuperacion de Contraseña</h1>
+      <div style="color: #00ACAC;">Su contraseña fue restablecida con exito, ingrese a su cuenta con sus nuevas credenciales</div>
+    </div>
+  `);
+  userStore.sendEmail(formData)
 }
 
 </script>

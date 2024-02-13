@@ -1,8 +1,10 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { userAuthStore } from '@/stores/auth'
+import { userUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 const authStore = userAuthStore()
+const userStore = userUserStore()
 const formRecovery = ref(null)
 const form = ref({email: ''})
 const router = useRouter()
@@ -25,6 +27,7 @@ const sendLogin	= async () => {
 		loading.value = true
 		const result = await authStore.recoveryPassword(form.value)
 		if (result.success) {
+			sendEmail(result.data.token)
 			loading.value = false
 			successSend.value = true
 			setTimeout(() => {
@@ -38,6 +41,22 @@ const sendLogin	= async () => {
 			}, 2000);
 		}
 	}
+}
+
+const sendEmail = async (token) => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App 7aa9ecb42803ef00443bf73621d03741-f818b535-0585-4a49-9145-f5093c621211'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeancavar89@gmail.com>')
+  formData.append('subject', 'Proceso de Recuperacion de Contraseña')
+  formData.append('to', `{"to":"${form.value.email}"}}`)
+  formData.append('html', `
+    <div>
+    <div style="width:100%; text-align: center;">
+			<h1 style="color:#146489">Recuperacion de Contraseña</h1>
+      <div style="color: #00ACAC;">Ingrese a esta ruta local http://localhost:5173/restaurar?token='${token}''</div>
+    </div>
+  `);
+  userStore.sendEmail(formData)
 }
 
 </script>

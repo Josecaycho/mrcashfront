@@ -15,12 +15,16 @@ const loading = ref(null)
 const banksUser = ref([])
 const firstContent = ref(true)
 const dialog = ref(false)
+const dialogDelete = ref(false)
+const dataDelete = ref(0)
 
 const banks = ref([])
 const typeAccounts = ref([])
 const money = ref(null)
 const headline = ref(null)
 const errorMoney = ref(true)
+
+const limitNumber = ref(0)
     
 const bankRules = [
   v => !!v || 'Seleccionar un banco'
@@ -33,7 +37,8 @@ const aliasAccountRules = [
 ]
 const numberRules = [
   v => Number.isInteger(Number(v)) || 'Solo numeros',
-  v => !!v || 'Ingresa un numero de cuenta'
+  v => !!v || 'Ingresa un numero de cuenta',
+  v => v.length <= limitNumber.value || `Maximo ${limitNumber.value} caracteres.`
 ]
 const headlineRules = [
   v =>!!v || 'Campos obligatorios'
@@ -41,14 +46,25 @@ const headlineRules = [
 
 onMounted(async () => {
   banks.value = authStore.banks
-  typeAccounts.value = authStore.typeAccounts
   getData()
 })
+
+const getTypesAccount = async (data) =>{
+  typeAccounts.value = await data.typesAccounts
+  form1.value.mrc_type_account_id = null
+  form1.value.number_account = ''
+} 
+
+const searchLimit = async (data) => {
+  limitNumber.value = await data.digits
+  form1.value.number_account = ''
+}
 
 const getData = async () => {
   const result = await userStore.getListBanksUser()
   if(result.success) {
     banksUser.value = result.data
+    authStore.setBank(result.data)
     firstContent.value = false
   }
 }
@@ -82,10 +98,13 @@ const getImage = (img) => {
   return new URL(`../../../assets/svg/banks/${img}.svg`, import.meta.url).href
 }
 
-const setData = (data) => {
+const setData = async (data) => {
   errorMoney.value = true
   headline.value = null
   addBank.value = false
+  const ta = banks.value.filter(dl => dl.id === data.mrc_bank_id)
+  typeAccounts.value = ta[0].typesAccounts
+  limitNumber.value = typeAccounts.value.filter(dl => dl.id === data.mrc_type_account_id)[0].digits
   form1.value = data
   money.value = data.type_money
   headline.value = data.account_holder === 1 ? true : false
@@ -99,9 +118,17 @@ const addNewBank = () => {
   addBank.value = !addBank.value
 }
 
+const openDeleteData = (data) => {
+  dataDelete.value = data.id
+  dialogDelete.value = true
+}
+
 const deleteData = async (data) => {
-  const result = await userStore.deleteBankUser(data.id)
+  loading.value = true
+  const result = await userStore.deleteBankUser(dataDelete.value)
   if ( result.success) {
+    dialogDelete.value = false
+    loading.value = false
     getData()
   }
 }
@@ -141,7 +168,7 @@ const deleteData = async (data) => {
                     <v-col cols="6">
                       <div class="d-flex justify-end align-center">
                         <v-icon @click="setData(bank)">mdi-pencil-box-outline</v-icon>
-                        <v-icon @click="deleteData(bank)" v-if="banksUser.length > 1">mdi-delete</v-icon>
+                        <v-icon @click="openDeleteData(bank)" v-if="banksUser.length > 1">mdi-delete</v-icon>
                       </div>
                     </v-col>
                   </v-row>
@@ -149,7 +176,7 @@ const deleteData = async (data) => {
               </div>
             </v-col>
           </v-row>
-          <v-row v-if="banksUser.length < 11">
+          <v-row v-if="banksUser.length < 10">
             <v-col cols="12" lg="6">
               <label></label>
               <div v-if="!addBank" class="content-info content-info-add" @click="addNewBank()">
@@ -176,7 +203,7 @@ const deleteData = async (data) => {
                                 <template #item="{ item, props }">
                                   <v-list-item v-bind="props">
                                     <template #title>
-                                      <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
+                                      <div @click="getTypesAccount(item.raw)" class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
                                     </template>
                                   </v-list-item>
                                 </template>
@@ -196,7 +223,15 @@ const deleteData = async (data) => {
                                 item-title="account_name"
                                 :rules="typeAccountRules"
                                 item-value="id"
-                              ></v-select>
+                              >
+                                <template #item="{ item, props }">
+                                  <v-list-item v-bind="props">
+                                    <template #title>
+                                      <div @click="searchLimit(item.raw)" class="d-flex justify-star align-center">{{item.raw.account_name}}</div>
+                                    </template>
+                                  </v-list-item>
+                                </template>
+                              </v-select>
                             </div>
                           </div>
                         </v-col>
@@ -209,6 +244,7 @@ const deleteData = async (data) => {
                                 variant="outlined"
                                 class="ip-form"
                                 :rules="numberRules"
+
                               ></v-text-field>
                             </div>
                           </div>
@@ -304,7 +340,7 @@ const deleteData = async (data) => {
                             <template #item="{ item, props }">
                               <v-list-item v-bind="props">
                                 <template #title>
-                                  <div class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
+                                  <div @click="getTypesAccount(item.raw)" class="d-flex justify-star align-center"><img width="25" height="25" class="mr-3" :src="getImage(item.raw.icon)" /> {{item.raw.name_bank}}</div>
                                 </template>
                               </v-list-item>
                             </template>
@@ -324,7 +360,15 @@ const deleteData = async (data) => {
                             item-title="account_name"
                             :rules="typeAccountRules"
                             item-value="id"
-                          ></v-select>
+                          >
+                          <template #item="{ item, props }">
+                            <v-list-item v-bind="props">
+                              <template #title>
+                                <div @click="searchLimit(item.raw)" class="d-flex justify-star align-center">{{item.raw.account_name}}</div>
+                              </template>
+                            </v-list-item>
+                          </template>
+                        </v-select>
                         </div>
                       </div>
                     </v-col>
@@ -400,6 +444,41 @@ const deleteData = async (data) => {
           </div>
         </v-card-text>
       </v-card>
+    </v-dialog>
+    <v-dialog
+      v-model="dialogDelete"
+      persistent
+       width="500"
+      >
+        <v-card class="dialog-delete-account">
+          <v-card-text>
+            <h3 class="color-blue text-center mb-4">
+              Eliminar Cuenta Bancaria
+            </h3>
+            <div class="text-center">Estas seguro de eliminar esta cuenta bancaria?</div>
+          </v-card-text>
+
+          <v-card-actions>
+            <div class="w-100 d-flex justify-end align-center">
+              <v-btn
+                class="btn-send" 
+                color="#0085AE" 
+                :height="!responsive ? `70` : `51`" 
+                @click="dialogDelete = false"
+              >
+                Cancelar
+              </v-btn>
+              <v-btn
+                outlined
+                class="btn-send" 
+                color="red" 
+                :loading="loading"
+                :height="!responsive ? `70` : `51`" 
+                @click="deleteData"
+              >Borrar</v-btn>
+            </div>
+          </v-card-actions>
+        </v-card>
     </v-dialog>
   </div>
 </template>
@@ -514,4 +593,7 @@ const deleteData = async (data) => {
   }
 }
 
+.v-card.dialog-delete-account{
+  border-radius: 20px !important;
+}
 </style>

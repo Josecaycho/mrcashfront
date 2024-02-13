@@ -20,10 +20,19 @@ window.axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, PUT
 
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    if(token) {
-      config.headers['Authorization'] = `Bearer ${token.replace(/['"]+/g, '')}`
+    let token = ''
+    if(!localStorage.getItem('tokenEmail') && localStorage.getItem('tokenEmail') === null)
+      token = localStorage.getItem('token')
+      if(token) {
+        config.headers['Authorization'] = `Bearer ${token.replace(/['"]+/g, '')}`
+      }
+    else {
+      token = localStorage.getItem('tokenEmail')
+      if(token) {
+        config.headers['Authorization'] = `${token.replace(/['"]+/g, '')}`
+      }
     }
+    
     return config
   },
   (error) => {
