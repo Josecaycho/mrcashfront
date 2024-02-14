@@ -66,6 +66,9 @@ const router = useRouter()
       top: 55px;
       right: 0;
       animation: EntrarLeft .9s ease;
+      @media screen and (max-width: 600px){
+        top: 15px;
+      }
     }
     &.cuadros-btn{
       position: absolute;
@@ -78,6 +81,7 @@ const router = useRouter()
       top: 0;
       left: 0;
       animation: EntrarRight .9s ease;
+      z-index: -1;
     }
     &.circle-btn{
       position: absolute;

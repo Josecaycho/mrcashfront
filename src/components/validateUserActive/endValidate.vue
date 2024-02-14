@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row no-gutters>
-        <v-col cols="6" class="d-flex justify-center">
+        <v-col cols="12" lg="6" class="d-flex justify-center">
           <div class="content-info-finish">
             <div class="title">
               ¡Ya esta por finalizar!
@@ -12,7 +12,7 @@
             </p>
           </div>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="12" lg="6" >
           <img class="frame" src="@/assets/images/frame-finish.png" alt="register" width="460" height="532">
         </v-col>
       </v-row>
