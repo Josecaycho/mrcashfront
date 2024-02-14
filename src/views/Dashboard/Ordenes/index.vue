@@ -13,14 +13,35 @@ const pagination = ref(0)
 const size = ref(3)
 const page = ref(0)
 const monto = ref('')
+const stateOrder = ref(1)
+const states = ref([
+  {id: 1, name: "Pendiente"},
+  {id: 2, name: "Cancelado"},
+  {id: 5, name: "Pagado"}
+])
+const dateStart = ref(null)
+const dateEnd = ref(null)
+const minDate = ref(null)
+
 
 onMounted(async () => {
+  dateStart.value =  new Date(Date.now())
+  dateEnd.value =  new Date(Date.now())
+  minDate.value = new Date(dateStart.value)
   await listOrders()
 })
 
 const listOrders = async () => {
   loading.value = true
-  const result = await userStore.listOrders({ page: page.value, size: size.value, monto: monto.value })
+  
+  const result = await userStore.listOrders({ 
+    page: page.value, 
+    size: size.value, 
+    monto: monto.value, 
+    state: stateOrder.value,
+    startDate: dateStart.value !== null ? formatDate(dateStart.value) :undefined,
+    endDate: dateEnd.value !== null ? formatDate(dateEnd.value) :undefined
+  })
   if(result.success) {
     ordenes.value = result.data.rows
     pagination.value = Math.ceil(result.data.count / size.value)
@@ -38,12 +59,36 @@ const searchMonto = () => {
   listOrders()
 }
 
+const searchState = (state) => {
+  stateOrder.value = state.id
+  listOrders()
+}
+
+const selectDateStart = () => {
+  minDate.value = new Date(dateStart.value)
+  if(dateEnd.value === null) 
+    dateEnd.value = new Date(Date.now())
+  listOrders()
+}
+
+const selectDateEnd = () => {
+  listOrders()
+}
+
 const getDate = (data) => {
   let dt = new Date(data)
   let day = dt.getDate()
   let month = dt.getMonth()
   let year = dt.getFullYear()
-  return `${day}/${month + 1}/${year}`
+  return `${day+1}/${month + 1}/${year}`
+}
+
+const formatDate = (data) => {
+  let dt = new Date(data)
+  let day = dt.getDate()
+  let month = dt.getMonth()
+  let year = dt.getFullYear()
+  return `${year}-${month + 1}-${day}`
 }
 
 const openDialog = (data) => {
@@ -63,9 +108,93 @@ const getImage = (img) => {
       <div class="title-views text-center">
         Ordenes de Pago
       </div>
-      <div>
-        <v-text-field v-model="monto" @keyup="searchMonto()"></v-text-field>
-      </div>
+      <v-row class="pa-5">
+        <v-col cols="12" lg="4" md="4">
+          <v-text-field 
+            variant="outlined"
+            placeholder="Buscar"
+            v-model="monto" 
+            @keyup="searchMonto()">
+          </v-text-field>
+        </v-col>
+        <v-col cols="12" lg="8" md="8">
+          <v-row>
+            <v-col cols="12" lg="4">
+              <v-select
+                v-model="stateOrder"
+                :items="states"
+                variant="outlined"
+                class="ip-form"
+                item-title="name"
+                item-value="id"
+                format="dd/MM/yyyy"
+              >
+                <template #item="{ item, props }">
+                  <v-list-item v-bind="props">
+                    <template #title>
+                      <div @click="searchState(item.raw)" class="d-flex justify-star align-center">{{ `${item.raw.name}`}}</div>
+                    </template>
+                  </v-list-item>
+                </template>
+              </v-select> 
+            </v-col>
+            <v-col cols="6" lg="4">
+              <v-text-field
+                color="#00ACAC"
+                class="ip-form style-calendar"
+                persistentPlaceholder
+                variant="outlined"
+                :placeholder="dateStart !== null ? dateStart.toLocaleDateString() : ''"
+                :value="dateStart !== null ? dateStart.toLocaleDateString() : ''"
+              >
+                <template #append-inner>
+                  <v-btn icon flat
+                    ><v-icon>mdi-calendar</v-icon>
+                    <v-menu activator="parent">
+                      <v-date-picker
+                        color="#00ACAC"
+                        hideHeader
+                        hideWeekdays
+                        format="dd/MM/yyyy"
+                        v-model="dateStart"
+                        @click="selectDateStart"
+                      >
+                      </v-date-picker>
+                    </v-menu>
+                  </v-btn>
+                </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="6" lg="4">
+              <v-text-field
+                color="#00ACAC"
+                persistentPlaceholder
+                class="ip-form style-calendar"
+                variant="outlined"
+                :placeholder="dateEnd !== null ? dateEnd.toLocaleDateString() : ''"
+                :value="dateEnd !== null ? dateEnd.toLocaleDateString() : ''"
+              >
+                <template #append-inner>
+                  <v-btn icon flat
+                    ><v-icon>mdi-calendar</v-icon>
+                    <v-menu activator="parent">
+                      <v-date-picker
+                        color="#00ACAC"
+                        :min="minDate"
+                        hideHeader
+                        hideWeekdays
+                        v-model="dateEnd"
+                        @click="selectDateEnd"
+                      >
+                      </v-date-picker>
+                    </v-menu>
+                  </v-btn>
+                </template>
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <div class="content-order d-flex align-center justify-center" v-if="!loading">
         <div>
           <v-card class="card-content" max-width="1152" width="1152">
@@ -146,6 +275,22 @@ const getImage = (img) => {
       <ul class="pagination-styles">
         <li @click="searchPagination(item)" :class="paginationActive === item ? 'active' : ''" v-for="item in pagination" :key="item">{{ item }}</li>
       </ul>
+      <div class="w-100 text-center" v-if="ordenes.length === 0 && !loading">
+        <div class="green-text">
+          <span>No se encontraron resultados</span>
+          <br>
+          <router-link :to="`/dashboard/nueva-orden`">
+            <v-btn
+              outlined
+              color="#70BA44"
+              class="mt-5"
+            >
+              Generar Nueva Orden
+            </v-btn>
+          </router-link>
+        </div>
+      </div>
+
     </v-container>
     <v-dialog
       v-model="dialog"
@@ -273,6 +418,11 @@ const getImage = (img) => {
         text-transform: capitalize;
       }
     }
+  }
+}
+.ip-form.style-calendar{
+  .v-btn--icon.v-btn--density-default{
+    background: transparent !important;
   }
 }
 .pagination-styles{
