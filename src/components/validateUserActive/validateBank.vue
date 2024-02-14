@@ -6,7 +6,7 @@
       <div class="section-banks">
         <v-container>
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12" lg="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Seleccione una entidad financiera</label>
@@ -30,7 +30,7 @@
                 </div>
               </div>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" lg="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Selecciona Tipo de cuenta</label>
@@ -54,7 +54,7 @@
                 </div>
               </div>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" lg="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Ingrese Numero de cuenta</label>
@@ -68,7 +68,7 @@
                 </div>
               </div>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" lg="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Agrégale un alias a tu cuenta</label>
@@ -316,6 +316,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 99;
     &.active {
       background: #70BA44;
       color: #fff
