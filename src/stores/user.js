@@ -91,9 +91,11 @@ export const userUserStore = defineStore ('user', {
         
       }
     },
-    async listOrders () {
+    async listOrders (params) {
       try {
-        const result = await axios.get(`/api/listOrders`)
+        const result = await axios.get(`/api/listOrders`, {
+          params
+        })
         if (result.data.success) {
           return result.data
         }

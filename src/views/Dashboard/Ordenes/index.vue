@@ -8,6 +8,11 @@ const dialog = ref(false)
 
 const ordenes = ref([])
 const orden = ref({})
+const paginationActive = ref(1)
+const pagination = ref(0)
+const size = ref(3)
+const page = ref(0)
+const monto = ref('')
 
 onMounted(async () => {
   await listOrders()
@@ -15,12 +20,22 @@ onMounted(async () => {
 
 const listOrders = async () => {
   loading.value = true
-  const result = await userStore.listOrders()
+  const result = await userStore.listOrders({ page: page.value, size: size.value, monto: monto.value })
   if(result.success) {
-    ordenes.value = result.data
+    ordenes.value = result.data.rows
+    pagination.value = Math.ceil(result.data.count / size.value)
     loading.value = false
-
   }
+}
+
+const searchPagination = (pageIndex) => {
+  paginationActive.value = pageIndex
+  page.value = pageIndex - 1
+  listOrders()
+}
+
+const searchMonto = () => {
+  listOrders()
 }
 
 const getDate = (data) => {
@@ -48,71 +63,89 @@ const getImage = (img) => {
       <div class="title-views text-center">
         Ordenes de Pago
       </div>
+      <div>
+        <v-text-field v-model="monto" @keyup="searchMonto()"></v-text-field>
+      </div>
       <div class="content-order d-flex align-center justify-center" v-if="!loading">
-        <v-card class="card-content" max-width="1152" width="1152">
-          <v-row class="content-order-list">
-            <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
-              <div class="content-order-list-item">
-                <div class="content-order-list-item-title">
-                  <v-row>
-                    <v-col cols="12" lg="8" md="8" sm="8" class="d-flex justify-center align-center transaction">
-                      Transaccion: <b class="ml-3">{{ item.codigo }}</b>
-                    </v-col>
-                    <v-col cols="12" lg="4" md="4" sm="4" class="d-flex justify-end align-center date">
-                      {{ getDate(item.create_date) }}
-                    </v-col>
-                  </v-row>
-                </div>
-                <div class="content-order-list-item-content">
-                  <div>
+        <div>
+          <v-card class="card-content" max-width="1152" width="1152">
+            <v-row class="content-order-list">
+              <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
+                <div class="content-order-list-item">
+                  <div class="content-order-list-item-title">
                     <v-row>
-                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                        <div class="content-order-list-item-content-text green-text">Monto Devuelto</div>
+                      <v-col cols="12" lg="8" md="8" sm="8" class="d-flex justify-center align-center transaction">
+                        Transaccion: <b class="ml-3">{{ item.codigo }}</b>
                       </v-col>
-                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                        <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_receive}` }}</div>
+                      <v-col cols="12" lg="4" md="4" sm="4" class="d-flex justify-end align-center date">
+                        {{ getDate(item.create_date) }}
                       </v-col>
                     </v-row>
-                    <v-row>
-                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                        <div class="content-order-list-item-content-text green-text">Monto Enviado</div>
-                      </v-col>
-                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                        <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_send}` }}</div>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                        <div class="text-center">
-                          <div class="green-text comission"> {{ `Comision (${item.percentage}%)` }}</div>
-                          <div class="blue-text comission-number">{{ `S/  ${item.monto_comision}` }}</div>
-                        </div>
-                      </v-col>
-                      <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                        <div class="state-order">
-                          {{ item.state === 1 || item.state === 2 || item.state === 3 || item.state === 4 ? 'Pendiente' : 'Pagado'}}
-                        </div>
-                      </v-col>
-                    </v-row>
-                    <div class="text-center mt-8">
-                      <v-btn
-                        color="#00ACAC"
-                        @click="openDialog(item)"
-                      >
-                        <template v-slot:prepend>
-                          <v-icon >mdi-eye</v-icon>
-                        </template>
-                        Ver detalle
-                      </v-btn>
+                  </div>
+                  <div class="content-order-list-item-content">
+                    <div>
+                      <v-row>
+                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                          <div class="content-order-list-item-content-text green-text">Monto Devuelto</div>
+                        </v-col>
+                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                          <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_receive}` }}</div>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                          <div class="content-order-list-item-content-text green-text">Monto Enviado</div>
+                        </v-col>
+                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                          <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_send}` }}</div>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                          <div class="text-center">
+                            <div class="green-text comission"> {{ `Comision (${item.percentage}%)` }}</div>
+                            <div class="blue-text comission-number">{{ `S/  ${item.monto_comision}` }}</div>
+                          </div>
+                        </v-col>
+                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                          <div class="state-order">
+                            {{ item.state === 1 || item.state === 2 || item.state === 3 || item.state === 4 ? 'Pendiente' : 'Pagado'}}
+                          </div>
+                        </v-col>
+                      </v-row>
+                      <div class="text-center mt-8">
+                        <v-btn
+                          color="#00ACAC"
+                          @click="openDialog(item)"
+                        >
+                          <template v-slot:prepend>
+                            <v-icon >mdi-eye</v-icon>
+                          </template>
+                          Ver detalle
+                        </v-btn>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </v-col>
-          </v-row>
-        </v-card>
+              </v-col>
+            </v-row>
+          </v-card>
+          <br>
+        </div>
       </div>
-      <Loading v-else />
+      <v-row v-else class="mb-6">
+        <v-col cols="12" md="4" v-for="item in 3" :key="item">
+          <v-skeleton-loader
+            class="mx-auto border"
+            width="362"
+            type="image, article"
+          ></v-skeleton-loader>
+        </v-col>
+      </v-row>
+      <!-- <Loading /> -->
+      <ul class="pagination-styles">
+        <li @click="searchPagination(item)" :class="paginationActive === item ? 'active' : ''" v-for="item in pagination" :key="item">{{ item }}</li>
+      </ul>
     </v-container>
     <v-dialog
       v-model="dialog"
@@ -150,17 +183,17 @@ const getImage = (img) => {
                   </v-col>
                   <v-col cols="6" lg="6">
                     <div class="grees-text">Banco Origen</div>
-                    <img width="100" class="mr-3" :src="getImage(orden.dataBank.icon)" />
+                    <img width="100" class="mr-3" :src="getImage(orden.bank.icon)" />
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="6" lg="6">
                     <div class="grees-text">{{ `Comision (${orden.percentage}%)` }}</div>
-                    <div class="black-text">{{ `S/ ${orden.monto_send}` }}</div>
+                    <div class="black-text">{{ `S/ ${orden.monto_comision}` }}</div>
                   </v-col>
                   <v-col cols="6" lg="6">
                     <div class="grees-text">Banco Destino</div>
-                    <img width="100" class="mr-3" :src="getImage(orden.bankUser.bank.icon)" />
+                    <img width="100" class="mr-3" :src="getImage(orden.userBank.bank.icon)" />
                   </v-col>
                 </v-row>
                 <v-row>
@@ -240,6 +273,23 @@ const getImage = (img) => {
         text-transform: capitalize;
       }
     }
+  }
+}
+.pagination-styles{
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  li.active{
+    background: #00ACAC;
+    border-radius:  50%;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff
   }
 }
 .green-text{
