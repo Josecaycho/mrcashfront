@@ -373,6 +373,9 @@ const getFilterAccountUser = async(data) => {
   }
 }
 .content-generate-orden-finaly{
+  @media screen and (max-width: 600px){
+    margin-bottom: 100px;
+  }
   .content-send{
     min-width: 310px;
     height: 54px;
