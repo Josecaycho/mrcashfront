@@ -335,6 +335,9 @@ const getFilterAccountUser = async(data) => {
         transform: translateX(-50%);
         top: 40px;
         right: 0;
+        @media screen and (max-width: 1024px){
+          top: 30px;
+        }
       }
     }
     .v-text-field .v-field {

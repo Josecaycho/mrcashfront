@@ -65,7 +65,7 @@ const getImageUrl = (name) => {
   padding: 15px;
   border-radius: 26px;
   z-index: 99999;
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 959px) {
     bottom: 0;
     top: unset;
     width: 100%;
@@ -86,7 +86,7 @@ const getImageUrl = (name) => {
     display: flex;
     justify-content: center;
     align-items: center;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 959px) {
       margin-bottom: 0px;
       height: auto;
       padding: 10px;
@@ -105,13 +105,13 @@ const getImageUrl = (name) => {
     }
     &:nth-child(1){
       margin-top: 30px;
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 959px) {
         margin: 0;
       }
     }
     p{
       line-height: 15px;
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 959px) {
         display: none;
       }
     }
@@ -121,12 +121,12 @@ const getImageUrl = (name) => {
     text-transform: capitalize;
     margin-top: 20px;
     display: block;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 959px) {
       margin-top: 0 !important;
       display: none
     }
     span{
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 959px) {
         display: none;
       }
     }
@@ -137,18 +137,18 @@ const getImageUrl = (name) => {
 
   .img-logout{
     display: none;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 959px) {
       display: block
     }
   }
 
   .divider-responsive{
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 959px) {
       display: none
     }
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 959px) {
     // display: none;
   }
 }

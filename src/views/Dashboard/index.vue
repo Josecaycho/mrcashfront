@@ -9,19 +9,16 @@ const { user } = storeToRefs(authStore);
   <div class="cont-mcas-das">
     <v-container>
       <v-row>
-        <v-col class="cont-letter">
+        <v-col cols="12" lg="6" class="cont-letter">
           <div class="cth">
             <div class="cth-title">¡Hola!</div>
             <div v-if="user" class="cth-names">
-              {{ user.nombres }}
-            </div>
-            <div v-if="user" class="cth-names">
-              {{ user.apellidos }}
+              {{ user.nombres.split(" ")[0] }} {{ user.apellidos.split(" ")[0] }}
             </div>
             <div class="cth-subtitle">¿Qué haremos hoy?</div>
           </div>
         </v-col>
-        <v-col>
+        <v-col cols="12" lg="6">
           <div class="cont-frame">
             <img src="@/assets/images/frame-dash.png" alt="">
           </div>
@@ -45,14 +42,23 @@ const { user } = storeToRefs(authStore);
     top: 0;
     left: 0;
     animation: EntrarLeft .9s ease;
+    @media screen and (max-width: 600px) {
+      position: relative;
+    }
     
     &-title, &-subtitle{
       font-size: 36px;
       color: $blue2;
+      @media screen and (max-width: 600px) {
+        font-size: 26px;
+      }
     }
     &-names{
       font-size: 100px;
       color: $blue2;
+      @media screen and (max-width: 600px) {
+        font-size: 64px;
+      }
     }
     &-subtitle{
       color: $blue3;
@@ -70,11 +76,18 @@ const { user } = storeToRefs(authStore);
 }
 .cont-frame{
   position: relative;
+  @media screen and (max-width: 600px) {
+    text-align: center;
+  }
   img{
     position: absolute;
     top: 0;
     left: 0;
     animation: EntrarRight .9s ease;
+    @media screen and (max-width: 600px) {
+      position: relative;
+      width: 300px;
+    }
   }
   @keyframes EntrarRight {
     from{

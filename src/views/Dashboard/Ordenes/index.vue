@@ -108,7 +108,7 @@ const getImage = (img) => {
       <div class="title-views text-center">
         Ordenes de Pago
       </div>
-      <v-row class="pa-5">
+      <v-row>
         <v-col cols="12" lg="4" md="4">
           <v-text-field 
             variant="outlined"
@@ -195,8 +195,8 @@ const getImage = (img) => {
           </v-row>
         </v-col>
       </v-row>
-      <div class="content-order d-flex align-center justify-center" v-if="!loading">
-        <div>
+      <div class="content-order d-flex align-center justify-center mt-5" v-if="!loading">
+        <div v-if="ordenes.length > 0">
           <v-card class="card-content" max-width="1152" width="1152">
             <v-row class="content-order-list">
               <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">

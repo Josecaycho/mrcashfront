@@ -33,7 +33,7 @@ onMounted(async () => {
     >
       <template v-slot:append>
         <div class="info-user" v-if="user">
-          Bienvenido: {{ `${user.nombres} ${user.apellidos}` }}
+          Bienvenido: {{ `${user.nombres.split(" ")[0]} ${user.apellidos.split(" ")[0]}` }}
           <div>
             <v-icon size="22" class="icon-user">mdi-account</v-icon>
           </div>
@@ -74,24 +74,28 @@ onMounted(async () => {
       top: 55px;
       right: 0;
       animation: EntrarLeft .9s ease;
+      z-index: -1;
     }
     &.cuadros-btn{
       position: absolute;
       bottom: 40px;
       left: 0;
       animation: EntrarRight .9s ease;
+      z-index: -1;
     }
     &.circle-top{
       position: absolute;
       top: 0;
       left: 0;
       animation: EntrarRight .9s ease;
+      z-index: -1;
     }
     &.circle-btn{
       position: absolute;
       bottom: 0;
       right: 0;
       animation: EntrarLeft .9s ease;
+      z-index: -1;
       @media screen and (max-width: 600px){
         bottom: -200px;
         right: -200px;
