@@ -42,21 +42,21 @@ const { user } = storeToRefs(authStore);
     top: 0;
     left: 0;
     animation: EntrarLeft .9s ease;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1024px) {
       position: relative;
     }
     
     &-title, &-subtitle{
       font-size: 36px;
       color: $blue2;
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 1024px) {
         font-size: 26px;
       }
     }
     &-names{
       font-size: 100px;
       color: $blue2;
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 1024px) {
         font-size: 64px;
       }
     }
@@ -76,7 +76,7 @@ const { user } = storeToRefs(authStore);
 }
 .cont-frame{
   position: relative;
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 1024px) {
     text-align: center;
   }
   img{
@@ -84,7 +84,7 @@ const { user } = storeToRefs(authStore);
     top: 0;
     left: 0;
     animation: EntrarRight .9s ease;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 1024px) {
       position: relative;
       width: 300px;
     }

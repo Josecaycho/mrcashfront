@@ -188,7 +188,7 @@ const PDRules = [
 									variant="outlined" 
 									v-model="form1.nombres" 
 									:rules="nameRules" 
-									label="Nombres"
+									placeholder="Nombres"
 									class="ip-form"
 									single-line
 								></v-text-field>
@@ -198,13 +198,13 @@ const PDRules = [
 									:rules="lastNameRules" 
 									single-line
 									class="ip-form"
-									label="Apellidos"
+									placeholder="Apellidos"
 								></v-text-field>
 								<v-text-field
 									variant="outlined" 
 									v-model="form1.dni" 
 									:rules="dniRules" 
-									label="DNI"
+									placeholder="DNI"
 									single-line
 									:error-messages="errorDni ? `DNI existente` : ``"
 								></v-text-field>
@@ -215,7 +215,7 @@ const PDRules = [
 									variant="outlined" 
 									v-model="form2.email" 
 									:rules="emailRules" 
-									label="Email"
+									placeholder="Email"
 									class="ip-form"
 									single-line
 								></v-text-field>
@@ -223,7 +223,7 @@ const PDRules = [
 									variant="outlined" 
 									v-model="form2.phone" 
 									:rules="phoneRules" 
-									label="Celular"
+									placeholder="Celular"
 									class="ip-form"
 									single-line
 								></v-text-field>
@@ -233,7 +233,7 @@ const PDRules = [
 									:type="show1 ? 'text' : 'password'"
 									v-model="password" 
 									:rules="passwordRules" 
-									label="Contraseña"
+									placeholder="Contraseña"
 									single-line
 									class="ip-form"
 									@click:append-inner="show1 = !show1"
@@ -244,7 +244,7 @@ const PDRules = [
 									:type="show2 ? 'text' : 'password'"
 									v-model="confirmPassword"  
 									:rules="matchRule" 
-									label="Confirmar Contraseña"
+									placeholder="Confirmar Contraseña"
 									single-line
 									class="ip-form"
 									@click:append-inner="show2 = !show2"

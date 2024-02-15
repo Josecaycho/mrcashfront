@@ -1,8 +1,9 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { userAuthStore } from '@/stores/auth'
 import { userUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 const authStore = userAuthStore()
 const userStore = userUserStore()
 const formRecovery = ref(null)
@@ -11,6 +12,8 @@ const router = useRouter()
 const errorEmail = ref(false)
 const loading = ref(false)
 const successSend = ref(false)
+const responsive = computed(() => mobile.value)
+const { mobile } = useDisplay()
 
 const emailRules = [
   v => !!v || 'Email obligatorio',
@@ -63,13 +66,13 @@ const sendEmail = async (token) => {
 <template>
 	<div class="content-login">
 		<v-row class="contents-row" no-gutters>
-			<v-col cols="7">
+			<v-col cols="12" lg="7" v-if="!responsive">
 				<div class="banner">
 					<img class="frame" src="@/assets/images/frame-login.png" alt="login" width="661" height="590">
 					<img class="circle" src="@/assets/svg/circles.svg" alt="circle">
 				</div>
 			</v-col>
-			<v-col class="login" cols="4">
+			<v-col class="login" :cols="!responsive ? `4` : `12`">
 				<div>
 					<div class="text-center">
 						<a href="/login">
@@ -88,7 +91,7 @@ const sendEmail = async (token) => {
 									v-model="form.email" 
 									:rules="emailRules" 
 									single-line
-									label="Email" 
+									placeholder="Email" 
 									style="max-width: 330px;max-height: 52px;"
 									class="mb-6"
 									:error-messages="errorEmail ? `Email no encontrado` : ``"
@@ -125,6 +128,9 @@ const sendEmail = async (token) => {
 				justify-content: center;
 				align-items: center;
 				padding-top: 103px;
+				@media screen and (max-width: 959px) {
+					padding-top: 20px;
+				}
 			}
 		}
 
@@ -165,9 +171,16 @@ const sendEmail = async (token) => {
 			max-width: 450px !important;
 			height: 580px;
 			border-radius: 30px !important;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			@media screen and (max-width: 600px) {
+				max-width: 318px !important;
+				padding: 65px 38px !important;
+				height: max-content;
+				display: block;
+			}
 
 			.v-card-text{
 				margin: 0;
@@ -194,6 +207,9 @@ const sendEmail = async (token) => {
 				text-transform: capitalize !important;
 				border-radius: 18px !important;
 				margin-top: 64px;
+				@media screen and (max-width: 959px) {
+					margin-top: 30px;
+				}
 			}
 			.register {
 				font-size: 17px;
@@ -232,6 +248,9 @@ const sendEmail = async (token) => {
 						font-family: 'Archivo-Bold';
 					}
 				}
+		}
+		.n-view{
+			display: none;
 		}
 	}
 </style>

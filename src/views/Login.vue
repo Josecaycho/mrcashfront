@@ -95,7 +95,7 @@ const sendLogin	= async () => {
 									v-model="form.dni" 
 									:rules="dniRules" 
 									single-line
-									label="DNI" 
+									placeholder="DNI" 
 									class="mb-6"
 									:error-messages="errorDni ? `Usuario No existe` : ``"
 								></v-text-field>
@@ -104,7 +104,7 @@ const sendLogin	= async () => {
 									type="password" 
 									v-model="form.password" 
 									:rules="passwordRules" 
-									label="Contraseña" 
+									placeholder="Contraseña" 
 									single-line
 									:error-messages="errorPassword ? `Contraseña incorrecta` : ``"
 								></v-text-field>
@@ -140,6 +140,9 @@ const sendLogin	= async () => {
 				justify-content: center;
 				align-items: center;
 				padding-top: 103px;
+				@media screen and (max-width: 959px) {
+					padding-top: 20px;
+				}
 			}
 		}
 
@@ -180,11 +183,15 @@ const sendLogin	= async () => {
 			max-width: 450px !important;
 			height: 580px;
 			border-radius: 30px !important;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 
 			@media screen and (max-width: 600px) {
 				max-width: 318px !important;
 				padding: 65px 38px !important;
 				height: max-content;
+				display: block;
 			}
 
 			.title-section{
@@ -229,6 +236,9 @@ const sendLogin	= async () => {
 				text-transform: capitalize !important;
 				border-radius: 18px !important;
 				margin-top: 64px;
+				@media screen and (max-width: 959px) {
+					margin-top: 30px;
+				}
 			}
 			.register {
 				font-size: 17px;

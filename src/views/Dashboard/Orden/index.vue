@@ -145,10 +145,10 @@ const sendEmail = async (data) => {
 
 const getFilterAccountUser = async(data) => {
   const newAccountsValue = accounts.value.filter(dl => dl.mrc_bank_id === data.id)
-  console.log(newAccountsValue)
-  if(newAccountsValue.length > 0)
+  form.bankUser = null
+  if(newAccountsValue.length > 0) {
     newAccounts.value = newAccountsValue
-  else newAccounts.value = accounts.value
+  }else newAccounts.value = accounts.value
 }
 
 </script>

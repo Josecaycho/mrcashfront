@@ -75,6 +75,9 @@ onMounted(async () => {
       right: 0;
       animation: EntrarLeft .9s ease;
       z-index: -1;
+      @media screen and (max-width: 600px){
+        top:20px;
+      }
     }
     &.cuadros-btn{
       position: absolute;
@@ -82,6 +85,9 @@ onMounted(async () => {
       left: 0;
       animation: EntrarRight .9s ease;
       z-index: -1;
+      @media screen and (max-width: 600px){
+        bottom:20px;
+      }
     }
     &.circle-top{
       position: absolute;
