@@ -174,6 +174,7 @@ export default {
             loading.value = false
             ctx.emit('sendData')
           }, 3000);
+          sendEmail()
         }
       }else {
         if(headline.value === null || !headline.value) {
@@ -184,6 +185,26 @@ export default {
         }else errorMoney.value = true
       }
     }
+
+    const sendEmail = async () => {
+      localStorage.setItem('tokenEmail', JSON.stringify('App 7aa9ecb42803ef00443bf73621d03741-f818b535-0585-4a49-9145-f5093c621211'));
+      const formData = new FormData()
+      formData.append('from', 'Administracion <jeancavar89@gmail.com>')
+      formData.append('subject', 'Proceso de Finalizacion de Validacion para activacion de cuenta')
+      formData.append('to', `{"to":"${authStore.user.email}","placeholders":{"firstName":"${authStore.user.apellidos}"}}`)
+      formData.append('html', `
+        <div>
+        <div style="width:100%; text-align: center;">
+          <h1 style="color:#146489">Bienvenido ${authStore.user.nombres} </h1>
+          <div style="color: #00ACAC;">
+            Tu cuenta ya a sido revisada y validada, sigue los siguientes pasos: </br>
+            Si tu session esta activa, porfavor de cerrar su session y volver a ingresar con sus credenciales.
+          </div>
+        </div>
+      `);
+      userStore.sendEmail(formData)
+    }
+
     const { mobile } = useDisplay()
     const responsive = computed(() => mobile.value)
 
