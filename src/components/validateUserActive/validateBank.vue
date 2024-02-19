@@ -245,7 +245,8 @@ export default {
       getImage,
       continuar,
       getTypesAccount,
-      searchLimit
+      searchLimit,
+      sendEmail
     }
   }
 }
