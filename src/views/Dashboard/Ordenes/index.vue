@@ -1,11 +1,14 @@
 <script setup>
 import Loading from '@/components/General/Loading.vue'
 import { userUserStore } from '@/stores/user'
+import { userAuthStore } from '@/stores/auth'
 import { onMounted, ref } from 'vue'
+const authStore = userAuthStore()
 const userStore = userUserStore()
 const loading = ref(false)
 const dialog = ref(false)
 
+const idUser = ref(0)
 const ordenes = ref([])
 const orden = ref({})
 const paginationActive = ref(1)
@@ -25,6 +28,7 @@ const minDate = ref(null)
 
 
 onMounted(async () => {
+  idUser.value = authStore.user.id
   dateStart.value =  new Date(Date.now())
   dateEnd.value =  new Date(Date.now())
   minDate.value = new Date(dateStart.value)
@@ -138,7 +142,7 @@ const getImage = (img) => {
                 </template>
               </v-select> 
             </v-col>
-            <v-col cols="6" lg="4">
+            <v-col cols="6" lg="4" md="6">
               <v-text-field
                 color="#00ACAC"
                 class="ip-form style-calendar"
@@ -165,7 +169,7 @@ const getImage = (img) => {
                 </template>
               </v-text-field>
             </v-col>
-            <v-col cols="6" lg="4">
+            <v-col cols="6" lg="4" md="6">
               <v-text-field
                 color="#00ACAC"
                 persistentPlaceholder

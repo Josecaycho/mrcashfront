@@ -6,7 +6,7 @@
       <div class="section-banks">
         <v-container>
           <v-row>
-            <v-col cols="12" lg="6">
+            <v-col cols="12" lg="6" md="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Seleccione una entidad financiera</label>
@@ -30,7 +30,7 @@
                 </div>
               </div>
             </v-col>
-            <v-col cols="12" lg="6">
+            <v-col cols="12" lg="6" md="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Selecciona Tipo de cuenta</label>
@@ -54,7 +54,7 @@
                 </div>
               </div>
             </v-col>
-            <v-col cols="12" lg="6">
+            <v-col cols="12" lg="6" md="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Ingrese Numero de cuenta</label>
@@ -68,7 +68,7 @@
                 </div>
               </div>
             </v-col>
-            <v-col cols="12" lg="6">
+            <v-col cols="12" lg="6" md="6">
               <div class="w-100 d-flex justify-center align-center">
                 <div>
                   <label for="" class="color-green">Agrégale un alias a tu cuenta</label>
@@ -106,7 +106,7 @@
           </v-checkbox>
         </div>
       </div>
-      <div class="text-center">
+      <div class="text-center position-relative">
         <v-btn 
           class="btn-send" 
           :loading="loading" 
@@ -116,6 +116,18 @@
           @click="continuar"
         >
           Finalizar
+        </v-btn>
+        <v-btn 
+          class="btn-send omitir" 
+          outlined
+          color="#70BA44"
+          width="241" 
+          @click="omitir"
+        >
+          Omitir
+          <template v-slot:append>
+            <v-icon size="20" color="#70BA44">mdi-arrow-collapse-right</v-icon>
+          </template>
         </v-btn>
       </div>
     </v-form>
@@ -162,11 +174,25 @@ export default {
       v =>!!v || 'Campos obligatorios'
     ]
 
+    const omitir = async () => {
+      loading.value = true
+      const data = {...form1.value, typeMoney: money.value, accountHolder: headline.value, type: 2}
+      const result = await userStore.sendValidateBank(data)
+        if ( result.success) {
+          await userStore.stateUser()
+          setTimeout(() => {
+            loading.value = false
+            ctx.emit('sendData')
+          }, 3000);
+          sendEmail()
+        }
+    }
+
     const continuar = async () => {
       const valid1 = await formBank.value.validate()
       loading.value = true
       if(valid1.valid) {
-        const data = {...form1.value, typeMoney: money.value, accountHolder: headline.value}
+        const data = {...form1.value, typeMoney: money.value, accountHolder: headline.value, type: 1}
         const result = await userStore.sendValidateBank(data)
         if ( result.success) {
           await userStore.stateUser()
@@ -246,7 +272,8 @@ export default {
       continuar,
       getTypesAccount,
       searchLimit,
-      sendEmail
+      sendEmail,
+      omitir
     }
   }
 }
@@ -267,9 +294,9 @@ export default {
   background: white;
 }
 
-.v-input.ip-form{
-  width: 330px;
-}
+// .v-input.ip-form{
+//   width: 330px;
+// }
 
 .cl-title{
   color: #005E81;
@@ -314,6 +341,15 @@ export default {
   text-transform: capitalize !important;
   border-radius: 18px !important;
   margin-top: 90px;
+  &.omitir{
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -140%);
+    background-color: white !important;
+    color: rgb(112, 186, 68) !important;
+    border: 1px solid #70BA44;
+  }
 }
 
 .color-green{

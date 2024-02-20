@@ -42,7 +42,6 @@ const sendLogin	= async () => {
 				loading.value = false
 				titlebutton.value = "Bienvenido"
 				const valid = await userStore.stateUser()
-				console.log(valid)
 				if(valid[0].state !== 0) {
 					await router.push('/validateUser')
 				}else {

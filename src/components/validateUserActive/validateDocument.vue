@@ -135,7 +135,7 @@ export default {
               <input type="file" @change="createBase64ImageF" style="display:none" name="file" id="upload1" accept="image/png, image/jpeg">
             </div>
             <img src="@/assets/images/dnifrontal.png" alt="" v-if="viewImage.imgview1 === null">
-            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370" height="235">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370">
           </div>
         </v-col>
         <v-col class="d-flex justify-center align-center">
@@ -145,7 +145,7 @@ export default {
               <input type="file" @change="createBase64ImageP" style="display:none" name="file2" id="upload2" accept="image/png, image/jpeg">
             </div>
             <img src="@/assets/images/dniposterior.png" alt="" v-if="viewImage.imgview2 === null">
-            <img v-else :src="`data:image/png;base64,${viewImage.imgview2}`" alt="" width="370" height="235">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview2}`" alt="" width="370">
           </div>
         </v-col>
       </v-row>

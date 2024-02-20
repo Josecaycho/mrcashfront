@@ -8,7 +8,7 @@ const route = useRoute()
 const navUser = [
   {
     img: 'new-orden',
-    name: 'Nueva Orden',
+    name: 'N. Orden',
     view: 'nueva-orden'
   },
   {
@@ -49,7 +49,8 @@ const getImageUrl = (name) => {
       <v-icon class="ml-2" color="#fff">mdi-logout</v-icon>
     </v-btn>
     <div class="item-nav img-logout" @click="authStore.logout()">
-      <img src="../assets/svg/icons/logout.svg" alt="">
+      <img src="../assets/svg/icons/logout.svg" alt="" width="30">
+      <p>Salir</p>
     </div>
   </div>
 </template>
@@ -75,7 +76,7 @@ const getImageUrl = (name) => {
     justify-content: space-between;
     align-items: center;
     border-radius: 0;
-    padding: 5px 15px;
+    padding: 5px 5px;
   }
   .item-nav{
     color: #fff;
@@ -87,13 +88,25 @@ const getImageUrl = (name) => {
     justify-content: center;
     align-items: center;
     @media screen and (max-width: 959px) {
+      a{
+        img{
+          width: 30px;
+        }
+      }
+      &:nth-child(4){
+        img{
+          width: 23px;
+        }
+      }
       margin-bottom: 0px;
-      height: auto;
+      height: 55px;
       padding: 10px;
+      width: 70px;
     }
     a{
       color: white;
       text-decoration: none;
+
     }
     &.active{
       color: #00ACAC !important;
@@ -112,7 +125,13 @@ const getImageUrl = (name) => {
     p{
       line-height: 15px;
       @media screen and (max-width: 959px) {
-        display: none;
+        font-size: 11px;
+      }
+    }
+    &.img-logout{
+      padding: 7px;
+      img{
+        width: 33%;
       }
     }
   }
@@ -138,7 +157,10 @@ const getImageUrl = (name) => {
   .img-logout{
     display: none;
     @media screen and (max-width: 959px) {
-      display: block
+      display: block;
+      img{
+        width: 50%;
+      }
     }
   }
 

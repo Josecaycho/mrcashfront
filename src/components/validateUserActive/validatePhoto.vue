@@ -98,17 +98,18 @@ export default {
 <template>
   <div>
     <div class="text-center cl-title">Validación de Identidad</div>
-    <div class="text-center cl-subtitle">Recuerda tener a la mano tu documento de identidad</div>
+    <!-- <div class="text-center cl-subtitle">Manten tu camara apuntado directamente a tu rostro</div> -->
+    <div class="text-center cl-subtitle">Sube una imagen mostrando tu rostro.</div>
     <div>
       <v-row>
         <v-col>
           <div class="contn-files">
             <div class="btn-open-files">
-              <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta la foto del lado frontal de tu documento <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
+              <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta una foto de perfil <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
               <input type="file" @change="createBase64ImageF" style="display:none" id="upload1" accept="image/png, image/jpeg">
             </div>
-            <img src="@/assets/images/dnifrontal.png" alt="" v-if="viewImage.imgview1 === null">
-            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370" height="235">
+            <img src="@/assets/svg/photo-perfil.svg" alt="" v-if="viewImage.imgview1 === null" height="350">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370">
           </div>
         </v-col>
       </v-row>
@@ -162,6 +163,6 @@ export default {
   font-size: 22px !important;
   text-transform: capitalize !important;
   border-radius: 18px !important;
-  margin-top: 90px;
+  margin-top: 20px;
   }
 </style>

@@ -18,6 +18,7 @@ const formRegister = ref(null)
 const router = useRouter()
 const show1 = ref(false)
 const show2 = ref(false)
+const loading = ref(false)
 
 const errorDni = ref(false)
 
@@ -53,6 +54,7 @@ const sendRegister	= async () => {
 const responsive = computed(() => mobile.value)
 
 const sendRegisterFinal = async () => {
+	loading.value = true
 	const valid2 = await formRegister2.value.validate()
 	// validateRegister2.value = valid2.valid
 	const data = {...form1.value, ...form2.value, password: password.value, politic_person: (politicPerson.value === 'true'), t_c: tc.value, politic_data: politicData.value }
@@ -62,6 +64,7 @@ const sendRegisterFinal = async () => {
 			sendEmail()
 			setTimeout(() => {
 				router.push('/login')
+				loading.value = true
 			}, 5000);
 			successRegister.value = true
 		}else {
@@ -302,7 +305,7 @@ const PDRules = [
 									</template>
 								</v-checkbox>
 								<!-- <v-btn @click="retroceder">Atras</v-btn> -->
-								<v-btn class="btn-send" color="#70BA44" :width="!responsive ? `330` : `100%`" :height="!responsive ? `70` : `51`" @click="sendRegisterFinal">Registrar</v-btn>
+								<v-btn class="btn-send" color="#70BA44" :width="!responsive ? `330` : `100%`" :height="!responsive ? `70` : `51`" :loading="loading" @click="sendRegisterFinal">Registrar</v-btn>
 							</v-form>
 							<div class="register mt-8 text-center">
 								<p>¿No tienes una cuenta? <a href="/login">Inicia sesión</a> </p>

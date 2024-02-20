@@ -35,15 +35,16 @@ onMounted(() => {
 
 const calculate = (type) => {
   if(type === 1) {
-    let calculate = form.send - (form.send * parseFloat(authStore.user.comision)/100)
+    let calculate = form.send - (Number(form.send * parseFloat(authStore.user.comision)/100).toFixed(1))
     let comision = form.send * parseFloat(authStore.user.comision)/100
     form.comision = comision
-    form.receive = calculate
+    form.receive = calculate === NaN ? 0 : calculate
   }else {
     let calculate = parseFloat(form.receive) + (form.receive * parseFloat(authStore.user.comision)/100)
+    let calculate2 = parseFloat(form.receive) + (calculate * parseFloat(authStore.user.comision)/100) 
     let comision = form.receive * parseFloat(authStore.user.comision)/100
     form.comision = comision
-    form.send = calculate
+    form.send = calculate2 === NaN ? 0 : calculate2
   }
 }
 
@@ -75,7 +76,7 @@ const getImage = (img) => {
 
 const numberRules = [
   v => !!v || 'Monto invalido',
-  v => /^[0-9]+$/.test(v) || 'Ingrese monto valido',
+  v => /^[0-9]+(\.\d{1,2})?$/.test(v) || 'Solo numeros'
 ]
 
 const bankRules = [
@@ -170,27 +171,11 @@ const getFilterAccountUser = async(data) => {
                     v-model="form.send"
                     prefix="S/"
                     variant="outlined"
-                    :disabled="disabledCalculo"
                     label="" 
                     class="ip-form"
                     @keyup="calculate(1)"
                     :rules="numberRules"
                   ></v-text-field>
-                  <v-icon v-if="disabledCalculo" class="icon-revert" color="#00ACAC" @click="revertCalculate()">mdi-autorenew</v-icon>
-                </div>
-              </v-col>
-              <v-col cols="12">
-                <div class="w-100">
-                  <div class="alert-content-comision">
-                    <v-row>
-                      <v-col cols="8">
-                        <div class="color-green comision">Comisión débito y crédito ({{parseFloat(authStore.user.comision)}}%)</div>
-                      </v-col>
-                      <v-col cols="4" class="d-flex justify-end align-center">
-                        <div class="color-blue monto">S/ {{ parseFloat(form.comision).toFixed(2) }}</div>
-                      </v-col>
-                    </v-row>
-                  </div>
                 </div>
               </v-col>
               <v-col cols="12">
@@ -198,14 +183,26 @@ const getFilterAccountUser = async(data) => {
                   <label for="" class="color-green">Recibes</label>
                   <v-text-field 
                     v-model="form.receive"
-                    :disabled="!disabledCalculo"
                     prefix="S/"
                     variant="outlined" 
                     label="" 
                     class="ip-form"
                     @keyup="calculate(2)"
                   ></v-text-field>
-                  <v-icon v-if="!disabledCalculo" class="icon-revert" color="#00ACAC" @click="revertCalculate()">mdi-autorenew</v-icon>
+                </div>
+              </v-col>
+              <v-col cols="12">
+                <div class="w-100 mb-2">
+                  <div class="alert-content-comision">
+                    <v-row>
+                      <v-col cols="8">
+                        <div class="color-green comision">Comisión débito y crédito</div>
+                      </v-col>
+                      <v-col cols="4" class="d-flex justify-end align-center">
+                        <div class="color-blue monto">S/ {{ parseFloat(form.comision).toFixed(2) }}</div>
+                      </v-col>
+                    </v-row>
+                  </div>
                 </div>
               </v-col>
               <v-col cols="12">
@@ -292,7 +289,7 @@ const getFilterAccountUser = async(data) => {
               <div>
                 <div class="title-file">Si ya realizaste el pago</div>
                 <div class="content-info-file" :class="errorImgs ? 'err-img' : ''" @click="openFile()">
-                  <div class="text-center">
+                  <div class="text-center" :class="loadinfImage ? 'loading-image' : ''">
                     <p>Adjunta tu comprobante de pago</p>
                     <img width="86" src="@/assets/svg/icons/file2.svg" alt="cuadors" v-if="!loadinfImage && !loadinfImageConfirm">
                     <img width="86" src="@/assets/svg/icons/check.svg" alt="cuadors" v-if="loadinfImageConfirm">
@@ -369,6 +366,9 @@ const getFilterAccountUser = async(data) => {
       border-radius: 18px;
       font-size: 22px;
       text-transform: capitalize;
+      @media screen and (max-width: 1024px){
+        margin-top: 25px;
+      }
     }
   }
 }
@@ -386,6 +386,9 @@ const getFilterAccountUser = async(data) => {
     display: flex;
     justify-content: center;
     align-items: center;margin-bottom: 80px;
+    @media screen and (max-width: 1024px){
+      margin-bottom: 25px;
+    }
   }
 
   .list-detail-bank{
@@ -424,6 +427,27 @@ const getFilterAccountUser = async(data) => {
     border-radius: 18px;
     padding: 10px;
     cursor: pointer;
+    @media screen and (max-width: 1024px){
+      height: auto;
+      width: 100%;
+      padding: 10px 30px;
+      div{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+        &.loading-image{
+          display: block;
+        }
+        p{
+          font-size: 15px;
+          margin-bottom: 0;
+        }
+        img{
+          width: 20px;
+        }
+      }
+    }
     &.err-img{
       border: 2px solid red;
       p{

@@ -7,27 +7,44 @@ import LayoutValidateUser from '../layouts/LayoutValidateUser.vue'
 
 const routes = [
   {
+    path: '/unauthorized',
+    name: 'unauthorized',
+    component: () => import('@/views/Unauthorized.vue')
+  },
+  {
     path: '/',
     redirect: { name: 'login'}
   },
   {
     path: '/login',
     name: 'login',
+    meta: {
+      title: 'Login'
+    },
     component: () => import('../views/Login.vue')
   },
   {
     path: '/registro',
     name: 'registro',
+    meta: {
+      title: 'Registro'
+    },
     component: () => import('../views/Registro.vue')
   },
   {
     path: '/recuperar',
     name: 'recuperar',
+    meta: {
+      title: 'Eecuperar'
+    },
     component: () => import('../views/RecoverPassword.vue')
   },
   {
     path: '/restaurar',
     name: 'restaurar',
+    meta: {
+      title: 'Restaurar'
+    },
     component: () => import('../views/RestorePassword.vue'),
     props: true
   },
@@ -36,7 +53,10 @@ const routes = [
     name: 'dashboard',
     component: () => import('../views/Dashboard/index.vue'),
     meta: {
-      layout: LayoutDashboard
+      title: 'Dashboard',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Cliente,Administrador'
     },
     beforeEnter: (to, from, next) => {
       const userStore = userUserStore()
@@ -51,7 +71,10 @@ const routes = [
     name: 'nueva-orden',
     component: () => import('../views/Dashboard/Orden/index.vue'),
     meta: {
-      layout: LayoutDashboard
+      title: 'Nueva Orden',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Cliente'
     },
     beforeEnter: (to, from, next) => {
       const userStore = userUserStore()
@@ -65,7 +88,10 @@ const routes = [
     name: 'cuentas',
     component: () => import('../views/Dashboard/Bancos/index.vue'),
     meta: {
-      layout: LayoutDashboard
+      title: 'Cuentas',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Cliente'
     },
     beforeEnter: (to, from, next) => {
       const userStore = userUserStore()
@@ -79,7 +105,10 @@ const routes = [
     name: 'ordenes',
     component: () => import('../views/Dashboard/Ordenes/index.vue'),
     meta: {
-      layout: LayoutDashboard
+      title: 'Ordenes',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Cliente'
     },
     beforeEnter: (to, from, next) => {
       const userStore = userUserStore()
@@ -93,7 +122,10 @@ const routes = [
     name: 'perfil',
     component: () => import('../views/Dashboard/Perfil/index.vue'),
     meta: {
-      layout: LayoutDashboard
+      title: 'Perfil',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Cliente'
     },
     beforeEnter: (to, from, next) => {
       const userStore = userUserStore()
@@ -107,7 +139,10 @@ const routes = [
     name: 'validateUser',
     component: () => import('../views/Dashboard/ValidateUser/index.vue'),
     meta: {
+      title: 'Validacion Usuario',
+      requiresAuth: true,
       layout: LayoutValidateUser,
+      rolesAllowed: 'Cliente'
     },
     beforeEnter: (to, from, next) => {
       const userStore = userAuthStore()
@@ -116,7 +151,27 @@ const routes = [
       }
       next()
     }
-  }
+  },
+
+
+ /// admin
+  {
+    path: '/dashboard/users',
+    name: 'users',
+    component: () => import('../views/Dashboard/Admin/User/index.vue'),
+    meta: {
+      title: 'Lista Usuarios',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
 ]
 
 const router = createRouter({
@@ -124,17 +179,53 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach( async (to) => {
-  const publicPages = ['/','/login','/registro','/recuperar','/restaurar']
-  const authRequired = !publicPages.includes(to.path)
+router.beforeEach(async (to,from, next) => {
+  document.title = to.meta.title
   const auth = userAuthStore()
-  if(authRequired && !auth.user) {
-    auth.returnUrl = to.fullPath
-    return '/login'
+  if(to.matched.some((record) => record.meta.requiresAuth)) {
+    if(auth.user && auth.isLogged) {
+      if( to.meta.rolesAllowed.split(',').includes(auth.user.rol.name)){
+        return next()
+      } else {
+        return next({
+          path: 'Unauthorized',
+          replace: true
+        })
+      }
+    }else {
+      return next({
+        path: '/login',
+        replace: true
+      })
+    }
+  }else {
+    if (auth.user && auth.isLogged) {
+      return next('/dashboard')
+    }else {
+      return next()
+    }
   }
-  if(!authRequired && auth.user && auth.isLogged) {
-    return '/dashboard'
-  }
+  // const authRequired = !publicPages.includes(to.path)
+  // const auth = userAuthStore()
+  // if(authRequired && !auth.user) {
+  //   auth.returnUrl = to.fullPath
+  //   return '/login'
+  // }
+  // if(!authRequired && auth.user && auth.isLogged) {
+  // rolesAllowed: 'Cliente'= 2) {
+  //       return '/dashboard';
+  //     } else {
+  //       router.push({path: '/login'});
+  //     }
+  //   } else if (to.meta.userAuth) {
+  //     if(auth.user.id_rol === 1) {
+  //       return '/dashboard';
+  //     } else {
+  //       router.push({path: '/login'});
+  //     }
+  //   }
+  //   return '/dashboard'
+  // }
 })
 
 export default router

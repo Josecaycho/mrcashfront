@@ -73,7 +73,7 @@ const continuar = async () => {
   const valid1 = await formBank.value.validate()
   loading.value = true
   if(valid1.valid) {
-    const data = {...form1.value, typeMoney: money.value, accountHolder: headline.value}
+    const data = {...form1.value, typeMoney: money.value, accountHolder: headline.value, type: 1}
     const result = await userStore.sendValidateBank(data)
     if ( result.success) {
       loading.value = false
