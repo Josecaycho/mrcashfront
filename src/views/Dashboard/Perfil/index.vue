@@ -128,9 +128,11 @@ const lastNameRules = [
                   </div>
                 </div>
                 <div class="content-info-btn">
-                  <v-btn class="btn-send" v-if="disabled" color="#00ACAC" @click="editUser">Editar</v-btn>
-                  <v-btn class="btn-send" v-if="!disabled" color="#00ACAC" @click="disabled = !disabled">Cancelar</v-btn>
-                  <v-btn class="btn-send" v-if="!disabled" color="#70BA44" @click="saveUser">Guardar</v-btn>
+                  <v-row>
+                    <v-col cols="6" lg="6" md="6" v-if="disabled" ><v-btn class="btn-send" color="#00ACAC" @click="editUser">Editar</v-btn></v-col>
+                    <v-col cols="6" lg="6" md="6" v-if="!disabled"><v-btn class="btn-send" color="#00ACAC" @click="disabled = !disabled">Cancelar</v-btn></v-col>
+                    <v-col cols="6" lg="6" md="6" v-if="!disabled"><v-btn class="btn-send" color="#70BA44" @click="saveUser">Guardar</v-btn></v-col>
+                  </v-row>
                 </div>
               </v-form>
             </v-col>
@@ -162,19 +164,17 @@ const lastNameRules = [
 }
 
 .content-info-btn{
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 40px;
+  // display: flex;
+  // justify-content: space-between;
+  // gap: 20px;
   .btn-send{
     width: 236px;
     height: 70px;
     border-radius: 18px;
-  }
-  @media screen and (max-width: 600px){
-    display: grid;
-    justify-content: center;
-    gap: 15px;
+    margin-top: 20px;
+    @media screen and (max-width: 600px){
+      margin-top: 40px;
+    }
   }
 }
 </style>
