@@ -26,12 +26,14 @@ const loadinfImageConfirm = ref(false)
 const loading = ref(false)
 const errorImgs = ref(false)
 const disabledCalculo = ref(false)
+const detailBank = ref('')
 
 onMounted(() => {
   banks.value = authStore.banks
   accounts.value = authStore.user.dataBank
   newAccounts.value = authStore.user.dataBank
 })
+
 
 const calculate = (type) => {
   if(type === 1) {
@@ -146,6 +148,7 @@ const sendEmail = async (data) => {
 
 const getFilterAccountUser = async(data) => {
   const newAccountsValue = accounts.value.filter(dl => dl.mrc_bank_id === data.id)
+  detailBank.value = data.info
   form.bankUser = null
   if(newAccountsValue.length > 0) {
     newAccounts.value = newAccountsValue
@@ -274,15 +277,7 @@ const getFilterAccountUser = async(data) => {
             <v-col cols="12" lg="6">
               <div class="list-detail-bank">
                 <h2 class="mb-5">Sigue los siguientes pasos:</h2>
-                <ul>
-                  <li>Ingrese a su aplicativo de banco mobile.</li>
-                  <li>Ingresa a la opción 'Servicios'.</li>
-                  <li>Selecciona Pago de Servicios.</li>
-                  <li>Digita BANCAPITAL S.A.</li>
-                  <li>Selecciona MrCash Soles.</li>
-                  <li>Código: Digita tu número de DNI.</li>
-                  <li>Realizas tu pago.</li>
-                </ul>
+                <div v-html="detailBank"></div>
               </div>
             </v-col>
             <v-col cols="12" lg="6" class="d-flex justify-center align-center">
@@ -360,7 +355,7 @@ const getFilterAccountUser = async(data) => {
   }
   &-finaly{
     .btn-send-order-finish{
-      margin-top: 90px;
+      margin-top: 50px;
       width: 330px;
       height: 70px;
       border-radius: 18px;
@@ -373,7 +368,7 @@ const getFilterAccountUser = async(data) => {
   }
 }
 .content-generate-orden-finaly{
-  @media screen and (max-width: 600px){
+  @media screen and (max-width: 1024px){
     margin-bottom: 100px;
   }
   .content-send{
