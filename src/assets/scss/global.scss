@@ -172,3 +172,21 @@ btn-send{
     margin-bottom: 100px;
   }
 }
+
+
+.cl-table{
+  background: transparent !important;
+  .v-data-table__thead{
+    color: #c1c1c1 !important;
+    th{
+      border-bottom-color: rgb(0 ,172, 172, 0.5) !important;
+    }
+  }
+
+  .v-data-table__tbody{
+    font-weight: 700 !important;
+    td{
+      border-bottom-color: rgb(0 ,172, 172, 0.5) !important;
+    }
+  }
+}

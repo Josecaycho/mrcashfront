@@ -23,6 +23,7 @@ const headers = [
   {title: 'DNI', key: 'dni'},
   {title: 'Comision', key: 'comision'},
   {title: 'Estado', key: 'state'},
+  {title: 'Acciones'},
 ]
 
 onMounted(() => {
@@ -72,9 +73,9 @@ const searchState = (state) => {
           >
           </v-text-field>
         </v-col>
-        <v-col cols="12" lg="8" md="8">
-          <v-row>
-            <v-col cols="12" lg="4">
+        <v-col cols="12" lg="8" md="8" class="justify-end">
+          <v-row no-gutters>
+            <v-col class="ms-md-auto" cols="12" lg="4">
               <v-select
                 v-model="stateUser"
                 :items="states"
@@ -82,7 +83,6 @@ const searchState = (state) => {
                 class="ip-form"
                 item-title="name"
                 item-value="id"
-                format="dd/MM/yyyy"
               >
                 <template #item="{ item, props }">
                   <v-list-item v-bind="props">
@@ -93,29 +93,12 @@ const searchState = (state) => {
                 </template>
               </v-select> 
             </v-col>
-            <v-col cols="12" lg="4">
-              <v-select
-                :items="states"
-                variant="outlined"
-                class="ip-form"
-                item-title="name"
-                item-value="id"
-                format="dd/MM/yyyy"
-              >
-                <template #item="{ item, props }">
-                  <v-list-item v-bind="props">
-                    <template #title>
-                      <div class="d-flex justify-star align-center">{{ `${item.raw.name}`}}</div>
-                    </template>
-                  </v-list-item>
-                </template>
-              </v-select> 
-            </v-col>
           </v-row>
         </v-col>
       </v-row>
       <div class="content-order d-flex align-center justify-center mt-5" >
         <v-data-table-server
+          class="cl-table"
           v-model:items-per-page="itemsPerPage"
           :headers="headers"
           :items-length="totalItems"
@@ -130,7 +113,17 @@ const searchState = (state) => {
               <td>{{ item.apellidos }}</td>
               <td>{{ item.dni }}</td>
               <td>{{ item.comision }}</td>
-              <td>{{ item.state === 3 ? 'Inactivo' : 'Activo' }}</td>
+              <td>
+                <div class="state-order modal-order" :class="item.state === 3 ? 'inactivo' : 'activo'">
+                  {{ item.state === 3 ? 'Inactivo' : 'Activo' }}
+                </div>
+              </td>
+              <td>
+                <div>
+                  <v-icon class="mr-2">mdi-eye</v-icon>
+                  <v-icon>mdi-pencil</v-icon>
+                </div>
+              </td>
             </tr>
           </template>
         </v-data-table-server>
@@ -138,3 +131,22 @@ const searchState = (state) => {
     </v-container>
   </div>
 </template>
+
+<style lang="scss">
+.state-order{
+  height: 31px;
+  width: 100px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 400;
+  &.activo{
+    background: #00A24F;
+  }
+  &.inactivo{
+    background: #DBD200;
+  }
+}
+</style>
