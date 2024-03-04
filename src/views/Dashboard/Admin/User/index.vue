@@ -12,6 +12,8 @@ const pageIn = ref(0)
 const searchText = ref('')
 const states = ref([
   {id: null, name: "Todos"},
+  {id: 0, name: "Registrado"},
+  {id: 1, name: "Por Validar"},
   {id: 2, name: "Activos"},
   {id: 3, name: "Inactivos"}
 ])
@@ -120,7 +122,7 @@ const searchState = (state) => {
               </td>
               <td>
                 <div>
-                  <v-icon class="mr-2">mdi-eye</v-icon>
+                  <router-link :to="`/dashboard/user/${item.id}`"><v-icon class="mr-2" color="#000">mdi-eye</v-icon></router-link>
                   <v-icon>mdi-pencil</v-icon>
                 </div>
               </td>

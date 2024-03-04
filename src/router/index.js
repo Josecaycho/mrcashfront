@@ -172,6 +172,23 @@ const routes = [
       }
     },
   },
+  {
+    path: '/dashboard/user/:userId',
+    name: 'user',
+    component: () => import('../views/Dashboard/Admin/User/idUser.vue'),
+    meta: {
+      title: 'Detalle de Usuario',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
 ]
 
 const router = createRouter({

@@ -1,5 +1,6 @@
 <script setup>
 import NavItems from '@/layouts/NavItems.vue';
+import NavItemsAdmin from '@/layouts/NavItemsAdmin.vue';
 import { storeToRefs } from 'pinia';
 import { userAuthStore } from '@/stores/auth'
 const authStore = userAuthStore()
@@ -48,7 +49,8 @@ onMounted(async () => {
         <img class="circle-top" src="@/assets/svg/circle-blue.svg" alt="cuadors">
         <img class="circle-btn" src="@/assets/svg/circle-green.svg" alt="cuadors">
       </div>
-      <NavItems  />
+      <NavItems v-if="user.rol === 'Cliente'" />
+      <NavItemsAdmin v-else/>
       <div>
         <router-view v-slot="{ Component }">
           <transition name="route" mode="out-in">

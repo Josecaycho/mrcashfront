@@ -15,7 +15,16 @@ export const adminAdminStore = defineStore ('admin', {
           params
         })
         if (result.data.success) {
-          console.log(result.data)
+          return result.data
+        }
+      } catch (error) {
+        
+      }   
+    },
+    async getDataUser (params) {
+      try {
+        const result = await axios.get(`/api/admin/user/${params}`)
+        if (result.data.success) {
           return result.data
         }
       } catch (error) {
