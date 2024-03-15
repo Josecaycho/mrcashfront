@@ -1,12 +1,19 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { adminAdminStore } from '@/stores/admin'
+import { userUserStore } from '@/stores/user'
+import { userAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 
 const adminStore = adminAdminStore()
+const userStore = userUserStore()
+const authStore = userAuthStore()
 
 const dataUser = ref({})
+const dataUserStore = ref({})
 const route = useRoute()
+const disabledEdit = ref(true)
+const comissions = ref([])
 
 const states = ref([
   {id: 0, name: "Registrado"},
@@ -19,16 +26,49 @@ const routeImg = 'https://mrcash-files.s3.amazonaws.com'
 
 onMounted(async() => {
   await getUser(route.params.userId)
+  comissions.value = authStore.comissions
 })
 
 const getUser = async (id)  => {
-  console.log(id)
   const result = await adminStore.getDataUser(id)
   dataUser.value = result.data
+  dataUserStore.value = result.data
 }
 
 const getImage = (img) => {
   return new URL(`../../../../assets/svg/banks/${img}.svg`, import.meta.url).href
+}
+
+const cancelChanges = async (id) => {
+  await getUser(route.params.userId)
+  disabledEdit.value = true
+}
+
+const saveChanges = async () => {
+  const data = {
+    nombres: dataUser.value.nombres,
+    phone: dataUser.value.phone,
+    apellidos: dataUser.value.apellidos,
+    comision: dataUser.value.comision,
+    email: dataUser.value.email,
+    id: dataUser.value.id
+  }
+
+  const result = await adminStore.updateUser(data)
+  if(result.success) {
+    cancelChanges()
+  }
+}
+
+const changeStateUser = async (state) => {
+  const data = {
+    id: dataUser.value.id,
+    state
+  }
+  const result = await adminStore.updateUser(data)
+  if(result.success) {
+    cancelChanges()
+  }
 }
 
 </script>
@@ -39,21 +79,46 @@ const getImage = (img) => {
       <div class="title-views text-center">
         Detalle de Usuario
       </div>
+      <div class="mb-8" v-if="dataUser.id_rol !== 1">
+        <div class="d-flex justify-end gap-4">
+          <v-btn color="success" v-if="dataUser.state === 1" @click="changeStateUser(2)">Aprobar Usuario</v-btn>
+          <v-btn color="red" v-if="(dataUser.state === 1 || dataUser.state === 2) && disabledEdit" @click="changeStateUser(3)">Bloquear Usuario</v-btn>
+          <v-btn color="success" v-if="dataUser.state === 3" @click="changeStateUser(2)">Activar Usuario</v-btn>
+          <v-btn color="warning" v-if="(dataUser.state === 1 || dataUser.state === 2) && disabledEdit" @click="disabledEdit = false">Editar Cliente</v-btn>
+          <v-btn color="#70BA44" v-if="!disabledEdit" @click="saveChanges()">Guardar</v-btn>
+          <v-btn color="red" v-if="!disabledEdit" @click="cancelChanges()">Cancelar</v-btn>
+        </div>
+      </div>
       <div class="mb-8">
         <v-row class="content-title-section">
           <v-col cols="12">
             Informacion del Cliente
           </v-col>
         </v-row>
-        <v-row>
+        <v-row class="content-info-section">
           <v-col cols="6">
-            <label class="color-green">Comision</label>
-            <v-text-field
-              v-model="dataUser.comision"
-              variant="outlined"
-              class="ip-form"
-              disabled=""
-            ></v-text-field>
+            <div v-if="disabledEdit" class="w-100 h-100 d-flex justify-center align-center">
+              <span class="title-comission">Comision: <b>{{ dataUser.comision }}</b></span>
+            </div>
+            <div v-else>
+              <label class="color-green">Selecciona Comision</label>
+              <v-select
+                v-model="dataUser.comision"
+                :items="comissions"
+                variant="outlined"
+                class="ip-form"
+                item-title="monto"
+                item-value="monto"
+              >
+              <template #item="{ item, props }">
+                <v-list-item v-bind="props">
+                  <template #title>
+                    <div class="d-flex justify-star align-center">{{item.raw.monto}}</div>
+                  </template>
+                </v-list-item>
+              </template>
+            </v-select>
+            </div>
           </v-col>
           <v-col cols="6">
             <div class="w-100 h-100 d-flex justify-center align-center">
@@ -70,8 +135,8 @@ const getImage = (img) => {
             Datos Personales
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="12" lg="6" md="6">
+        <v-row class="content-info-section">
+          <v-col cols="12" lg="6" md="6" class="pa-5">
             <v-form ref="formRegister1">
               <v-row class="content-info-form">
                 <v-col cols="12" lg="6" md="6">
@@ -80,7 +145,7 @@ const getImage = (img) => {
                     v-model="dataUser.dni"
                     variant="outlined"
                     class="ip-form"
-                    disabled=""
+                    disabled
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6">
@@ -89,7 +154,7 @@ const getImage = (img) => {
                     v-model="dataUser.email"
                     variant="outlined"
                     class="ip-form"
-                    disabled=""
+                    :disabled="disabledEdit"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6">
@@ -98,7 +163,7 @@ const getImage = (img) => {
                     v-model="dataUser.nombres"
                     variant="outlined"
                     class="ip-form"
-                    disabled=""
+                    :disabled="disabledEdit"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6">
@@ -107,7 +172,7 @@ const getImage = (img) => {
                     v-model="dataUser.apellidos"
                     variant="outlined"
                     class="ip-form"
-                    disabled=""
+                    :disabled="disabledEdit"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6">
@@ -116,7 +181,7 @@ const getImage = (img) => {
                     v-model="dataUser.phone"
                     variant="outlined"
                     class="ip-form"
-                    disabled=""
+                    :disabled="disabledEdit"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -135,8 +200,8 @@ const getImage = (img) => {
             Bancos
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="12" lg="6" md="6" v-for="(bank, index) in dataUser.userBanks" :key="index">
+        <v-row class="content-info-section">
+          <v-col cols="12" lg="6" md="6" class="pa-5" v-for="(bank, index) in dataUser.userBanks" :key="index">
             <div class="content">
                 <label class="content-title">{{ bank.alias_account }}</label>
                 <div class="content-info">
@@ -175,8 +240,8 @@ const getImage = (img) => {
             Documentos
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="12" lg="6" md="6">
+        <v-row class="content-info-section">
+          <v-col cols="12" lg="6" md="6" class="pa-5">
             <div class="w-100 d-flex justify-center align-center">
               <img class="img-perfil" v-if="dataUser.userFile" :src="`${routeImg}/${dataUser.userFile.dni_frontal}`" />
             </div>
@@ -197,10 +262,19 @@ const getImage = (img) => {
 .cont-info-user{
   .content-title-section {
     font-size: 20px;
-    background: #00ACAC;
+    // background: #146489;
     border-radius: 15px;
     color: #fff;
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
+    color: #146489;
+  }
+  .content-info-section{
+    border: 1px solid #146489;
+    border-radius: 20px;
+  }
+  .title-comission{
+    font-size: 22px;
+    color: #00ACAC;
   }
   .content{
       .v-input.ip-form{
@@ -325,7 +399,7 @@ const getImage = (img) => {
     }
   }
   .img-perfil{
-    width: 60%;
+    width: 80%;
   }
 }
 </style>

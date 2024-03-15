@@ -10,6 +10,7 @@ export const userAuthStore = defineStore('auth', {
 		token: null,
 		isLogged: true,
 		banks: null,
+		comissions: null,
 		typeAccounts: null
 	}),
 	getters: {
@@ -25,8 +26,10 @@ export const userAuthStore = defineStore('auth', {
 				const result = await axios.post('/api/login', data)
 				if (result.data.success) {
 					const banks = await axios.get('/api/banks')
+					const comission = await axios.get('/api/comissions')
 					// const typeAccounts = await axios.get('/api/typeAccounts')
 					this.banks = banks.data.data
+					this.comissions = comission.data.data
 					this.token = result.data.data.token
 					this.user = result.data.data
 					localStorage.setItem('token', JSON.stringify(result.data.data.token));

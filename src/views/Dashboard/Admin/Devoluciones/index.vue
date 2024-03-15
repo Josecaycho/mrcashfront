@@ -9,36 +9,34 @@ const totalItems = ref(0)
 const users = ref([])
 const size = ref(10)
 const pageIn = ref(0)
-const searchText = ref('')
+const searchTextUser = ref('')
+const searchTextOrden = ref('')
 const states = ref([
   {id: null, name: "Todos"},
-  {id: 0, name: "Registrado"},
-  {id: 1, name: "Por Validar"},
-  {id: 2, name: "Activos"},
-  {id: 3, name: "Inactivos"}
+  {id: 3, name: "Validado"},
+  {id: 4, name: "Observado"}
 ])
 const stateUser = ref()
 
 const headers = [
-  {title: 'Nombres', key: 'nombres'},
-  {title: 'Apellidos', key: 'apellidos'},
+  {title: 'Fecha', key: 'fecha'},
+  {title: 'Monto', key: 'monto'},
   {title: 'DNI', key: 'dni'},
-  {title: 'Comision', key: 'comision'},
+  {title: 'Cliente', key: 'cliente'},
+  {title: 'Nro operacion', key: 'codigo'},
+  {title: 'Banco', key: 'banco'},
   {title: 'Estado', key: 'state'},
   {title: 'Acciones'},
 ]
-
-onMounted(() => {
-  getDataUsers()
-})
-
 const getDataUsers = async () => {
   loading.value = true
-  const result = await adminStore.getUsers({
+  const result = await adminStore.getOrders({
     size: size.value,
     page: pageIn.value,
-    text: searchText.value,
-    state: stateUser.value
+    textUser: searchTextUser.value,
+    textOrden: searchTextOrden.value,
+    state: stateUser.value,
+    lst: 'devol'
   })
   if(result.success) {
     users.value = result.data.rows
@@ -55,6 +53,7 @@ const loadItems = ({ page, itemsPerPage, sortBy }) => {
 const searchState = (state) => {
   stateUser.value = state.id
   getDataUsers()
+  console.log('srrr')
 }
 
 </script>
@@ -63,19 +62,28 @@ const searchState = (state) => {
   <div class="cont-mcas cont-mcas-inter">
     <v-container>
       <div class="title-views text-center">
-        Listas de Usuarios
+        Listas de Devolucines
       </div>
       <v-row>
-        <v-col cols="12" lg="4" md="4">
+        <v-col cols="12" lg="3" md="3">
           <v-text-field 
             variant="outlined"
-            placeholder="Buscar"
-            v-model="searchText" 
+            placeholder="Buscar por datos de Usuarios"
+            v-model="searchTextUser"
             @keyup="getDataUsers()"
           >
           </v-text-field>
         </v-col>
-        <v-col cols="12" lg="8" md="8" class="justify-end">
+        <v-col cols="12" lg="3" md="3">
+          <v-text-field 
+            variant="outlined"
+            placeholder="Buscar por datos de Orden"
+            v-model="searchTextOrden"
+            @keyup="getDataUsers()"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col cols="12" lg="6" md="6" class="justify-end">
           <v-row no-gutters>
             <v-col class="ms-md-auto" cols="12" lg="4">
               <v-select
@@ -107,14 +115,18 @@ const searchState = (state) => {
           :items="users"
           :loading="loading"
           item-value="name"
+          loading-text="Loading..."
+          no-data-text="No se encontraron resultados."
           @update:options="loadItems"
         >
           <template v-slot:item="{ item }">
             <tr>
-              <td>{{ item.nombres }}</td>
-              <td>{{ item.apellidos }}</td>
-              <td>{{ item.dni }}</td>
-              <td>{{ item.comision }}</td>
+              <td>{{ item.create_date }}</td>
+              <td>{{ `S/ ${item.monto_send}` }}</td>
+              <td>{{ item.user.dni }}</td>
+              <td>{{ `${item.user.nombres} ${item.user.apellidos}` }}</td>
+              <td>{{ item.codigo }}</td>
+              <td>{{ item.userBank.bank.icon }}</td>
               <td>
                 <div class="state-order modal-order" :class="item.state === 3 ? 'inactivo' : 'activo'">
                   {{ item.state === 3 ? 'Inactivo' : 'Activo' }}

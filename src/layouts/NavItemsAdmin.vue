@@ -7,26 +7,29 @@ const activeitem = ref(1)
 const route = useRoute()
 const navUser = [
   {
-    img: 'new-orden',
+    img: 'user',
     name: 'Usuarios',
     routes: 'users,user', 
     view: 'users'
   },
-  // {
-  //   img: 'orden',
-  //   name: 'Ordenes',
-  //   view: 'ordenes'
-  // },
-  // {
-  //   img: 'banks',
-  //   name: 'Bancos',
-  //   view: 'cuentas'
-  // },
-  // {
-  //   img: 'user',
-  //   name: 'Perfil',
-  //   view: 'perfil'
-  // }
+  {
+    img: 'orden',
+    name: 'Pagos',
+    routes: 'pagos,orden', 
+    view: 'pagos'
+  },
+  {
+    img: 'orden',
+    name: 'Devolucines',
+    routes: 'devoluciones,orden', 
+    view: 'devoluciones'
+  },
+  {
+    img: 'orden',
+    name: 'Ordenes',
+    routes: 'ordenes,orden', 
+    view: 'ordenes'
+  },
 ]
 
 const getImageUrl = (name) => {

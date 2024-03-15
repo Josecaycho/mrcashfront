@@ -189,6 +189,57 @@ const routes = [
       }
     },
   },
+  {
+    path: '/dashboard/ordenes',
+    name: 'ordenes',
+    component: () => import('../views/Dashboard/Admin/Ordenes/index.vue'),
+    meta: {
+      title: 'Lista de Ordenes',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
+  {
+    path: '/dashboard/pagos',
+    name: 'pagos',
+    component: () => import('../views/Dashboard/Admin/Pagos/index.vue'),
+    meta: {
+      title: 'Lista de Pagos',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
+  {
+    path: '/dashboard/devoluciones',
+    name: 'devoluciones',
+    component: () => import('../views/Dashboard/Admin/Devoluciones/index.vue'),
+    meta: {
+      title: 'Lista de devoluciones',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
 ]
 
 const router = createRouter({
