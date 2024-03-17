@@ -15,13 +15,13 @@ const navUser = [
   {
     img: 'orden',
     name: 'Pagos',
-    routes: 'pagos,orden', 
+    routes: 'pagos,pago', 
     view: 'pagos'
   },
   {
     img: 'orden',
     name: 'Devolucines',
-    routes: 'devoluciones,orden', 
+    routes: 'devoluciones,devolucion', 
     view: 'devoluciones'
   },
   {

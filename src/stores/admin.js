@@ -53,6 +53,16 @@ export const adminAdminStore = defineStore ('admin', {
         
       }   
     },
+    async getDataOrden (params) {
+      try {
+        const result = await axios.get(`/api/admin/orden/${params}`)
+        if (result.data.success) {
+          return result.data
+        }
+      } catch (error) {
+        
+      }   
+    },
   },
   persist: {
     storage: sessionStorage, // data in sessionStorage is cleared when the page session ends.

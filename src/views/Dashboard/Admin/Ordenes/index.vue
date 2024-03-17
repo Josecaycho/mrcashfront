@@ -13,10 +13,9 @@ const searchTextUser = ref('')
 const searchTextOrden = ref('')
 const states = ref([
   {id: null, name: "Todos"},
-  {id: 0, name: "Registrado"},
-  {id: 1, name: "Por Validar"},
-  {id: 2, name: "Activos"},
-  {id: 3, name: "Inactivos"}
+  {id: 1, name: "Pendiente"},
+  {id: 5, name: "Completado"},
+  {id: 4, name: "Observado"}
 ])
 const stateUser = ref()
 
@@ -38,7 +37,7 @@ const getDataUsers = async () => {
     textUser: searchTextUser.value,
     textOrden: searchTextOrden.value,
     state: stateUser.value,
-    lst: 'ordem'
+    lst: 'orden'
   })
   if(result.success) {
     users.value = result.data.rows
@@ -130,8 +129,8 @@ const searchState = (state) => {
               <td>{{ item.codigo }}</td>
               <td>{{ item.userBank.bank.icon }}</td>
               <td>
-                <div class="state-order modal-order" :class="item.state === 3 ? 'inactivo' : 'activo'">
-                  {{ item.state === 3 ? 'Inactivo' : 'Activo' }}
+                <div class="state-order modal-order" :class="item.state === 1 ? 'pendiente' : item.state === 5 ? 'completado' : 'observado'">
+                  {{ item.state === 1 ? 'Pendiente': item.state === 5 ? 'Completado' : 'Observado' }}
                 </div>
               </td>
               <td>
@@ -157,11 +156,14 @@ const searchState = (state) => {
   align-items: center;
   color: #fff;
   font-weight: 400;
-  &.activo{
+  &.completado{
     background: #00A24F;
   }
-  &.inactivo{
+  &.pendiente{
     background: #DBD200;
+  }
+  &.observado{
+    background: red;
   }
 }
 </style>

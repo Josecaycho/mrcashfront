@@ -128,8 +128,8 @@ const searchState = (state) => {
               <td>{{ item.codigo }}</td>
               <td>{{ item.userBank.bank.icon }}</td>
               <td>
-                <div class="state-order modal-order" :class="item.state === 3 ? 'inactivo' : 'activo'">
-                  {{ item.state === 3 ? 'Inactivo' : 'Activo' }}
+                <div class="state-order modal-order" :class="item.state === 3 ? 'validado' : 'observado'">
+                  {{ item.state === 3 ? 'Validado' : 'Observado' }}
                 </div>
               </td>
               <td>
@@ -155,11 +155,11 @@ const searchState = (state) => {
   align-items: center;
   color: #fff;
   font-weight: 400;
-  &.activo{
-    background: #00A24F;
-  }
-  &.inactivo{
+  &.validado{
     background: #DBD200;
+  }
+  &.observado{
+    background: red;
   }
 }
 </style>

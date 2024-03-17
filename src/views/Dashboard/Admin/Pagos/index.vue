@@ -135,7 +135,7 @@ const searchState = (state) => {
               </td>
               <td>
                 <div class="d-flex ml-4">
-                  <router-link :to="`/dashboard/user/${item.id}`"><v-icon class="mr-2" color="#00ACAC">mdi-eye</v-icon></router-link>
+                  <router-link :to="`/dashboard/pagos/${item.id}`"><v-icon class="mr-2" color="#00ACAC">mdi-eye</v-icon></router-link>
                 </div>
               </td>
             </tr>

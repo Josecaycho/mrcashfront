@@ -240,6 +240,23 @@ const routes = [
       }
     },
   },
+  {
+    path: '/dashboard/pagos/:idPago',
+    name: 'pago',
+    component: () => import('../views/Dashboard/Admin/Pagos/detalle.vue'),
+    meta: {
+      title: 'Detalle de pago',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
 ]
 
 const router = createRouter({
