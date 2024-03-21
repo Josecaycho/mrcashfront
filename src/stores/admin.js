@@ -38,7 +38,7 @@ export const adminAdminStore = defineStore ('admin', {
           return result.data
         }
       } catch (error) {
-        
+        return error.response.data
       }  
     },
     async getOrders (params) {

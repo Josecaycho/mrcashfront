@@ -14,6 +14,9 @@ const dataUserStore = ref({})
 const route = useRoute()
 const disabledEdit = ref(true)
 const comissions = ref([])
+const formRegister = ref(null)
+
+const errorDni = ref(false)
 
 const states = ref([
   {id: 0, name: "Registrado"},
@@ -45,18 +48,27 @@ const cancelChanges = async (id) => {
 }
 
 const saveChanges = async () => {
-  const data = {
-    nombres: dataUser.value.nombres,
-    phone: dataUser.value.phone,
-    apellidos: dataUser.value.apellidos,
-    comision: dataUser.value.comision,
-    email: dataUser.value.email,
-    id: dataUser.value.id
-  }
+  const { valid } = await formRegister.value.validate()
+  if(valid) {
+    const data = {
+      nombres: dataUser.value.nombres,
+      phone: dataUser.value.phone,
+      apellidos: dataUser.value.apellidos,
+      comision: dataUser.value.comision,
+      email: dataUser.value.email,
+      dni: dataUser.value.dni,
+      id: dataUser.value.id
+    }
 
-  const result = await adminStore.updateUser(data)
-  if(result.success) {
-    cancelChanges()
+    const result = await adminStore.updateUser(data)
+    if(result.success) {
+      cancelChanges()
+    }else {
+      errorDni.value = true
+			setTimeout(() => {
+				errorDni.value = false
+			}, 2000);
+    }
   }
 }
 
@@ -70,6 +82,29 @@ const changeStateUser = async (state) => {
     cancelChanges()
   }
 }
+
+const nameRules = [
+  v => !!v || 'Nombres obligatorio'
+]
+
+const lastNameRules = [
+  v => !!v || 'Apellidos obligatorio'
+]
+
+const dniRules = [
+  v => !!v || 'DNI obligatorio',
+  v => /^[0-9]{8,8}$/.test(v) || 'Ingrese un dni valido',
+]
+
+const phoneRules = [
+  v => !!v || 'Celular obligatorio',
+  v => /^[0-9]{9,9}$/.test(v) || 'Ingrese un celular valido',
+]
+
+const emailRules = [
+	v => !!v || 'Email obligatorio',
+	v => /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/.test(v) || 'Ingrese Email valido',
+]
 
 </script>
 
@@ -89,55 +124,55 @@ const changeStateUser = async (state) => {
           <v-btn color="red" v-if="!disabledEdit" @click="cancelChanges()">Cancelar</v-btn>
         </div>
       </div>
-      <div class="mb-8">
-        <v-row class="content-title-section">
-          <v-col cols="12">
-            Informacion del Cliente
-          </v-col>
-        </v-row>
-        <v-row class="content-info-section">
-          <v-col cols="6">
-            <div v-if="disabledEdit" class="w-100 h-100 d-flex justify-center align-center">
-              <span class="title-comission">Comision: <b>{{ dataUser.comision }}</b></span>
-            </div>
-            <div v-else>
-              <label class="color-green">Selecciona Comision</label>
-              <v-select
-                v-model="dataUser.comision"
-                :items="comissions"
-                variant="outlined"
-                class="ip-form"
-                item-title="monto"
-                item-value="monto"
-              >
-              <template #item="{ item, props }">
-                <v-list-item v-bind="props">
-                  <template #title>
-                    <div class="d-flex justify-star align-center">{{item.raw.monto}}</div>
-                  </template>
-                </v-list-item>
-              </template>
-            </v-select>
-            </div>
-          </v-col>
-          <v-col cols="6">
-            <div class="w-100 h-100 d-flex justify-center align-center">
-              <div class="state-order modal-order" :class="dataUser.state === 3 ? 'inactivo' : 'activo'">
-                {{ dataUser.state === 3 ? 'Inactivo' : 'Activo' }}
+      <v-form ref="formRegister">
+        <div class="mb-8">
+          <v-row class="content-title-section">
+            <v-col cols="12">
+              Informacion del Cliente
+            </v-col>
+          </v-row>
+          <v-row class="content-info-section">
+            <v-col cols="6">
+              <div v-if="disabledEdit" class="w-100 h-100 d-flex justify-center align-center">
+                <span class="title-comission">Comision: <b>{{ `${Number(dataUser.comision)}%` }}</b></span>
               </div>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
-      <div class="mb-8">
-        <v-row class="content-title-section">
-          <v-col cols="12">
-            Datos Personales
-          </v-col>
-        </v-row>
-        <v-row class="content-info-section">
-          <v-col cols="12" lg="6" md="6" class="pa-5">
-            <v-form ref="formRegister1">
+              <div v-else>
+                <label class="color-green">Selecciona Comision</label>
+                <v-select
+                  v-model="dataUser.comision"
+                  :items="comissions"
+                  variant="outlined"
+                  class="ip-form"
+                  :item-title="item => `${Number(item.monto)}%`"
+                  item-value="monto"
+                >
+                <template #item="{ item, props }">
+                  <v-list-item v-bind="props">
+                    <template #title>
+                      <div class="d-flex justify-star align-center">{{`${Number(item.raw.monto)}%`}}</div>
+                    </template>
+                  </v-list-item>
+                </template>
+              </v-select>
+              </div>
+            </v-col>
+            <v-col cols="6">
+              <div class="w-100 h-100 d-flex justify-center align-center">
+                <div class="state-order modal-order" :class="dataUser.state === 3 ? 'inactivo' : 'activo'">
+                  {{ dataUser.state === 3 ? 'Inactivo' : 'Activo' }}
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+        <div class="mb-8">
+          <v-row class="content-title-section">
+            <v-col cols="12">
+              Datos Personales
+            </v-col>
+          </v-row>
+          <v-row class="content-info-section">
+            <v-col cols="12" lg="6" md="6" class="pa-5">
               <v-row class="content-info-form">
                 <v-col cols="12" lg="6" md="6">
                   <label class="color-green">DNI</label>
@@ -145,7 +180,9 @@ const changeStateUser = async (state) => {
                     v-model="dataUser.dni"
                     variant="outlined"
                     class="ip-form"
-                    disabled
+                    :disabled="disabledEdit"
+                    :rules="dniRules" 
+                    :error-messages="errorDni ? `DNI existente` : ``"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6">
@@ -155,6 +192,7 @@ const changeStateUser = async (state) => {
                     variant="outlined"
                     class="ip-form"
                     :disabled="disabledEdit"
+                    :rules="emailRules" 
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6">
@@ -164,6 +202,7 @@ const changeStateUser = async (state) => {
                     variant="outlined"
                     class="ip-form"
                     :disabled="disabledEdit"
+                    :rules="nameRules" 
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6">
@@ -172,6 +211,7 @@ const changeStateUser = async (state) => {
                     v-model="dataUser.apellidos"
                     variant="outlined"
                     class="ip-form"
+                    :rules="lastNameRules" 
                     :disabled="disabledEdit"
                   ></v-text-field>
                 </v-col>
@@ -181,19 +221,20 @@ const changeStateUser = async (state) => {
                     v-model="dataUser.phone"
                     variant="outlined"
                     class="ip-form"
+                    :rules="phoneRules" 
                     :disabled="disabledEdit"
                   ></v-text-field>
                 </v-col>
               </v-row>
-            </v-form>
-          </v-col>
-          <v-col cols="12" lg="6" md="6">
-            <div class="w-100 h-100 d-flex justify-center align-center">
-              <img class="img-perfil" v-if="dataUser.userFile" :src="`${routeImg}/${dataUser.userFile.photo}`" />
-            </div>
-          </v-col>
-        </v-row>
-      </div>
+            </v-col>
+            <v-col cols="12" lg="6" md="6">
+              <div class="w-100 h-100 d-flex justify-center align-center">
+                <img class="img-perfil" v-if="dataUser.userFile" :src="`${routeImg}/${dataUser.userFile.photo}`" />
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+      </v-form>
       <div class="mb-8">
         <v-row class="content-title-section">
           <v-col cols="12">
@@ -269,8 +310,7 @@ const changeStateUser = async (state) => {
     color: #146489;
   }
   .content-info-section{
-    border: 1px solid #146489;
-    border-radius: 20px;
+    border-top: 1px solid #00ACAC;
   }
   .title-comission{
     font-size: 22px;
@@ -399,7 +439,7 @@ const changeStateUser = async (state) => {
     }
   }
   .img-perfil{
-    width: 80%;
+    width: calc(100% - 40%);
   }
 }
 </style>

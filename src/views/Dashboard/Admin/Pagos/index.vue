@@ -68,8 +68,8 @@ const searchState = (state) => {
       <v-row>
         <v-col cols="12" lg="3" md="3">
           <v-text-field 
-            variant="outlined"
-            placeholder="Buscar por datos de Usuarios"
+            label="Buscar por datos de Usuarios"
+            class="ip-form style-calendar"
             v-model="searchTextUser"
             @keyup="getDataUsers()"
           >
@@ -77,8 +77,8 @@ const searchState = (state) => {
         </v-col>
         <v-col cols="12" lg="3" md="3">
           <v-text-field 
-            variant="outlined"
-            placeholder="Buscar por datos de Orden"
+            label="Buscar por datos de Orden"
+            class="ip-form style-calendar"
             v-model="searchTextOrden"
             @keyup="getDataUsers()"
           >
@@ -90,8 +90,8 @@ const searchState = (state) => {
               <v-select
                 v-model="stateUser"
                 :items="states"
-                variant="outlined"
-                class="ip-form"
+                label="Estados"
+                class="ip-form style-calendar"
                 item-title="name"
                 item-value="id"
               >

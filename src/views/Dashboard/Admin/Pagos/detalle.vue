@@ -262,8 +262,7 @@ const cancelChanges = async (id) => {
     color: #146489;
   }
   .content-info-section{
-    border: 1px solid #146489;
-    border-radius: 20px;
+    border-top: 1px solid #00ACAC;
   }
   .title-comission{
     font-size: 22px;

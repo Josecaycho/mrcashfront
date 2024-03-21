@@ -127,6 +127,7 @@ btn-send{
     height: 38px !important;
     input, .v-field__input{
       padding-top: initial !important;
+      min-height: 41px !important;
     }
     .v-field__append-inner{
       height: inherit !important;
@@ -196,3 +197,33 @@ btn-send{
 .gap-3{gap: 6px;}
 .gap-4{gap: 8px;}
 .gap-5{gap: 10px;}
+
+
+.style-calendar{
+  .v-field__field{
+    .v-field-label.v-field-label--floating{
+      position: absolute;
+      top: -20px !important;
+      left: -20px;
+    }
+  }
+  .v-field__input{
+    padding-top: initial !important;
+  }
+  .v-field__overlay{
+    background-color: #fff !important;
+  }
+  .v-field.v-field--focused{
+    .v-field__outline{
+      &::after{
+        transform: scaleX(0) !important;
+      }
+  }
+  }
+
+  .v-field__outline{
+    &::before{
+      border-style: unset !important;
+    }
+  }
+}

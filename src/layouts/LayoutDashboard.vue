@@ -45,9 +45,9 @@ onMounted(async () => {
     <v-main class="relative" relative style="min-height: 300px;">
       <div>
         <img class="cuadros-top" src="@/assets/svg/cuadros-btn.svg" alt="cuadors">
-        <img class="cuadros-btn" src="@/assets/svg/cuadros-top.svg" alt="cuadors">
+        <img class="cuadros-btn" src="@/assets/svg/cuadros-top.svg" alt="cuadors" v-if="user.id_rol !== 1">
         <img class="circle-top" src="@/assets/svg/circle-blue.svg" alt="cuadors">
-        <img class="circle-btn" src="@/assets/svg/circle-green.svg" alt="cuadors">
+        <img class="circle-btn" src="@/assets/svg/circle-green.svg" alt="cuadors" v-if="user.id_rol !== 1">
       </div>
       <NavItems v-if="user.rol === 'Cliente'" />
       <NavItemsAdmin v-else/>
