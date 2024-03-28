@@ -42,7 +42,8 @@ const getImage = (img) => {
 const updateOrder = async (state) => {
   let dt = {
     body: {
-      state
+      state,
+      obs: 'no paso la orden'
     },
     orderId: route.params.idOrden
   }
@@ -61,10 +62,24 @@ const updateOrder = async (state) => {
         Detalle de Pago
       </div>
       <div class="mb-8">
+        <v-row class="content-title-section">
+          <v-col cols="12">
+            Historial de estados de orden
+          </v-col>
+        </v-row>
+        <v-row class="content-info-section">
+          <div class="w-100" v-for="(item, index) in dataOrden.historyOrders" :key="index">
+            <div>{{ `${index + 1} ` }}</div>
+            <div>{{ item.obs }}</div>
+          </div>
+        </v-row>
+      </div>
+      <div class="mb-8">
         <div class="d-flex justify-end gap-4">
-          <v-btn color="success" v-if="dataOrden.state === 1"  @click="updateOrder(3)">Aprobar Pago</v-btn>
-          <v-btn color="red" v-if="dataOrden.state === 1"  @click="updateOrder(2)">Cancelar Pago</v-btn>
-          <v-btn color="success" v-if="dataOrden.state === 3"  @click="updateOrder(5)">Finalizar Devolucion</v-btn>
+          <v-btn color="success" v-if="dataOrden.state === 1 && route.name === 'pago'"  @click="updateOrder(3)">Aprobar Pago</v-btn>
+          <v-btn color="red" v-if="dataOrden.state === 1 && route.name === 'pago'"  @click="updateOrder(2)">Cancelar Pago</v-btn>
+          <v-btn color="success" v-if="dataOrden.state === 3 && route.name === 'devolucion'"  @click="updateOrder(5)">Finalizar Devolucion</v-btn>
+          <v-btn color="red" v-if="dataOrden.state === 3 && route.name === 'devolucion'"  @click="updateOrder(4)">Obervar Devolucion</v-btn>
         </div>
       </div>
       <div class="mb-8" v-if="dataOrden.user">
