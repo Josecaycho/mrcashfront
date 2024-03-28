@@ -49,7 +49,7 @@ onMounted(async () => {
         <img class="circle-top" src="@/assets/svg/circle-blue.svg" alt="cuadors">
         <img class="circle-btn" src="@/assets/svg/circle-green.svg" alt="cuadors" v-if="user.id_rol !== 1">
       </div>
-      <NavItems v-if="user.rol === 'Cliente'" />
+      <NavItems v-if="user.rol.name === 'Cliente'" />
       <NavItemsAdmin v-else/>
       <div>
         <router-view v-slot="{ Component }">

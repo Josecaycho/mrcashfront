@@ -39,18 +39,40 @@ const getImage = (img) => {
   return new URL(`../../../../assets/svg/banks/${img}.svg`, import.meta.url).href
 }
 
-const updateOrder = async (state) => {
-  let dt = {
-    body: {
-      state
-    },
-    orderId: route.params.idOrden
-  }
-  const result = await adminStore.updateStateOrder(dt)
-  if(result.success) {
-    getOrden(route.params.idOrden)
-  }
+const cancelChanges = async (id) => {
+  await getOrden(route.params.userId)
+  disabledEdit.value = true
 }
+
+// const saveChanges = async () => {
+//   const data = {
+//     nombres: dataUser.value.nombres,
+//     phone: dataUser.value.phone,
+//     apellidos: dataUser.value.apellidos,
+//     comision: dataUser.value.comision,
+//     email: dataUser.value.email,
+//     id: dataUser.value.id
+//   }
+
+//   const result = await adminStore.updateUser(data)
+//   if(result.success) {
+//     cancelChanges()
+//   }
+// }
+
+// const changeStateUser = async (state) => {
+//   const data = {
+//     id: dataUser.value.id,
+//     state
+//   }
+//   const result = await adminStore.updateUser(data)
+//   if(result.success) {
+//     cancelChanges()
+//   }
+// }
+
+const aprobarOrden = () => {}
+const cancelarOrden = () => {}
 
 </script>
 
@@ -62,9 +84,8 @@ const updateOrder = async (state) => {
       </div>
       <div class="mb-8">
         <div class="d-flex justify-end gap-4">
-          <v-btn color="success" v-if="dataOrden.state === 1"  @click="updateOrder(3)">Aprobar Pago</v-btn>
-          <v-btn color="red" v-if="dataOrden.state === 1"  @click="updateOrder(2)">Cancelar Pago</v-btn>
-          <v-btn color="success" v-if="dataOrden.state === 3"  @click="updateOrder(5)">Finalizar Devolucion</v-btn>
+          <v-btn color="success" v-if="dataOrden.state === 1" @click="aprobarOrden()">Aprobar Pago</v-btn>
+          <v-btn color="red" v-if="dataOrden.state === 1" @click="cancelarOrden()">Cancelar Pago</v-btn>
         </div>
       </div>
       <div class="mb-8" v-if="dataOrden.user">

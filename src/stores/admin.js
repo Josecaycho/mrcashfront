@@ -63,6 +63,16 @@ export const adminAdminStore = defineStore ('admin', {
         
       }   
     },
+    async updateStateOrder (params) {
+      try {
+        const result = await axios.post(`/api/admin/orden/${params.orderId}/update`,params.body)
+        if (result.data.success) {
+          return result.data
+        }
+      } catch (error) {
+        
+      }   
+    }
   },
   persist: {
     storage: sessionStorage, // data in sessionStorage is cleared when the page session ends.

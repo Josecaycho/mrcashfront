@@ -27,8 +27,8 @@ const navUser = [
   {
     img: 'orden',
     name: 'Ordenes',
-    routes: 'ordenes,orden', 
-    view: 'ordenes'
+    routes: 'ordenes-admin,orden', 
+    view: 'ordenes-admin'
   },
 ]
 

@@ -190,8 +190,8 @@ const routes = [
     },
   },
   {
-    path: '/dashboard/ordenes',
-    name: 'ordenes',
+    path: '/dashboard/ordenes-admin',
+    name: 'ordenes-admin',
     component: () => import('../views/Dashboard/Admin/Ordenes/index.vue'),
     meta: {
       title: 'Lista de Ordenes',
@@ -241,11 +241,45 @@ const routes = [
     },
   },
   {
-    path: '/dashboard/pagos/:idPago',
+    path: '/dashboard/pago/:idOrden',
     name: 'pago',
     component: () => import('../views/Dashboard/Admin/Pagos/detalle.vue'),
     meta: {
       title: 'Detalle de pago',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
+  {
+    path: '/dashboard/orden/:idOrden',
+    name: 'orden',
+    component: () => import('../views/Dashboard/Admin/Pagos/detalle.vue'),
+    meta: {
+      title: 'Detalle de Orden',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
+  {
+    path: '/dashboard/devolucion/:idOrden',
+    name: 'devolucion',
+    component: () => import('../views/Dashboard/Admin/Pagos/detalle.vue'),
+    meta: {
+      title: 'Detalle de devolucione',
       requiresAuth: true,
       layout: LayoutDashboard,
       rolesAllowed: 'Administrador'
