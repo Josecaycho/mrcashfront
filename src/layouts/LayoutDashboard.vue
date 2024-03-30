@@ -3,6 +3,7 @@ import NavItems from '@/layouts/NavItems.vue';
 import NavItemsAdmin from '@/layouts/NavItemsAdmin.vue';
 import { storeToRefs } from 'pinia';
 import { userAuthStore } from '@/stores/auth'
+import LoadingGeneral from '@/components/General/LoadinGeneral.vue';
 const authStore = userAuthStore()
 const { user } = storeToRefs(authStore);
 
@@ -25,6 +26,7 @@ onMounted(async () => {
 
 <template>
   <v-layout class="rounded rounded-md">
+    <LoadingGeneral />
     <v-app-bar
       :order="1"
       color="#146489"

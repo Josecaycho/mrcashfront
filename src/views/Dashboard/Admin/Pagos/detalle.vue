@@ -14,6 +14,8 @@ const dataOrdenStore = ref({})
 const route = useRoute()
 const disabledEdit = ref(true)
 const comissions = ref([])
+const obs = ref('')
+const textInfo = ref(false)
 
 const states = ref([
   {id: 0, name: "Registrado"},
@@ -25,14 +27,18 @@ const states = ref([
 const routeImg = 'https://mrcash-files.s3.amazonaws.com'
 
 onMounted(async() => {
+  userStore.stateLoadingGeneral(true)
   await getOrden(route.params.idOrden)
   comissions.value = authStore.comissions
 })
 
 const getOrden = async (id)  => {
   const result = await adminStore.getDataOrden(id)
-  dataOrden.value = result.data
-  dataOrdenStore.value = result.data
+  if(result.success){
+    dataOrden.value = result.data
+    dataOrdenStore.value = result.data
+    userStore.stateLoadingGeneral(false)
+  }
 }
 
 const getImage = (img) => {
@@ -40,17 +46,28 @@ const getImage = (img) => {
 }
 
 const updateOrder = async (state) => {
+  userStore.stateLoadingGeneral(true)
   let dt = {
     body: {
       state,
-      obs: 'no paso la orden'
+      obs: obs.value
     },
     orderId: route.params.idOrden
   }
   const result = await adminStore.updateStateOrder(dt)
   if(result.success) {
     getOrden(route.params.idOrden)
+    textInfo.value = false
+    userStore.stateLoadingGeneral(false)
   }
+}
+
+const formatDate = (data) => {
+  let dt = new Date(data.replace('Z',''))
+  let day = dt.getDate()
+  let month = dt.getMonth()
+  let year = dt.getFullYear()
+  return `${day}/${month + 1}/${year}`
 }
 
 </script>
@@ -62,24 +79,22 @@ const updateOrder = async (state) => {
         Detalle de Pago
       </div>
       <div class="mb-8">
-        <v-row class="content-title-section">
-          <v-col cols="12">
-            Historial de estados de orden
-          </v-col>
-        </v-row>
-        <v-row class="content-info-section">
-          <div class="w-100" v-for="(item, index) in dataOrden.historyOrders" :key="index">
-            <div>{{ `${index + 1} ` }}</div>
-            <div>{{ item.obs }}</div>
-          </div>
-        </v-row>
-      </div>
-      <div class="mb-8">
-        <div class="d-flex justify-end gap-4">
+        <div class="d-flex justify-end gap-4" v-if="!textInfo">
           <v-btn color="success" v-if="dataOrden.state === 1 && route.name === 'pago'"  @click="updateOrder(3)">Aprobar Pago</v-btn>
           <v-btn color="red" v-if="dataOrden.state === 1 && route.name === 'pago'"  @click="updateOrder(2)">Cancelar Pago</v-btn>
           <v-btn color="success" v-if="dataOrden.state === 3 && route.name === 'devolucion'"  @click="updateOrder(5)">Finalizar Devolucion</v-btn>
-          <v-btn color="red" v-if="dataOrden.state === 3 && route.name === 'devolucion'"  @click="updateOrder(4)">Obervar Devolucion</v-btn>
+          <v-btn color="red" v-if="dataOrden.state === 3 && route.name === 'devolucion'"  @click="textInfo = true">Obervar Devolucion</v-btn>
+        </div>
+        <div v-if="textInfo" class="mt-5">
+          <v-text-field
+            label="Observacion"
+            v-model="obs"
+            class="ip-form style-calendar"
+          ></v-text-field>
+          <div class="d-flex justify-end align-center gap-5">
+            <v-btn color="red" @click="textInfo = !textInfo">Cancelar</v-btn>
+            <v-btn color="success" @click="updateOrder(4)">Guardar</v-btn>
+          </div>
         </div>
       </div>
       <div class="mb-8" v-if="dataOrden.user">
@@ -157,11 +172,10 @@ const updateOrder = async (state) => {
             Informacion
           </v-col>
         </v-row>
-        <v-row class="content-info-section">
-          <v-col cols="12" lg="6" md="6" class="pa-5">
-            <div class="w-100 d-flex justify-center align-center">
+        <v-row class="content-info-section pa-5">
+          <v-col cols="12" lg="6" md="6">
+            <div class="w-100">
               <div ref="formRegister" class="d-flex align-center justify-center">
-                <v-card class="card-content" max-width="500" width="500">
                   <v-row>
                     <v-col cols="12">
                       <div class="w-100 content-input-changes">
@@ -228,7 +242,6 @@ const updateOrder = async (state) => {
                       </div>
                     </v-col>
                   </v-row>
-                </v-card>
               </div>
             </div>
           </v-col>
@@ -237,6 +250,31 @@ const updateOrder = async (state) => {
               <img class="img-perfil" v-if="dataOrden.img" :src="`${routeImg}/${dataOrden.img}`" />
             </div>
           </v-col>
+        </v-row>
+      </div>
+      <div class="mb-8">
+        <v-row class="content-title-section">
+          <v-col cols="12">
+            Historial de estados de orden
+          </v-col>
+        </v-row>
+        <v-row class="content-info-section">
+          <v-row>
+            <v-col cols="12" v-for="(item, index) in dataOrden?.historyOrders" :key="index">
+              <div class="history-updates">
+                <div>
+                  <p><b>{{ `${item.user.nombres} ${item.user.apellidos}` }} </b></p>
+                  <span>
+                    <b>Obs:</b>  {{ item.obs === null || item.obs === '' ? '-' : item.obs }}
+                  </span>
+                  <p><b>Fecha:</b> {{ formatDate(item.create_date) }}</p>
+                </div>
+                <div class="state-order info" :class="item.state_order === 3 ? 'validado' : 'observado'">
+                  {{ item.state_order === 3 ? 'Validado' : 'Observado' }}
+                </div>
+              </div>
+            </v-col>
+          </v-row>
         </v-row>
       </div>
     </v-container>
@@ -367,24 +405,16 @@ const updateOrder = async (state) => {
       }
     }
   }
-  .state-order{
-    height: 50px;
-    width: 150px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-weight: 400;
-    &.activo{
-      background: #00A24F;
-    }
-    &.inactivo{
-      background: #DBD200;
-    }
-  }
   .img-perfil{
     width: 80%;
+  }
+  .history-updates{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 15px 10px;
+    border-bottom: 1px solid #ccc;
+    align-items: center;
+    margin: 10px 20px;
   }
 }
 </style>

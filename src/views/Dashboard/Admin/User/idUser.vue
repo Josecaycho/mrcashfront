@@ -28,14 +28,18 @@ const states = ref([
 const routeImg = 'https://mrcash-files.s3.amazonaws.com'
 
 onMounted(async() => {
+  userStore.stateLoadingGeneral(true)
   await getUser(route.params.userId)
   comissions.value = authStore.comissions
 })
 
 const getUser = async (id)  => {
   const result = await adminStore.getDataUser(id)
-  dataUser.value = result.data
-  dataUserStore.value = result.data
+  if(result.success){
+    dataUser.value = result.data
+    dataUserStore.value = result.data
+    userStore.stateLoadingGeneral(false)
+  }
 }
 
 const getImage = (img) => {
@@ -48,6 +52,7 @@ const cancelChanges = async (id) => {
 }
 
 const saveChanges = async () => {
+  userStore.stateLoadingGeneral(true)
   const { valid } = await formRegister.value.validate()
   if(valid) {
     const data = {
@@ -63,11 +68,13 @@ const saveChanges = async () => {
     const result = await adminStore.updateUser(data)
     if(result.success) {
       cancelChanges()
+      userStore.stateLoadingGeneral(false)
     }else {
       errorDni.value = true
 			setTimeout(() => {
 				errorDni.value = false
 			}, 2000);
+      userStore.stateLoadingGeneral(false)
     }
   }
 }

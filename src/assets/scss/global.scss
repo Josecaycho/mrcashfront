@@ -40,11 +40,12 @@ btn-send{
 }
 
 .cont-mcas-inter{
-  padding-left: 150px;
+  padding-left: 200px;
   z-index: 999999;
   position: relative;
   padding-top: 70px;
   z-index: 0;
+  padding-right: 50px;
 	&-inter{
 		padding-top: 70px;
 	}
@@ -52,6 +53,7 @@ btn-send{
   @media screen and (max-width: 959px) {
     padding-left: 0;
     padding-top: 50px;
+    padding-right: 0px;
   }
 }
 
@@ -225,5 +227,44 @@ btn-send{
     &::before{
       border-style: unset !important;
     }
+  }
+}
+
+
+.state-order{
+  height: 35px;
+  width: 150px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 400;
+  &.info{
+    height: 30px !important;
+  }
+  &.activo{
+    background: #00A24F;
+  }
+  &.inactivo{
+    background: #DBD200;
+  }
+  &.validado{
+    background: #DBD200;
+  }
+  &.completado{
+    background: #00A24F;
+  }
+  &.pendiente{
+    background: #DBD200;
+  }
+  &.observado{
+    background: red;
+  }
+  &.nofinal{
+    background: #c1c1c1;
+  }
+  &.cancelado{
+    background: red;
   }
 }

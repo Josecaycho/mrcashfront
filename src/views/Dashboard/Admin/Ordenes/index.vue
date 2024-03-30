@@ -253,23 +253,4 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
 </template>
 
 <style lang="scss">
-.state-order{
-  height: 31px;
-  width: 100px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-weight: 400;
-  &.completado{
-    background: #00A24F;
-  }
-  &.pendiente{
-    background: #DBD200;
-  }
-  &.observado{
-    background: red;
-  }
-}
 </style>

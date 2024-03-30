@@ -5,7 +5,8 @@ import { userAuthStore } from '@/stores/auth';
 export const userUserStore = defineStore ('user', {
   state: () => ({
 		userState: null,
-    tokenSend: null
+    tokenSend: null,
+    loading: false
 	}),
 	getters: {
 		getStateUser(state) { 
@@ -13,6 +14,9 @@ export const userUserStore = defineStore ('user', {
     }
 	},
   actions: {
+    async stateLoadingGeneral(paylod) {
+      this.loading = await paylod
+    },
     async stateUser () {
       try {
         const authStore = userAuthStore();
