@@ -291,6 +291,23 @@ const routes = [
       }
     },
   },
+  {
+    path: '/dashboard/resumen',
+    name: 'resumen',
+    component: () => import('../views/Dashboard/Admin/Resumen/index.vue'),
+    meta: {
+      title: 'Resumen-Estadistico',
+      requiresAuth: true,
+      layout: LayoutDashboard,
+      rolesAllowed: 'Administrador'
+    },
+    beforeEnter: (to, from, next) => {
+      const userStore = userUserStore()
+      if (userStore.userState === 0) {
+        next()
+      }
+    },
+  },
 ]
 
 const router = createRouter({

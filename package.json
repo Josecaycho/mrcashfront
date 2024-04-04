@@ -11,7 +11,10 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "axios": "^1.6.2",
+    "chart.js": "^4.4.2",
     "crypto-js": "^4.2.0",
+    "install": "^0.13.0",
+    "npm": "^10.5.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "roboto-fontface": "*",

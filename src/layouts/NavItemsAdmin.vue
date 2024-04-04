@@ -30,6 +30,12 @@ const navUser = [
     routes: 'ordenes-admin,orden', 
     view: 'ordenes-admin'
   },
+  {
+    img: 'orden',
+    name: 'Resumen',
+    routes: 'resumen', 
+    view: 'resumen'
+  },
 ]
 
 const getImageUrl = (name) => {

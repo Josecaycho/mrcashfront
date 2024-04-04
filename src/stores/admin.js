@@ -72,6 +72,16 @@ export const adminAdminStore = defineStore ('admin', {
       } catch (error) {
         
       }   
+    },
+    async getDataResumen (params) {
+      try {
+        const result = await axios.post(`/api/admin/estadistic`,params)
+        if (result.data.success) {
+          return result.data
+        }
+      } catch (error) {
+        
+      }   
     }
   },
   persist: {
