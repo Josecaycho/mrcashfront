@@ -98,18 +98,22 @@ export default {
 <template>
   <div>
     <div class="text-center cl-title">Validación de Identidad</div>
-    <!-- <div class="text-center cl-subtitle">Manten tu camara apuntado directamente a tu rostro</div> -->
-    <div class="text-center cl-subtitle">Sube una imagen mostrando tu rostro.</div>
     <div>
       <v-row>
         <v-col>
           <div class="contn-files">
-            <div class="btn-open-files">
-              <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta una foto de perfil <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
-              <input type="file" @change="createBase64ImageF" style="display:none" id="upload1" accept="image/png, image/jpeg">
-            </div>
-            <img src="@/assets/svg/photo-perfil.svg" alt="" v-if="viewImage.imgview1 === null" height="350">
-            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370">
+            <v-row class="gap-5">
+              <v-col class="justify-end align-center d-flex">
+                <div class="btn-open-files">
+                  <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''">Adjunta una foto de perfil <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
+                  <input type="file" @change="createBase64ImageF" style="display:none" id="upload1" accept="image/png, image/jpeg">
+                </div>
+              </v-col>
+              <v-col class="justify-start align-center d-flex">
+                <img src="@/assets/svg/photo-perfil.svg" alt="" v-if="viewImage.imgview1 === null" height="300">
+                <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" height="300"  class="mb-5">
+              </v-col>
+          </v-row>
           </div>
         </v-col>
       </v-row>
@@ -124,13 +128,16 @@ export default {
 .cl-title{
   color: #005E81;
   font-size: 36px;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  @media screen and (max-width: 959px) {
+    font-size: 30px;
+  }
 }
 
 .cl-subtitle{
   color:#0081A2;
-  font-size: 20px;
-  margin-bottom: 60px;
+  font-size: 18px;
+  margin-bottom: 50px;
 }
 
 .contn-files {
@@ -163,6 +170,9 @@ export default {
   font-size: 22px !important;
   text-transform: capitalize !important;
   border-radius: 18px !important;
-  margin-top: 20px;
+  margin-top: calc(200px - 15%);
+  @media screen and (max-width: 959px) {
+    margin-top: 50px
+  }
   }
 </style>

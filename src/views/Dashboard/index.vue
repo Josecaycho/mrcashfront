@@ -9,16 +9,17 @@ const { user } = storeToRefs(authStore);
   <div class="cont-mcas-das">
     <v-container>
       <v-row>
-        <v-col cols="12" lg="6" class="cont-letter">
+        <v-col cols="12" lg="6" md="12" class="cont-letter">
           <div class="cth">
             <div class="cth-title">¡Hola!</div>
             <div v-if="user" class="cth-names">
-              {{ user.nombres.split(" ")[0] }} {{ user.apellidos.split(" ")[0] }}
+              <p>{{ user.nombres.split(" ")[0] }}</p> 
+              <p>{{ user.apellidos.split(" ")[0] }}</p>
             </div>
             <div class="cth-subtitle">¿Qué haremos hoy?</div>
           </div>
         </v-col>
-        <v-col cols="12" lg="6">
+        <v-col cols="12" lg="6" md="12">
           <div class="cont-frame">
             <img src="@/assets/images/frame-dash.png" alt="">
           </div>
@@ -33,14 +34,11 @@ const { user } = storeToRefs(authStore);
 .cont-letter{
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
 
   .cth{
     font-family: 'Archivo-SemiBold';
-    position: absolute;
-    top: 0;
-    left: 0;
     animation: EntrarLeft .9s ease;
     @media screen and (max-width: 1024px) {
       position: relative;
@@ -75,14 +73,13 @@ const { user } = storeToRefs(authStore);
   }
 }
 .cont-frame{
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   @media screen and (max-width: 1024px) {
     text-align: center;
   }
   img{
-    position: absolute;
-    top: 0;
-    left: 0;
     animation: EntrarRight .9s ease;
     @media screen and (max-width: 1024px) {
       position: relative;

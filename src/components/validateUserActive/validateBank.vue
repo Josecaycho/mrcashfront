@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="d-flex justify-center align-center">
     <v-form ref="formBank">
       <div class="text-center cl-title">Ingrese cuenta bancaria</div>
       <div class="text-center cl-subtitle">Recuerda para poder realizar una nueva operacion debe tener al menos una cuenta ingresada</div>
-      <div class="section-banks">
+      <div v-if="addCard" class="section-banks">
         <v-container>
           <v-row>
             <v-col cols="12" lg="6" md="6" sm="6">
@@ -63,6 +63,7 @@
                     variant="outlined" 
                     label="" 
                     class="ip-form"
+                    type="number"
                     :rules="numberRules"
                   ></v-text-field>
                 </div>
@@ -89,7 +90,7 @@
           </div>
         </v-container> 
       </div>
-      <div class="d-flex justify-center align-center mt-7">
+      <div v-if="addCard" class="d-flex justify-center align-center mt-2">
         <div>
           <v-checkbox
             v-model="headline"
@@ -106,7 +107,7 @@
           </v-checkbox>
         </div>
       </div>
-      <div class="text-center position-relative">
+      <div v-if="addCard" class="text-center position-relative">
         <v-btn 
           class="btn-send" 
           :loading="loading" 
@@ -117,17 +118,27 @@
         >
           Finalizar
         </v-btn>
+      </div>
+      <div v-else class="cont-btns d-flex justify-center align-center gap-5">
+        <v-btn 
+          class="btn-send" 
+          color="#70BA44" 
+          height="51"
+          @click="addCard = !addCard"
+        >
+          <v-icon>mdi-plus</v-icon>
+          Agregar Cuenta
+        </v-btn>
         <v-btn 
           class="btn-send omitir" 
-          outlined
+          variant="text"
           color="#70BA44"
-          width="241" 
           @click="omitir"
+          height="51"
+          :loading="loading" 
         >
           Omitir
-          <template v-slot:append>
-            <v-icon size="20" color="#70BA44">mdi-arrow-collapse-right</v-icon>
-          </template>
+          <v-icon>mdi-skip-next</v-icon>
         </v-btn>
       </div>
     </v-form>
@@ -155,6 +166,7 @@ export default {
     const errorMoney = ref(true)
 
     const limitNumber = ref(0)
+    const addCard = ref(false)
         
     const bankRules = [
       v => !!v || 'Seleccionar un banco'
@@ -239,6 +251,7 @@ export default {
     }
 
     const getTypesAccount = async (data) =>{
+      console.log(data,'data')
       typeAccounts.value = await data.typesAccounts
       form1.value.mrc_type_account_id = null
       form1.value.number_account = ''
@@ -273,7 +286,8 @@ export default {
       getTypesAccount,
       searchLimit,
       sendEmail,
-      omitir
+      omitir,
+      addCard
     }
   }
 }
@@ -301,13 +315,16 @@ export default {
 .cl-title{
   color: #005E81;
   font-size: 36px;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
+  @media screen and (max-width: 959px) {
+    font-size: 30px;
+  }
 }
 
 .cl-subtitle{
   color:#0081A2;
-  font-size: 20px;
-  margin-bottom: 60px;
+  font-size: 18px;
+  margin-bottom: 30px;
 }
 
 .contn-files {
@@ -340,15 +357,14 @@ export default {
   font-size: 22px !important;
   text-transform: capitalize !important;
   border-radius: 18px !important;
-  margin-top: 90px;
   &.omitir{
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translate(-50%, -140%);
     background-color: white !important;
     color: rgb(112, 186, 68) !important;
     border: 1px solid #70BA44;
+  }
+  margin-top: calc(200px - 22%);
+  @media screen and (max-width: 959px) {
+    margin-top: 50px
   }
 }
 
@@ -361,7 +377,7 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 25px;
-  margin-top: 60px;
+  margin-top: 25px;
   .type-account{
     cursor: pointer;
     width: 150px;
@@ -369,7 +385,7 @@ export default {
     border-radius: 13.5px;
     color: #70BA44;
     background: #fff;
-    box-shadow: rgba(112, 186, 68, 0.3) 0px 19px 38px, rgba(112, 186, 68, 0.22) 0px 15px 12px;
+    box-shadow: rgba(112, 186, 68, 0.3) 0px 9px 29px, rgba(112, 186, 68, -0.78) 0px 5px 7px;
     text-align: center;
     display: flex;
     justify-content: center;
@@ -408,4 +424,15 @@ export default {
   content: "\F0131" !important;
   color: red;
 }
+
+.cont-btns{
+  @media screen and (max-width: 959px) {
+    display: block !important;
+    text-align: center;
+    .omitir{
+      margin-top: 20px
+    }
+  }
+}
+
 </style>

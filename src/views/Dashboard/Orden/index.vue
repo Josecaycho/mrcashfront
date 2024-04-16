@@ -39,14 +39,14 @@ const calculate = (type) => {
   if(type === 1) {
     let calculate = form.send - (Number(form.send * parseFloat(authStore.user.comision)/100).toFixed(1))
     let comision = form.send * parseFloat(authStore.user.comision)/100
-    form.comision = comision
-    form.receive = calculate === NaN ? 0 : calculate
+    form.comision = isNaN(comision) ? 0 : comision
+    form.receive = isNaN(calculate) ? 0 : calculate
   }else {
     let calculate = parseFloat(form.receive) + (form.receive * parseFloat(authStore.user.comision)/100)
     let calculate2 = parseFloat(form.receive) + (calculate * parseFloat(authStore.user.comision)/100) 
     let comision = form.receive * parseFloat(authStore.user.comision)/100
-    form.comision = comision
-    form.send = calculate2 === NaN ? 0 : calculate2
+    form.comision = isNaN(comision) ? 0 : comision
+    form.send = isNaN(calculate2) ? 0 : calculate2
   }
 }
 
@@ -167,7 +167,7 @@ const getFilterAccountUser = async(data) => {
         <v-form ref="formRegister" class="d-flex align-center justify-center">
           <v-card class="card-content" max-width="500" width="500">
             <v-row>
-              <v-col cols="12">
+              <v-col cols="12" md="6" lg="6" class="py-0">
                 <div class="w-100 content-input-changes">
                   <label for="" class="color-green">Envías</label>
                   <v-text-field 
@@ -175,13 +175,14 @@ const getFilterAccountUser = async(data) => {
                     prefix="S/"
                     variant="outlined"
                     label="" 
+                    type="number"
                     class="ip-form"
                     @keyup="calculate(1)"
                     :rules="numberRules"
                   ></v-text-field>
                 </div>
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" md="6" lg="6" class="py-0">
                 <div class="w-100 content-input-changes">
                   <label for="" class="color-green">Recibes</label>
                   <v-text-field 
@@ -194,7 +195,7 @@ const getFilterAccountUser = async(data) => {
                   ></v-text-field>
                 </div>
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" class="py-0">
                 <div class="w-100 mb-2">
                   <div class="alert-content-comision">
                     <v-row>
@@ -208,7 +209,7 @@ const getFilterAccountUser = async(data) => {
                   </div>
                 </div>
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" class="py-0">
                 <div class="w-100">
                   <label for="" class="color-green">Banco que realizas la operación</label>
                   <v-select
@@ -230,7 +231,7 @@ const getFilterAccountUser = async(data) => {
                   </v-select>
                 </div>
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" class="py-0">
                 <div class="w-100">
                   <label for="" class="color-green">Seleccione su numero de cuenta</label>
                   <v-select
@@ -281,11 +282,11 @@ const getFilterAccountUser = async(data) => {
               </div>
             </v-col>
             <v-col cols="12" lg="6" class="d-flex justify-center align-center">
-              <div>
+              <div class="content-items-file">
                 <div class="title-file">Si ya realizaste el pago</div>
                 <div class="content-info-file" :class="errorImgs ? 'err-img' : ''" @click="openFile()">
                   <div class="text-center" :class="loadinfImage ? 'loading-image' : ''">
-                    <p>Adjunta tu comprobante de pago</p>
+                    <p>{{ loadinfImage ? 'Adjuntando..' : loadinfImageConfirm ? 'Listo' : 'Adjunta tu comprobante de pago' }}</p>
                     <img width="86" src="@/assets/svg/icons/file2.svg" alt="cuadors" v-if="!loadinfImage && !loadinfImageConfirm">
                     <img width="86" src="@/assets/svg/icons/check.svg" alt="cuadors" v-if="loadinfImageConfirm">
                     <input type="file" @change="sendFile" style="display:none" name="file" id="upload1" accept="image/png, image/jpeg">
@@ -298,18 +299,18 @@ const getFilterAccountUser = async(data) => {
                     ></v-progress-linear>
                   </div>
                 </div>
+                <div class="w-100 d-flex justify-center align-center">
+                  <v-btn
+                    class="btn-send-order-finish"
+                    color="#70BA44"
+                    :loading="loading"
+                    @click="finishOrder()"
+                  >Finalizar Orden</v-btn>
+                </div>
               </div>
             </v-col>
           </v-row>
         </v-container>
-        <div class="w-100 d-flex justify-center align-center">
-          <v-btn
-            class="btn-send-order-finish"
-            color="#70BA44"
-            :loading="loading"
-            @click="finishOrder()"
-          >Finalizar Orden</v-btn>
-        </div>
       </div>
     </v-container>
   </div>
@@ -355,9 +356,9 @@ const getFilterAccountUser = async(data) => {
   }
   &-finaly{
     .btn-send-order-finish{
-      margin-top: 50px;
+      margin-top: 40px;
       width: 330px;
-      height: 70px;
+      height: 60px;
       border-radius: 18px;
       font-size: 22px;
       text-transform: capitalize;
@@ -373,14 +374,15 @@ const getFilterAccountUser = async(data) => {
   }
   .content-send{
     min-width: 310px;
-    height: 54px;
+    height: 45px;
     color: #fff;
     background: #146489;
     border-radius: 18px;
     font-size: 28px;
     display: flex;
     justify-content: center;
-    align-items: center;margin-bottom: 80px;
+    align-items: center;
+    margin-bottom: 30px;
     @media screen and (max-width: 1024px){
       margin-bottom: 25px;
     }
@@ -414,8 +416,8 @@ const getFilterAccountUser = async(data) => {
   }
   .content-info-file{
     background: rgba(155, 210, 201, 0.2);
-    width: 280px;
-    height: 291px;
+    width: 250px;
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -456,5 +458,10 @@ const getFilterAccountUser = async(data) => {
       margin-bottom: 20px;
     }
   }
+}
+
+.content-items-file{
+  display: grid;
+  justify-items: center;
 }
 </style>

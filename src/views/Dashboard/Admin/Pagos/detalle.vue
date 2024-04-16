@@ -89,7 +89,7 @@ const formatDate = (data) => {
           <v-text-field
             label="Observacion"
             v-model="obs"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
           ></v-text-field>
           <div class="d-flex justify-end align-center gap-5">
             <v-btn color="red" @click="textInfo = !textInfo">Cancelar</v-btn>
@@ -247,12 +247,12 @@ const formatDate = (data) => {
           </v-col>
           <v-col cols="12" lg="6" md="6">
             <div class="w-100 d-flex justify-center align-center">
-              <img class="img-perfil" v-if="dataOrden.img" :src="`${routeImg}/${dataOrden.img}`" />
+              <img class="img-perfil" v-if="dataOrden.img && dataOrden.img !== '-'" :src="`${routeImg}/${dataOrden.img}`" />
             </div>
           </v-col>
         </v-row>
       </div>
-      <div class="mb-8">
+      <div class="mb-8" v-if="dataOrden?.historyOrders?.length > 0">
         <v-row class="content-title-section">
           <v-col cols="12">
             Historial de estados de orden
@@ -269,8 +269,15 @@ const formatDate = (data) => {
                   </span>
                   <p><b>Fecha:</b> {{ formatDate(item.create_date) }}</p>
                 </div>
-                <div class="state-order info" :class="item.state_order === 3 ? 'validado' : 'observado'">
-                  {{ item.state_order === 3 ? 'Validado' : 'Observado' }}
+                <div class="state-order info" 
+                  :class="item.state_order === 0 ? 'nofinal': 
+                          item.state_order === 1 ? 'pendiente' : 
+                          item.state_order === 5 ? 'completado' : 
+                          item.state_order === 4 ? 'observado' : 'cancelado'">
+                  {{ item.state_order === 0 ? 'nofinal': 
+                          item.state_order === 1 ? 'Pendiente' : 
+                          item.state_order === 5 ? 'Completado' : 
+                          item.state_order === 4 ? 'Observado' : 'Cancelado' }}
                 </div>
               </div>
             </v-col>

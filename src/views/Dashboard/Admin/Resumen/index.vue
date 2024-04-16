@@ -34,6 +34,13 @@ const months = [
   {id: '12', name: "Diciembre"},
 ]
 
+const option = ref('meses_balance')
+const options = [
+  {id: 'meses_balance', name: "Balance"},
+  {id: 'meses_ingresado', name: "Monto Ingresado"},
+  {id: 'meses_enviado', name: "Monto Enviado"}
+]
+
 const bank = ref(null)
 const banks = ref([])
 
@@ -45,14 +52,14 @@ const labels = ['January','February','March','April','May','June','July','August
 onMounted(async () => {
   const date = new Date()
   year.value = date.getFullYear()
-  monthI.value = date.getMonth() < 9 ? `0${date.getMonth()}` : date.getMonth()
-  monthF.value = date.getMonth() < 9 ? `0${date.getMonth()}` : date.getMonth()
+  monthI.value = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+  monthF.value = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
   banks.value = [{id: 0, name_bank: "Todos"}, ...JSON.parse(JSON.stringify( authStore.banks))]
   bank.value = 1
-  await getdataResumen()
+  await getDataResumen()
 })
 
-const getdataResumen = async () => {
+const getDataResumen = async () => {
   const result = await adminStore.getDataResumen({
     year: year.value,
     bank: bank.value,
@@ -62,17 +69,19 @@ const getdataResumen = async () => {
   if(result.success) {
     resumen.value = await result.data
     loadingGeneral.value = false
-    let montos = JSON.parse(result.data[0].contentInfo.meses)
+    option.value = 'meses_balance'
+    let item = result.data[0].contentInfo.meses_balance
+    let montos = JSON.parse(item)
     document.getElementById("myChart").remove()
     let canvas = document.createElement("canvas");
     canvas.id = "myChart"; 
     document.getElementById("contenedor").appendChild(canvas);
-    if(result.data.length === 1) {
+    if(resumen.value.length === 1) {
       let datasets = [
                       {
-                        label: result.data[0].name_bank,
-                        backgroundColor: result.data[0].color,
-                        borderColor: result.data[0].color,
+                        label: resumen.value[0].name_bank,
+                        backgroundColor: resumen.value[0].color,
+                        borderColor: resumen.value[0].color,
                         data: montos,
                       },
                     ]
@@ -84,18 +93,25 @@ const getdataResumen = async () => {
             labels: labels,
             datasets
           },
-          options: {}
+          options: {
+            callbacks: {
+              label: (tooltipItem, data) => {
+                let indice = tooltipItem.index;
+                return data.labels[indice] + ': ' + data.datasets[0].data[indice] + '%'
+              }
+            }
+          }
         }
       );
     }else {
       let datasets = []
-      for (let i = 0; i < result.data.length; i++) {
-        if(result.data[i].contentInfo.monto_total !== null)
+      for (let i = 0; i < resumen.value.length; i++) {
+        if(resumen.value[i].contentInfo.monto_total !== null)
           datasets.push({
-            label: result.data[i].name_bank,
-            backgroundColor: result.data[i].color,
-            borderColor: result.data[i].color,
-            data: JSON.parse(result.data[i].contentInfo.meses),
+            label: resumen.value[i].name_bank,
+            backgroundColor: resumen.value[i].color,
+            borderColor: resumen.value[i].color,
+            data: JSON.parse(resumen.value[i].contentInfo.meses_balance),
           })
       }
       const myChart = new Chart(
@@ -106,30 +122,106 @@ const getdataResumen = async () => {
             labels: labels,
             datasets
           },
-          options: {}
+          options: {
+            callbacks: {
+              label: (tooltipItem, data) => {
+                let indice = tooltipItem.index;
+                return data.labels[indice] + ': ' + data.datasets[0].data[indice] + '%'
+              }
+            }
+          }
         }
       );
     }
   }
 }
 
+const searchOptionGrafic = (item) => {
+  setGrafic(resumen.value[0].contentInfo[item.id],item)
+}
+
+const setGrafic = (item, value) => {
+  let montos = JSON.parse(item)
+  document.getElementById("myChart").remove()
+  let canvas = document.createElement("canvas");
+  canvas.id = "myChart"; 
+  document.getElementById("contenedor").appendChild(canvas);
+  if(resumen.value.length === 1) {
+    let datasets = [
+                    {
+                      label: resumen.value[0].name_bank,
+                      backgroundColor: resumen.value[0].color,
+                      borderColor: resumen.value[0].color,
+                      data: montos,
+                    },
+                  ]
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets
+        },
+        options: {
+          callbacks: {
+            label: (tooltipItem, data) => {
+              let indice = tooltipItem.index;
+              return data.labels[indice] + ': ' + data.datasets[0].data[indice] + '%'
+            }
+          }
+        }
+      }
+    );
+  }else {
+    let datasets = []
+    for (let i = 0; i < resumen.value.length; i++) {
+      if(resumen.value[i].contentInfo.monto_total !== null)
+        datasets.push({
+          label: resumen.value[i].name_bank,
+          backgroundColor: resumen.value[i].color,
+          borderColor: resumen.value[i].color,
+          data: JSON.parse(resumen.value[i].contentInfo[value.id]),
+        })
+    }
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets
+        },
+        options: {
+          callbacks: {
+            label: (tooltipItem, data) => {
+              let indice = tooltipItem.index;
+              return data.labels[indice] + ': ' + data.datasets[0].data[indice] + '%'
+            }
+          }
+        }
+      }
+    );
+  }
+}
+
 const searchState = (state) => {
   year.value = state.id
   loadingGeneral.value = true
-  getdataResumen()
+  getDataResumen()
 }
 
 const searchBank = (state) => {
   bank.value = state.id
   loadingGeneral.value = true
-  getdataResumen()
+  getDataResumen()
 }
 
 const searchMonth = (state, type) => {
   if(type === 1) {
     monthI.value = state.id
   }else monthF.value = state.id
-  getdataResumen()
+  getDataResumen()
 }
 
 
@@ -139,7 +231,7 @@ const searchMonth = (state, type) => {
   <div class="cont-mcas cont-mcas-inter">
     <v-container>
       <div class="title-views text-center">
-        Listas de Devoluciones
+        Vista Resumen
       </div>
       <v-row>
         <v-col class="ms-md-auto" cols="12" lg="3">
@@ -147,7 +239,7 @@ const searchMonth = (state, type) => {
             v-model="monthI"
             :items="months"
             label="Mes inicial"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
             item-title="name"
             item-value="id"
           >
@@ -165,7 +257,7 @@ const searchMonth = (state, type) => {
             v-model="monthF"
             :items="months"
             label="Mes final"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
             item-title="name"
             item-value="id"
           >
@@ -183,7 +275,7 @@ const searchMonth = (state, type) => {
             v-model="year"
             :items="years"
             label="Años"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
             item-title="name"
             item-value="id"
           >
@@ -201,7 +293,7 @@ const searchMonth = (state, type) => {
             v-model="bank"
             :items="banks"
             label="Bancos"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
             item-title="name_bank"
             item-value="id"
           >
@@ -241,7 +333,19 @@ const searchMonth = (state, type) => {
             <h4 class="mb-5">{{ item.name_bank }}</h4>
             <v-row>
               <v-col>
-                <div cols="12" lg="4" md="4">
+                <div cols="12" lg="3" md="3">
+                  <div class="w-100 d-flex justify-center align-center ct-info">
+                    <div class="text-center">
+                      <div class="title">Total Ordenes</div>
+                      <div>
+                        <span class="num">{{ item.contentInfo.ordenes === null ? 0 : item.contentInfo.ordenes }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </v-col>
+              <v-col>
+                <div cols="12" lg="3" md="3">
                   <div class="w-100 d-flex justify-center align-center ct-info">
                     <div class="text-center">
                       <div class="title">Monto Ingresado</div>
@@ -253,7 +357,7 @@ const searchMonth = (state, type) => {
                 </div>
               </v-col>
               <v-col>
-                <div cols="12" lg="4" md="4">
+                <div cols="12" lg="3" md="3">
                   <div class="w-100 d-flex justify-center align-center ct-info">
                     <div class="text-center">
                       <div class="title">Monto Enviado</div>
@@ -265,7 +369,7 @@ const searchMonth = (state, type) => {
                 </div>
               </v-col>
               <v-col>
-                <div cols="12" lg="4" md="4">
+                <div cols="12" lg="3" md="3">
                   <div class="w-100 d-flex justify-center align-center ct-info">
                     <div class="text-center">
                       <div class="title">Balance</div>
@@ -280,6 +384,24 @@ const searchMonth = (state, type) => {
           </v-col>
         </v-row>
       </div>
+      <v-row class="mt-8">
+        <v-select
+          v-model="option"
+          :items="options"
+          label="Opciones"
+          class="ip-form inpt-general"
+          item-title="name"
+          item-value="id"
+        >
+          <template #item="{ item, props }">
+            <v-list-item v-bind="props">
+              <template #title>
+                <div @click="searchOptionGrafic(item.raw)" class="d-flex justify-star align-center">{{ `${item.raw.name}`}}</div>
+              </template>
+            </v-list-item>
+          </template>
+        </v-select> 
+      </v-row>
       <div class="mt-10" id="contenedor">
         <canvas id="myChart"></canvas>
       </div>

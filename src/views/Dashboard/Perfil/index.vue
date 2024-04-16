@@ -81,69 +81,56 @@ const lastNameRules = [
         Datos Personales
       </div>
       <div class="content-perfil d-flex align-center justify-center">
-        <v-card class="card-content" max-width="1152" width="1152">
-          <v-row>
-            <v-col cols="12" lg="6">
+        <v-card class="card-pagos" width="500" height="500">
               <v-form ref="formRegister1">
-                <div class="content-info-form">
-                  <div>
-                    <label class="color-green">DNI</label>
-                    <v-text-field
-                      v-model="dataUser.dniv"
-                      variant="outlined"
-                      class="ip-form"
-                      :disabled="disabledDNI"
-                      :rules="dniRules" 
-                    ></v-text-field>
-                  </div>
-                  <div>
-                    <label class="color-green">Correo</label>
-                    <v-text-field 
-                      v-model="dataUser.emailv"
-                      variant="outlined"
-                      class="ip-form"
-                      :rules="emailRules" 
-                      :disabled="disabled"
-                    ></v-text-field>
-                  </div>
-                  <div>
-                    <label class="color-green">Nombres</label>
-                    <v-text-field 
-                      v-model="dataUser.nombresv"
-                      variant="outlined"
-                      class="ip-form"
-                      :disabled="disabled"
-                      :rules="nameRules" 
-                    ></v-text-field>
-                  </div>
-                  <div>
-                    <label class="color-green">Apellidos</label>
-                    <v-text-field 
-                      v-model="dataUser.apellidosv"
-                      :rules="lastNameRules"
-                      variant="outlined"
-                      class="ip-form"
-                      :disabled="disabled"
-                    ></v-text-field>
-                  </div>
+                <div class="content-info-form pt-5">
+                  <v-row class="pt-3">
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="dataUser.dniv"
+                        label="DNI"
+                        class="ip-form inpt-general"
+                        :disabled="disabledDNI"
+                        :rules="dniRules" 
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field 
+                        v-model="dataUser.emailv"
+                        label="Correo"
+                        class="ip-form inpt-general"
+                        :rules="emailRules" 
+                        :disabled="disabled"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field 
+                        v-model="dataUser.nombresv"
+                        label="Nombres"
+                        class="ip-form inpt-general"
+                        :disabled="disabled"
+                        :rules="nameRules" 
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field 
+                        v-model="dataUser.apellidosv"
+                        :rules="lastNameRules"
+                        label="Apellidos"
+                        class="ip-form inpt-general"
+                        :disabled="disabled"
+                      ></v-text-field>
+                    </v-col>  
+                  </v-row>
                 </div>
                 <div class="content-info-btn">
                   <v-row>
-                    <v-col cols="6" lg="6" md="6" v-if="disabled" ><v-btn class="btn-send" color="#00ACAC" @click="editUser">Editar</v-btn></v-col>
-                    <v-col cols="6" lg="6" md="6" v-if="!disabled"><v-btn class="btn-send" color="#00ACAC" @click="disabled = !disabled">Cancelar</v-btn></v-col>
-                    <v-col cols="6" lg="6" md="6" v-if="!disabled"><v-btn class="btn-send" color="#70BA44" @click="saveUser">Guardar</v-btn></v-col>
+                    <v-col cols="6" lg="6" md="6" v-if="disabled" ><v-btn class="btn-send" height="51" color="#00ACAC" @click="editUser">Editar</v-btn></v-col>
+                    <v-col cols="6" lg="6" md="6" v-if="!disabled"><v-btn class="btn-send" height="51" color="#00ACAC" @click="disabled = !disabled">Cancelar</v-btn></v-col>
+                    <v-col cols="6" lg="6" md="6" v-if="!disabled"><v-btn class="btn-send" height="51" color="#70BA44" @click="saveUser">Guardar</v-btn></v-col>
                   </v-row>
                 </div>
               </v-form>
-            </v-col>
-            <v-col cols="6">
-              <div class="d-inline-block text-center w-100">
-                <!-- <img :src="`${routeImg}/${authStore.user.dni_frontal}`" width="400" />
-                <br>
-                <img :src="`${routeImg}/${authStore.user.dnir_later}`" width="400" /> -->
-              </div>
-            </v-col>
-          </v-row>
         </v-card>
       </div>
       <Loading v-if="false"/>
@@ -176,5 +163,9 @@ const lastNameRules = [
       margin-top: 40px;
     }
   }
+}
+.card-pagos{
+  box-shadow: none !important;
+  background: transparent !important;
 }
 </style>

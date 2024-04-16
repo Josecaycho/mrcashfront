@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="d-flex justify-center aling-center h-100">
     <v-container>
       <v-row no-gutters>
-        <v-col cols="12" lg="6" class="d-flex justify-center">
+        <v-col cols="12" lg="6" class="d-flex justify-center align-center">
           <div class="content-info-finish">
             <div class="title">
               ¡Ya esta por finalizar!
@@ -12,8 +12,8 @@
             </p>
           </div>
         </v-col>
-        <v-col cols="12" lg="6" >
-          <img class="frame" src="@/assets/images/frame-finish.png" alt="register" width="460" height="532">
+        <v-col cols="12" lg="6" class="text-center">
+          <img class="frame" src="@/assets/images/frame-finish.png" alt="register">
         </v-col>
       </v-row>
     </v-container>
@@ -21,8 +21,12 @@
 </template>
 
 
-<style>
-
+<style lang="scss">
+.content-info-finish{
+  @media screen and (max-width: 959px) {
+    text-align: center;
+  }
+}
 .title{
   font-size: 36px;
   color: #146489;
@@ -33,4 +37,12 @@
   color: #0085AE;
   font-size: 20px;
 }
+
+.frame{
+  animation: EntrarLeft 1.5s ease;
+  z-index: 1;
+  width: calc(100% - 150px);
+  height: auto;
+}
+
 </style>

@@ -126,7 +126,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
         <v-col cols="12" lg="4" md="12">
           <v-text-field
             label="Buscar"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
             v-model="searchText" 
             @keyup="getDataUsers()"
           >
@@ -138,7 +138,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
               <v-select
                 v-model="stateUser"
                 :items="states"
-                class="ip-form style-calendar"
+                class="ip-form inpt-general"
                 label="Estados"
                 item-title="name"
                 item-value="id"
@@ -158,7 +158,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
                 v-model="comision"
                 :items="comissions"
                 label="Comisiones"
-                class="ip-form style-calendar"
+                class="ip-form inpt-general"
                 :item-title="item => {
                   if(item.monto === 'Todos') {
                     return 'Todos'
@@ -184,7 +184,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
                 <template #activator="{ props }">
                   <v-text-field
                     v-model="dateStartNew"
-                    class="style-calendar"
+                    class="inpt-general"
                     label="Fecha de Inicio"
                     readonly
                     append-inner-icon="mdi-calendar"
@@ -207,7 +207,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
                 <template #activator="{ props }">
                   <v-text-field
                     v-model="dateEndNew"
-                    class="style-calendar"
+                    class="inpt-general"
                     label="Fecha de Fin"
                     readonly
                     append-inner-icon="mdi-calendar"
@@ -249,8 +249,8 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
               <td>{{ `${Number(item.comision)}%` }}</td>
               <td>{{ formatDateView(item.creation_date) }}</td>
               <td>
-                <div class="state-order modal-order" :class="item.state === 3 ? 'inactivo' : 'activo'">
-                  {{ item.state === 3 ? 'Inactivo' : 'Activo' }}
+                <div class="state-order modal-order" :class="item.state === 3 ? 'inactivo' : item.state === 2 ? 'activo' : item.state === 1 ? 'por-validar' : item.state === 0 ? 'registrado' : ''">
+                  {{ item.state === 3 ? 'Inactivo' : item.state === 2 ? 'Activo' : item.state === 1 ? 'Por Validar' : item.state === 0 ? 'Registrado' : ''}}
                 </div>
               </td>
               <td>
@@ -265,22 +265,3 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
     </v-container>
   </div>
 </template>
-
-<style lang="scss">
-.state-order{
-  height: 31px;
-  width: 100px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-weight: 400;
-  &.activo{
-    background: #00A24F;
-  }
-  &.inactivo{
-    background: #DBD200;
-  }
-}
-</style>

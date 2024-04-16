@@ -80,7 +80,7 @@ const sendRegisterFinal = async () => {
 		if(politicData.value === null || !politicData.value) {
 			politicData.value = false	
 		} else politicData.value = politicData.value
-
+		loading.value = false
 	}
 }
 
@@ -152,22 +152,21 @@ const PDRules = [
 ]
 </script>
 <template>
-	<div class="content-login">
+	<div class="content-login" :class="!validateRegister1 && !validateRegister2 ? 'ps-1': 'ps-2'">
 		<v-row class="contents-row" no-gutters>
-			<div class="icon-float">
-				<a href="/login">
-					<img :class="!responsive ? `mb-8` : `mb-8`" src="@/assets/images/Logo.png" alt="logo" height="auto">
-				</a>
-			</div>
 			<v-col cols="7" v-if="!responsive">
 				<div class="banner">
 					<img v-if="!successRegister" class="frame" src="@/assets/images/frame-register.png" alt="register" width="661" height="590">
 					<img v-else class="frame" src="@/assets/images/frame-register-success.png" alt="register" width="661" height="590">
-					<img class="circle" src="@/assets/svg/circles2.svg" alt="circle">
 				</div>
 			</v-col>
 			<v-col class="login" :cols="!responsive ? `4` : `12`">
-				<div>
+				<div class="mt-5">
+					<div class="text-center">
+						<a href="/login">
+						  <img :class="!responsive ? `mb-2 logo` : `mb-5 logo`" src="@/assets/images/Logo.png" alt="logo">
+            </a>
+					</div>
 					<v-card
 						class="card-login"
 						max-width="374"
@@ -175,7 +174,7 @@ const PDRules = [
 						<v-card-text v-if="!successRegister">
 							<h1 class="h-100 text-center title-section">Regístrate</h1>
 							<div>
-								<h3 class="text-center title-pass">{{ !validateRegister1 && !validateRegister2 ? 'Paso 1' : 'Paso 2' }}</h3>
+								<!-- <h3 class="text-center title-pass">{{ !validateRegister1 && !validateRegister2 ? 'Paso 1' : 'Paso 2' }}</h3> -->
 								<div :class="`content-section-register ${!validateRegister1 && !validateRegister2 ? 'active1' : 'active2'}`">
 									<div :class="`item ${!validateRegister1 && !validateRegister2 ? 'active' : ''}`">1</div>
 									<div class="circle-pass">
@@ -209,6 +208,7 @@ const PDRules = [
 									:rules="dniRules" 
 									placeholder="DNI"
 									single-line
+									class="ip-form"
 									:error-messages="errorDni ? `DNI existente` : ``"
 								></v-text-field>
 								<v-btn class="btn-send" color="#70BA44" :width="!responsive ? `330` : `100%`" :height="!responsive ? `70` : `51`" @click="sendRegister">Siguiente</v-btn>
@@ -261,15 +261,6 @@ const PDRules = [
 								>
 									<v-radio
 										color="#00ABAC"
-										value="true"
-										:class="`${politicPerson !== null && !politicPerson ? 'rd-pex error' : 'rd-pex'}`"
-									>
-										<template v-slot:label>
-											<div style="color:#0081A2">Si</div>
-										</template>
-									</v-radio>
-									<v-radio
-										color="#00ABAC"
 										value="false"
 										:class="`${politicPerson !== null && !politicPerson ? 'rd-pex error' : 'rd-pex'}`"
 									>
@@ -277,6 +268,16 @@ const PDRules = [
 											<div style="color:#0081A2">No</div>
 										</template>
 									</v-radio>
+									<v-radio
+										color="#00ABAC"
+										value="true"
+										:class="`${politicPerson !== null && !politicPerson ? 'rd-pex error' : 'rd-pex'}`"
+									>
+										<template v-slot:label>
+											<div style="color:#0081A2">Si</div>
+										</template>
+									</v-radio>
+									
 								</v-radio-group>
 								<v-checkbox
 									v-model="tc"
@@ -304,8 +305,13 @@ const PDRules = [
 										</div>
 									</template>
 								</v-checkbox>
-								<!-- <v-btn @click="retroceder">Atras</v-btn> -->
-								<v-btn class="btn-send" color="#70BA44" :width="!responsive ? `330` : `100%`" :height="!responsive ? `70` : `51`" :loading="loading" @click="sendRegisterFinal">Registrar</v-btn>
+								<div class="mt-10">
+									<v-btn variant="text" class="w-100 btn-after" @click="retroceder">
+										<v-icon>mdi-chevron-left</v-icon>
+										Atras
+									</v-btn>
+									<v-btn class="btn-send" color="#70BA44" :width="!responsive ? `330` : `100%`" :height="!responsive ? `70` : `51`" :loading="loading" @click="sendRegisterFinal">Registrar</v-btn>
+								</div>
 							</v-form>
 							<div class="register mt-8 text-center">
 								<p>¿No tienes una cuenta? <a href="/login">Inicia sesión</a> </p>
@@ -331,7 +337,15 @@ const PDRules = [
     justify-content: center;
     align-items: center;
     display: flex;
-		overflow: hidden;
+
+		@media screen and (max-width: 959px) {
+			&.ps-1{
+				overflow: hidden;
+			}
+			&.ps-2{
+				overflow: auto;
+			}
+		}
 
 		.contents-row{
 			height: inherit;
@@ -360,10 +374,14 @@ const PDRules = [
 					animation: EntrarLeft 1.5s ease;
 					margin-top: 4rem;
 					z-index: 1;
+					width: calc(100% - 200px);
+					height: auto;
 				}
 				&.circle{
 					animation: EntrarLeft .9s ease;
 					margin-left: 7rem;
+					width: calc(100% - 40px);
+					height: auto;
 				}
       }
 		}
@@ -378,17 +396,20 @@ const PDRules = [
 		}
 
 		.card-login{
-			padding: 40px 60px !important;
+			padding: 40px !important;
 			border: none;
 			box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
 			max-width: 450px !important;
 			border-radius: 30px !important;
 			position: relative;
+			margin: 20px 0px;
 
 			@media screen and (max-width: 600px) {
 				max-width: 318px !important;
-				padding: 65px 38px !important;
+				padding: 40px 38px !important;
 				height: max-content;
+				margin-top: 20px !important;
+				margin-bottom: 20px !important;
 			}
 
 			.title-section {
@@ -551,11 +572,18 @@ const PDRules = [
 				box-shadow: rgba(50, 50, 93, 0.2) 0px 3px 5px 0px, rgba(0, 0, 0, 0.1) -1px 0px 3px -1px;
 				background: white;
 			}
+			.btn-after{
+				text-transform: capitalize;
+				color: #79B942;
+				font-size: 18px;
+				&:hover > .v-btn__overlay {
+					background: transparent !important;
+				}
+			}
 			.btn-send{
 				font-size: 22px !important;
 				text-transform: capitalize !important;
 				border-radius: 18px !important;
-				margin-top: 40px;
 			}
 			.register {
 				font-size: 17px;

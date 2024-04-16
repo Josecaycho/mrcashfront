@@ -127,25 +127,27 @@ export default {
     <div class="text-center cl-title">Validación de Identidad</div>
     <div class="text-center cl-subtitle">Recuerda tener a la mano tu documento de identidad</div>
     <div>
-      <v-row>
+      <v-row class="gap-3">
         <v-col class="d-flex justify-center align-center">
           <div class="contn-files">
-            <div class="btn-open-files">
+            <div class="btn-open-files" v-if="viewImage.imgview1 === null" >
               <label for="upload1" :class="errorImgs.img1 ? 'err-img' : ''"><span>Adjunta la foto del lado frontal de tu documento </span><img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
               <input type="file" @change="createBase64ImageF" style="display:none" name="file" id="upload1" accept="image/png, image/jpeg">
             </div>
-            <img src="@/assets/images/dnifrontal.png" alt="" v-if="viewImage.imgview1 === null">
-            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="370">
+            <div class="dlt-image cursor-pointer" @click="viewImage.imgview1 = null" v-if="viewImage.imgview1"> <v-icon color="red">mdi-image-remove</v-icon> Borrar</div>
+            <img src="@/assets/images/dnifrontal.png" alt="" v-if="viewImage.imgview1 === null" width="300">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview1}`" alt="" width="300">
           </div>
         </v-col>
         <v-col class="d-flex justify-center align-center">
           <div  class="contn-files">
-            <div class="btn-open-files">
+            <div class="btn-open-files" v-if="viewImage.imgview2 === null" >
               <label for="upload2" :class="errorImgs.img2 ? 'err-img' : ''"><span>Adjunta la foto del lado posterior de tu documento</span> <img src="@/assets/svg/icons/file.svg" alt="cuadors"></label>
               <input type="file" @change="createBase64ImageP" style="display:none" name="file2" id="upload2" accept="image/png, image/jpeg">
             </div>
-            <img src="@/assets/images/dniposterior.png" alt="" v-if="viewImage.imgview2 === null">
-            <img v-else :src="`data:image/png;base64,${viewImage.imgview2}`" alt="" width="370">
+            <div class="dlt-image cursor-pointer" @click="viewImage.imgview2 = null" v-if="viewImage.imgview2"> <v-icon color="red">mdi-image-remove</v-icon> Borrar</div>
+            <img src="@/assets/images/dniposterior.png" alt="" v-if="viewImage.imgview2 === null" width="300">
+            <img v-else :src="`data:image/png;base64,${viewImage.imgview2}`" alt="" width="300">
           </div>
         </v-col>
       </v-row>
@@ -160,13 +162,16 @@ export default {
 .cl-title{
   color: #005E81;
   font-size: 36px;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
+  @media screen and (max-width: 959px) {
+    font-size: 30px;
+  }
 }
 
 .cl-subtitle{
   color:#0081A2;
-  font-size: 20px;
-  margin-bottom: 60px;
+  font-size: 18px;
+  margin-bottom: 50px;
 }
 
 .contn-files {
@@ -176,6 +181,7 @@ export default {
   // align-items: center;
   // justify-content: center;
 }
+
 .btn-open-files{
   color: #0081A2;
   display: flex;
@@ -191,11 +197,16 @@ export default {
     align-items: center;
     position: relative;
     cursor: pointer;
+    font-size: 15px;
      &.err-img{
       border: red;
       color: red;
       background: rgb(255, 0, 0, 20%);
       transition: 0.3s ease-in-out;
+    }
+    @media screen and (max-width: 959px) {
+      padding: 10px 20px;
+      font-size: 14px;
     }
   }
 }
@@ -204,6 +215,19 @@ export default {
   font-size: 22px !important;
   text-transform: capitalize !important;
   border-radius: 18px !important;
-  margin-top: 90px;
+  margin-top: calc(200px - 13%);
+  @media screen and (max-width: 959px) {
+    margin-top: 50px
   }
+}
+
+.dlt-image{
+  color: red;
+  font-weight: bold;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
 </style>

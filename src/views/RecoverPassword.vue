@@ -68,15 +68,14 @@ const sendEmail = async (token) => {
 		<v-row class="contents-row" no-gutters>
 			<v-col cols="12" lg="7" v-if="!responsive">
 				<div class="banner">
-					<img class="frame" src="@/assets/images/frame-login.png" alt="login" width="661" height="590">
-					<img class="circle" src="@/assets/svg/circles.svg" alt="circle">
+					<img class="frame" src="@/assets/images/frame-recuperar.png" alt="login" width="661" height="590">
 				</div>
 			</v-col>
 			<v-col class="login" :cols="!responsive ? `4` : `12`">
 				<div>
 					<div class="text-center">
 						<a href="/login">
-						  <img class="mb-15" src="@/assets/images/Logo.png" alt="logo" width="279" height="112">
+						  <img class="mb-10 logo" src="@/assets/images/Logo.png" alt="logo" width="279" height="112">
             </a>
 					</div>
 					<v-card
@@ -92,17 +91,16 @@ const sendEmail = async (token) => {
 									:rules="emailRules" 
 									single-line
 									placeholder="Email" 
-									style="max-width: 330px;max-height: 52px;"
-									class="mb-6"
+									class="mb-6 ip-form"
 									:error-messages="errorEmail ? `Email no encontrado` : ``"
 								></v-text-field>
-								<v-btn class="btn-send" :loading="loading" color="#70BA44" width="330" height="70" @click="sendLogin" >Enviar</v-btn>
+								<v-btn class="btn-send" :loading="loading" color="#70BA44" :width="!responsive ? `330` : `100%`" :height="!responsive ? `70` : `51`" @click="sendLogin" >Enviar</v-btn>
 							</v-form>
 						</v-card-text>
 						<v-card-text v-else>
 							<div class="text-center">
 								<img src="@/assets/svg/bienvenido-register.svg" alt="" class="mb-9">
-								<h1 class="h-100 text-center title-section title-section-success"><b>Solicitud Enviada !</b></h1>
+								<h2 class="h-100 text-center title-section title-section-success"><b>Solicitud Enviada !</b></h2>
 								<p class="txt-success">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
 							</div>
 						</v-card-text>
@@ -127,10 +125,6 @@ const sendEmail = async (token) => {
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				padding-top: 103px;
-				@media screen and (max-width: 959px) {
-					padding-top: 20px;
-				}
 			}
 		}
 
@@ -146,11 +140,15 @@ const sendEmail = async (token) => {
 					animation: EntrarLeft 1.5s ease;
 					margin-top: 9rem;
 					z-index: 1;
+					width: calc(100% - 200px);
+					height: auto;
 				}
 				&.circle{
 					animation: EntrarLeft .9s ease;
 					margin-left: 7rem;
 					margin-top: 5rem;
+					width: calc(100% - 40px);
+					height: auto;
 				}
       }
 		}
@@ -165,11 +163,11 @@ const sendEmail = async (token) => {
 		}
 
 		.card-login{
-			padding: 70px 60px !important;
+			padding: 50px 40px !important;
 			border: none;
 			box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
 			max-width: 450px !important;
-			height: 580px;
+			height: auto;
 			border-radius: 30px !important;
 			display: flex;
 			justify-content: center;
@@ -177,7 +175,7 @@ const sendEmail = async (token) => {
 
 			@media screen and (max-width: 600px) {
 				max-width: 318px !important;
-				padding: 65px 38px !important;
+				padding: 40px 38px !important;
 				height: max-content;
 				display: block;
 			}
@@ -196,7 +194,6 @@ const sendEmail = async (token) => {
 				border-radius: 18px;
 				color: $blue;
 				font-family: 'Archivo-SemiBold';
-				padding-left: 20px;
 				height: 54px;
 				width: 330px;
 				box-shadow: rgba(50, 50, 93, 0.2) 0px 3px 5px 0px, rgba(0, 0, 0, 0.1) -1px 0px 3px -1px;

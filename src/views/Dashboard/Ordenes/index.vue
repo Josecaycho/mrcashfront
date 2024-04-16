@@ -2,7 +2,7 @@
 import Loading from '@/components/General/Loading.vue'
 import { userUserStore } from '@/stores/user'
 import { userAuthStore } from '@/stores/auth'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 const authStore = userAuthStore()
 const userStore = userUserStore()
 const loading = ref(false)
@@ -25,6 +25,11 @@ const states = ref([
 const dateStart = ref(null)
 const dateEnd = ref(null)
 const minDate = ref(null)
+
+const openDateStart = ref(false)
+const openDateEnd = ref(false)
+const dateStartNew = computed(() => dateStart.value !== null ? formatDateView(dateStart.value) : '');
+const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(dateEnd.value) : '')
 
 
 onMounted(async () => {
@@ -68,17 +73,6 @@ const searchState = (state) => {
   listOrders()
 }
 
-const selectDateStart = () => {
-  minDate.value = new Date(dateStart.value)
-  if(dateEnd.value === null) 
-    dateEnd.value = new Date(Date.now())
-  listOrders()
-}
-
-const selectDateEnd = () => {
-  listOrders()
-}
-
 const getDate = (data) => {
   let dt = new Date(data)
   let day = dt.getDate()
@@ -104,6 +98,23 @@ const getImage = (img) => {
   return new URL(`../../../assets/svg/banks/${img}-logo.svg`, import.meta.url).href
 }
 
+const formatDateView = (data) => {
+  let dt = new Date(data)
+  let day = dt.getDate()
+  let month = dt.getMonth()
+  let year = dt.getFullYear()
+  return `${day}/${month + 1}/${year}`
+}
+const selectDateStart = () => {
+  minDate.value = new Date(dateStart.value)
+  if(dateEnd.value === null) 
+    dateEnd.value = new Date(Date.now())
+    listOrders()
+}
+
+const selectDateEnd = () => {
+  listOrders()
+}
 </script>
 
 <template>
@@ -116,7 +127,8 @@ const getImage = (img) => {
         <v-col cols="12" lg="4" md="4">
           <v-text-field 
             variant="outlined"
-            placeholder="Buscar"
+            label="Buscar"
+            class="ip-form inpt-general"
             v-model="monto" 
             @keyup="searchMonto()">
           </v-text-field>
@@ -127,11 +139,10 @@ const getImage = (img) => {
               <v-select
                 v-model="stateOrder"
                 :items="states"
-                variant="outlined"
-                class="ip-form"
+                class="ip-form inpt-general"
+                label="Estados"
                 item-title="name"
                 item-value="id"
-                format="dd/MM/yyyy"
               >
                 <template #item="{ item, props }">
                   <v-list-item v-bind="props">
@@ -143,125 +154,120 @@ const getImage = (img) => {
               </v-select> 
             </v-col>
             <v-col cols="6" lg="4" md="6">
-              <v-text-field
-                color="#00ACAC"
-                class="ip-form style-calendar"
-                persistentPlaceholder
-                variant="outlined"
-                :placeholder="dateStart !== null ? dateStart.toLocaleDateString() : ''"
-                :value="dateStart !== null ? dateStart.toLocaleDateString() : ''"
-              >
-                <template #append-inner>
-                  <v-btn icon flat
-                    ><v-icon>mdi-calendar</v-icon>
-                    <v-menu activator="parent">
-                      <v-date-picker
-                        color="#00ACAC"
-                        hideHeader
-                        hideWeekdays
-                        format="dd/MM/yyyy"
-                        v-model="dateStart"
-                        @click="selectDateStart"
-                      >
-                      </v-date-picker>
-                    </v-menu>
-                  </v-btn>
+              <v-menu v-model="openDateStart" :close-on-content-click="false">
+                <template #activator="{ props }">
+                  <v-text-field
+                    v-model="dateStartNew"
+                    class="inpt-general"
+                    label="Fecha de Inicio"
+                    readonly
+                    append-inner-icon="mdi-calendar"
+                    v-bind="props"
+                  ></v-text-field>
                 </template>
-              </v-text-field>
+                <v-date-picker
+                  v-model="dateStart"
+                  color="primary"
+                  format="dd/MM/yyyy"
+                  show-adjacent-months
+                  hideHeader
+                  hideWeekdays
+                  @update:model-value="selectDateStart(),openDateStart = false"
+                ></v-date-picker>
+              </v-menu>
             </v-col>
             <v-col cols="6" lg="4" md="6">
-              <v-text-field
-                color="#00ACAC"
-                persistentPlaceholder
-                class="ip-form style-calendar"
-                variant="outlined"
-                :placeholder="dateEnd !== null ? dateEnd.toLocaleDateString() : ''"
-                :value="dateEnd !== null ? dateEnd.toLocaleDateString() : ''"
-              >
-                <template #append-inner>
-                  <v-btn icon flat
-                    ><v-icon>mdi-calendar</v-icon>
-                    <v-menu activator="parent">
-                      <v-date-picker
-                        color="#00ACAC"
-                        :min="minDate"
-                        hideHeader
-                        hideWeekdays
-                        v-model="dateEnd"
-                        @click="selectDateEnd"
-                      >
-                      </v-date-picker>
-                    </v-menu>
-                  </v-btn>
+              <v-menu v-model="openDateEnd" :close-on-content-click="false">
+                <template #activator="{ props }">
+                  <v-text-field
+                    v-model="dateEndNew"
+                    class="inpt-general"
+                    label="Fecha de Fin"
+                    readonly
+                    append-inner-icon="mdi-calendar"
+                    v-bind="props"
+                  ></v-text-field>
                 </template>
-              </v-text-field>
+                <v-date-picker
+                  v-model="dateEnd"
+                  :min="minDate"
+                  color="primary"
+                  format="dd/MM/yyyy"
+                  show-adjacent-months
+                  hideHeader
+                  hideWeekdays
+                  @update:model-value="selectDateEnd(),openDateEnd = false"
+                ></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-      <div class="content-order d-flex align-center justify-center mt-5" v-if="!loading">
+      <div class="content-order mt-5" v-if="!loading">
         <div v-if="ordenes.length > 0">
-          <v-card class="card-content" max-width="1152" width="1152">
-            <v-row class="content-order-list">
-              <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
-                <div class="content-order-list-item">
-                  <div class="content-order-list-item-title">
-                    <v-row>
-                      <v-col cols="12" lg="8" md="8" sm="8" class="d-flex justify-center align-center transaction">
-                        Transaccion: <b class="ml-3">{{ item.codigo }}</b>
-                      </v-col>
-                      <v-col cols="12" lg="4" md="4" sm="4" class="d-flex justify-end align-center date">
-                        {{ getDate(item.create_date) }}
-                      </v-col>
-                    </v-row>
-                  </div>
-                  <div class="content-order-list-item-content">
-                    <div>
+          <v-card class="card-pagos">
+            <v-card-text class="pa-0">
+              <v-row class="content-order-list">
+                <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
+                  <div class="content-order-list-item">
+                    <div class="content-order-list-item-title">
                       <v-row>
-                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                          <div class="content-order-list-item-content-text green-text">Monto Devuelto</div>
+                        <v-col cols="12" lg="8" md="8" sm="8" class="d-flex justify-center align-center transaction">
+                          Transaccion: <b class="ml-3">{{ item.codigo }}</b>
                         </v-col>
-                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                          <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_receive}` }}</div>
+                        <v-col cols="12" lg="4" md="4" sm="4" class="d-flex justify-end align-center date">
+                          {{ getDate(item.create_date) }}
                         </v-col>
                       </v-row>
-                      <v-row>
-                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                          <div class="content-order-list-item-content-text green-text">Monto Enviado</div>
-                        </v-col>
-                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                          <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_send}` }}</div>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                          <div class="text-center">
-                            <div class="green-text comission"> {{ `Comision (${item.percentage}%)` }}</div>
-                            <div class="blue-text comission-number">{{ `S/  ${item.monto_comision}` }}</div>
-                          </div>
-                        </v-col>
-                        <v-col cols="12" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
-                          <div class="state-order">
-                            {{ item.state === 1 || item.state === 2 || item.state === 3 || item.state === 4 ? 'Pendiente' : 'Pagado'}}
-                          </div>
-                        </v-col>
-                      </v-row>
-                      <div class="text-center mt-8">
-                        <v-btn
-                          color="#00ACAC"
-                          @click="openDialog(item)"
-                        >
-                          <template v-slot:prepend>
-                            <v-icon >mdi-eye</v-icon>
-                          </template>
-                          Ver detalle
-                        </v-btn>
+                    </div>
+                    <div class="content-order-list-item-content">
+                      <div>
+                        <v-row>
+                          <v-col cols="6" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                            <div class="content-order-list-item-content-text green-text">Monto Devuelto</div>
+                          </v-col>
+                          <v-col cols="6" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                            <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_receive}` }}</div>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="6" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                            <div class="content-order-list-item-content-text green-text">Monto Enviado</div>
+                          </v-col>
+                          <v-col cols="6" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                            <div class="content-order-list-item-content-number blue-text">{{ `S/ ${item.monto_send}` }}</div>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="6" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                            <div class="text-center">
+                              <div class="green-text comission"> {{ `Comision (${item.percentage}%)` }}</div>
+                              <div class="blue-text comission-number">{{ `S/  ${item.monto_comision}` }}</div>
+                            </div>
+                          </v-col>
+                          <v-col cols="6" lg="6" md="6" sm="6" class="d-flex justify-center align-center">
+                            <div class="state-order">
+                              {{ item.state === 1 || item.state === 2 || item.state === 3 || item.state === 4 ? 'Pendiente' : 'Pagado'}}
+                            </div>
+                          </v-col>
+                        </v-row>
+                        <div class="text-center mt-8">
+                          <v-btn
+                            color="#00ACAC"
+                            @click="openDialog(item)"
+                          >
+                            <template v-slot:prepend>
+                              <v-icon >mdi-eye</v-icon>
+                            </template>
+                            Ver detalle
+                          </v-btn>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </v-col>
-            </v-row>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </v-card>
           <br>
         </div>
@@ -270,7 +276,6 @@ const getImage = (img) => {
         <v-col cols="12" md="4" v-for="item in 3" :key="item">
           <v-skeleton-loader
             class="mx-auto border"
-            width="362"
             type="image, article"
           ></v-skeleton-loader>
         </v-col>
@@ -386,7 +391,7 @@ const getImage = (img) => {
         }
         .transaction{
           @media screen and (max-width: 600px) {
-            font-size: 20px;
+            font-size: 18px;
           } 
         }
         .date{
@@ -399,20 +404,26 @@ const getImage = (img) => {
       &-content{
         padding: 30px;
         background: #fff;
+        @media screen and (max-width: 600px) {
+          padding: 30px 0 !important;
+        }
+        .v-row {
+          @media screen and (max-width: 600px) {
+            margin-bottom: 25px;
+          }
+        }
         &-text{
-          font-size: 17px;
-          // @media screen and (max-width: 600px) {
-          //   font-size: 14px;
-          // }
+          font-size: 15px;
         }
         &-number{
-          font-size: 28px;
+          font-size: 20px;
           @media screen and (max-width: 600px) {
-            font-size: 32px;
+            font-size: 22px;
+            font-weight: bold;
           }
         }
         .comission{
-          font-size: 17px;
+          font-size: 12px;
           &-number{
             font-size: 18px;
           }
@@ -424,7 +435,7 @@ const getImage = (img) => {
     }
   }
 }
-.ip-form.style-calendar{
+.ip-form.inpt-general{
   .v-btn--icon.v-btn--density-default{
     background: transparent !important;
   }
@@ -497,6 +508,10 @@ const getImage = (img) => {
   .monto_receive{
     font-size: 36px;
   }
+}
+.card-pagos{
+  box-shadow: none !important;
+  background: transparent !important;
 }
 </style>
 

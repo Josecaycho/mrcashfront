@@ -43,7 +43,7 @@ btn-send{
   padding-left: 200px;
   z-index: 999999;
   position: relative;
-  padding-top: 70px;
+  padding-top: 30px;
   z-index: 0;
   padding-right: 50px;
 	&-inter{
@@ -52,8 +52,9 @@ btn-send{
 
   @media screen and (max-width: 959px) {
     padding-left: 0;
-    padding-top: 50px;
     padding-right: 0px;
+    padding-top: 20px;
+    padding-bottom: 80px;
   }
 }
 
@@ -61,7 +62,6 @@ btn-send{
   padding-left: 250px;
   z-index: 999999;
   position: relative;
-  padding-top: 143px;
   z-index: 0;
 	&-inter{
 		padding-top: 70px;
@@ -76,7 +76,7 @@ btn-send{
   font-size: 36px;
   font-family: 'Archivo-SemiBold';
   color: $blue2;
-  margin-bottom: 60px;
+  margin-bottom: 25px;
   @media screen and (max-width: 959px) {
     font-size: 30px;
     margin-bottom: 25px;
@@ -116,31 +116,56 @@ btn-send{
   }
 }
 
-.v-text-field .v-field {	
-  border: 1.5px solid $green;
-  border-radius: 18px;
-  color: $blue;
-  font-family: 'Archivo-SemiBold';
-  padding-left: 5px;
-  height: 54px;
-  box-shadow: rgba(50, 50, 93, 0.2) 0px 3px 5px 0px, rgba(0, 0, 0, 0.1) -1px 0px 3px -1px;
-  background: white;
-  @media screen and (max-width: 1024px){
-    height: 38px !important;
-    input, .v-field__input{
-      padding-top: initial !important;
-      min-height: 41px !important;
-    }
-    .v-field__append-inner{
-      height: inherit !important;
-      button{
-        width: auto !important;
-        height: auto !important;
+.v-text-field {
+  &.ip-form{
+    .v-field {
+      @media screen and (max-width: 1024px){
+        height: 38px !important;
+        input, .v-field__input{
+          padding-top: initial !important;
+      
+        }
+        .v-field__append-inner{
+          height: inherit !important;
+          button{
+            width: auto !important;
+            height: auto !important;
+          }
+        }
+        .v-text-field__prefix{
+          padding-top: 0 !important;
+        }
       }
     }
-    .v-text-field__prefix{
-      padding-top: 0 !important;
+  }
+  .v-field {	
+    border: 1.5px solid $green;
+    border-radius: 18px;
+    color: $blue;
+    font-family: 'Archivo-SemiBold';
+    padding-left: 5px;
+    height: 54px;
+    box-shadow: rgba(50, 50, 93, 0.2) 0px 3px 5px 0px, rgba(0, 0, 0, 0.1) -1px 0px 3px -1px;
+    background: white;
+    @media screen and (max-width: 1024px){
+      height: 38px !important;
+      input, .v-field__input{
+        padding-top: initial !important;
+        min-height: 41px !important;
+      }
+      .v-field__append-inner{
+        height: inherit !important;
+        button{
+          width: auto !important;
+          height: auto !important;
+        }
+      }
+      .v-text-field__prefix{
+        padding-top: 0 !important;
+      }
     }
+
+
   }
 }
 
@@ -201,12 +226,14 @@ btn-send{
 .gap-5{gap: 10px;}
 
 
-.style-calendar{
+.inpt-general{
   .v-field__field{
     .v-field-label.v-field-label--floating{
       position: absolute;
-      top: -20px !important;
+      top: -25px !important;
       left: -20px;
+      color: #00ACAC;
+      font-size: 17px;
     }
   }
   .v-field__input{
@@ -261,10 +288,49 @@ btn-send{
   &.observado{
     background: red;
   }
-  &.nofinal{
+  &.nofinal {
+    background: #c1c1c1;
+  }
+  &.por-validar{
+    background: #c1c1c1;
+  }
+  &.registrado{
     background: #c1c1c1;
   }
   &.cancelado{
     background: red;
   }
+  &.inactivo{
+    background: red;
+  }
+}
+
+.v-data-table-footer__items-per-page{
+  .v-text-field .v-field{
+    height: auto !important;;
+  }
+}
+
+
+.logo{
+  width: calc(100% - 200px);
+  height: auto;
+
+  @media screen and (max-width: 959px) {
+    width: calc(100% - 100px);
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.ip-form input[type='number'] {
+  -moz-appearance:textfield;
+}
+.ip-form input::-webkit-outer-spin-button,
+.ip-form input::-webkit-inner-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;  
 }

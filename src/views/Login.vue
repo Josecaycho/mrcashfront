@@ -12,6 +12,7 @@ const loading = ref(false)
 const router = useRouter()
 const errorDni = ref(false)
 const errorPassword= ref(false)
+const show = ref(false)
 
 const { mobile } = useDisplay()
 const titlebutton = ref('Ingresar')
@@ -62,6 +63,8 @@ const sendLogin	= async () => {
 			}
 			loading.value = false
 		}
+	}else {
+		loading.value = false
 	}
 }
 
@@ -71,15 +74,14 @@ const sendLogin	= async () => {
 		<v-row class="contents-row" no-gutters>
 			<v-col cols="7" v-if="!responsive">
 				<div class="banner">
-					<img class="frame" src="@/assets/images/frame-login.png" alt="login" width="661" height="590">
-					<img class="circle" src="@/assets/svg/circles.svg" alt="circle">
+					<img class="frame" src="@/assets/images/frame-login.png" alt="login">
 				</div>
 			</v-col>
 			<v-col class="login" :cols="!responsive ? `4` : `12`">
 				<div>
 					<div class="text-center">
 						<a href="/login">
-						  <img :class="!responsive ? `mb-15` : `mb-8`" src="@/assets/images/Logo.png" alt="logo" :width="!responsive ? `279` : '232'" :height="!responsive ? `112` : '94'">
+						  <img :class="!responsive ? `mb-10 logo` : `mb-8 logo`" src="@/assets/images/Logo.png" alt="logo">
             </a>
 					</div>
 					<v-card
@@ -95,16 +97,19 @@ const sendLogin	= async () => {
 									:rules="dniRules" 
 									single-line
 									placeholder="DNI" 
-									class="mb-6"
+									class="mb-5 ip-form"
 									:error-messages="errorDni ? `Usuario No existe` : ``"
 								></v-text-field>
 								<v-text-field 
+									:append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
 									variant="outlined" 
-									type="password" 
+									:type="show ? 'text' : 'password'"
 									v-model="form.password" 
 									:rules="passwordRules" 
 									placeholder="Contraseña" 
 									single-line
+									class="ip-form"
+									@click:append-inner="show = !show"
 									:error-messages="errorPassword ? `Contraseña incorrecta` : ``"
 								></v-text-field>
 								<v-btn class="btn-send" color="#70BA44" :loading="loading" :width="!responsive ? `330` : `100%`" :height="!responsive ? `70` : `51`" @click="sendLogin" >{{titlebutton}}</v-btn>
@@ -127,7 +132,6 @@ const sendLogin	= async () => {
 <style lang="scss">
 	.content-login{
 		height: 100vh;
-    overflow: hidden;
     justify-content: center;
     align-items: center;
     display: flex;
@@ -138,7 +142,6 @@ const sendLogin	= async () => {
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				padding-top: 103px;
 				@media screen and (max-width: 959px) {
 					padding-top: 20px;
 				}
@@ -157,11 +160,15 @@ const sendLogin	= async () => {
 					animation: EntrarLeft 1.5s ease;
 					margin-top: 9rem;
 					z-index: 1;
+					width: calc(100% - 200px);
+					height: auto;
 				}
 				&.circle{
 					animation: EntrarLeft .9s ease;
 					margin-left: 7rem;
 					margin-top: 5rem;
+					width: calc(100% - 40px);
+					height: auto;
 				}
       }
 		}
@@ -176,11 +183,11 @@ const sendLogin	= async () => {
 		}
 
 		.card-login{
-			padding: 70px 60px !important;
+			padding: 40px !important;
 			border: none;
 			box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
 			max-width: 450px !important;
-			height: 580px;
+			height: auto;
 			border-radius: 30px !important;
 			display: flex;
 			justify-content: center;
@@ -188,7 +195,7 @@ const sendLogin	= async () => {
 
 			@media screen and (max-width: 600px) {
 				max-width: 318px !important;
-				padding: 65px 38px !important;
+				padding: 30px 38px !important;
 				height: max-content;
 				display: block;
 			}
@@ -234,7 +241,7 @@ const sendLogin	= async () => {
 				font-size: 22px !important;
 				text-transform: capitalize !important;
 				border-radius: 18px !important;
-				margin-top: 64px;
+				margin-top: 50px;
 				@media screen and (max-width: 959px) {
 					margin-top: 30px;
 				}
@@ -251,6 +258,7 @@ const sendLogin	= async () => {
 					color: $green2;
 					font-weight: 700;
 					text-decoration: unset;
+					font-size: 14px;
 				}
 			}
 			.forgot-password {

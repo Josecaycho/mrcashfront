@@ -142,7 +142,7 @@ const deleteData = async (data) => {
         Cuentas bancarias
       </div>
       <div class="content-" v-if="!firstContent">
-        <v-card class="card-content" max-width="1152" width="1152">
+        <v-card class="card-pagos">
           <v-row>
             <v-col cols="12" lg="6" v-for="(bank, i) in banksUser" :key="i">
               <div class="content">
@@ -175,19 +175,21 @@ const deleteData = async (data) => {
                 </div>
               </div>
             </v-col>
-          </v-row>
-          <v-row v-if="banksUser.length < 10">
-            <v-col cols="12" lg="6">
-              <label></label>
+            <v-col>
+              <label style="color: transparent;" class="content-title">Agregar Nueva Cuenta</label>
               <div v-if="!addBank" class="content-info content-info-add" @click="addNewBank()">
                 <div>Agregar nueva cuenta</div>
                 <v-icon>mdi-plus-circle-outline</v-icon>
               </div>
+            </v-col>
+          </v-row>
+          <v-row v-if="banksUser.length < 10">
+            <v-col cols="12" lg="6">
               <div v-if="addBank" class="content-info content-info-form">
                 <v-form ref="formBank">
                   <div class="section-banks">
                       <v-row>
-                        <v-col cols="12">
+                        <v-col cols="12" class="pa-0">
                           <div class="w-100">
                             <div>
                               <label class="color-green">Seleccione una entidad financiera</label>
@@ -211,7 +213,7 @@ const deleteData = async (data) => {
                             </div>
                           </div>
                         </v-col>
-                        <v-col cols="12">
+                        <v-col cols="12" class="pa-0">
                           <div class="w-100">
                             <div>
                               <label class="color-green">Selecciona Tipo de cuenta</label>
@@ -235,7 +237,7 @@ const deleteData = async (data) => {
                             </div>
                           </div>
                         </v-col>
-                        <v-col cols="12">
+                        <v-col cols="12" class="pa-0">
                           <div class="w-100">
                             <div>
                               <label class="color-green">Ingrese Numero de cuenta</label>
@@ -249,7 +251,7 @@ const deleteData = async (data) => {
                             </div>
                           </div>
                         </v-col>
-                        <v-col cols="12">
+                        <v-col cols="12" class="pa-0">
                           <div class="w-100">
                             <div>
                               <label class="color-green">Agrégale un alias a tu cuenta</label>
@@ -289,7 +291,7 @@ const deleteData = async (data) => {
                     <v-btn 
                       class="btn-send" 
                       color="#0085AE" 
-                      :height="!responsive ? `70` : `51`" 
+                      height="51" 
                       @click="addBank = false"
                     >
                       Cancelar
@@ -298,7 +300,7 @@ const deleteData = async (data) => {
                       class="btn-send" 
                       :loading="loading" 
                       color="#70BA44" 
-                      :height="!responsive ? `70` : `51`" 
+                      height="51" 
                       @click="continuar"
                     >
                       Finalizar
@@ -324,7 +326,7 @@ const deleteData = async (data) => {
             <v-form ref="formBank">
               <div class="section-banks">
                   <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pa-0">
                       <div class="w-100">
                         <div>
                           <label class="color-green">Seleccione una entidad financiera</label>
@@ -348,7 +350,7 @@ const deleteData = async (data) => {
                         </div>
                       </div>
                     </v-col>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pa-0">
                       <div class="w-100">
                         <div>
                           <label class="color-green">Selecciona Tipo de cuenta</label>
@@ -372,7 +374,7 @@ const deleteData = async (data) => {
                         </div>
                       </div>
                     </v-col>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pa-0">
                       <div class="w-100">
                         <div>
                           <label class="color-green">Ingrese Numero de cuenta</label>
@@ -385,7 +387,7 @@ const deleteData = async (data) => {
                         </div>
                       </div>
                     </v-col>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pa-0">
                       <div class="w-100">
                         <div>
                           <label class="color-green">Agrégale un alias a tu cuenta</label>
@@ -425,7 +427,7 @@ const deleteData = async (data) => {
                 <v-btn 
                   class="btn-send" 
                   color="#0085AE" 
-                  :height="!responsive ? `70` : `51`" 
+                  height="51"
                   @click="dialog = false, getData()"
                 >
                   Cancelar
@@ -434,7 +436,7 @@ const deleteData = async (data) => {
                   class="btn-send" 
                   :loading="loading" 
                   color="#70BA44" 
-                  :height="!responsive ? `70` : `51`" 
+                  height="51"
                   @click="continuar"
                 >
                   Finalizar
@@ -517,9 +519,20 @@ const deleteData = async (data) => {
       justify-content: flex-start;
       align-items: center;
 
+      p{
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
       &-account{
         border-left: 4px solid $blue2;
-        padding-left: 25px;
+        padding-left: 10px;
+        p{
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
         @media screen and (max-width: 600px) {
           border: none;
           padding: unset;
@@ -544,7 +557,7 @@ const deleteData = async (data) => {
         justify-content: center;
         align-items: center;
         gap: 25px;
-        margin-top: 60px;
+        margin-top: 30px;
         .type-account{
           cursor: pointer;
           width: 150px;
@@ -595,5 +608,9 @@ const deleteData = async (data) => {
 
 .v-card.dialog-delete-account{
   border-radius: 20px !important;
+}
+.card-pagos{
+  box-shadow: none !important;
+  background: transparent !important;
 }
 </style>

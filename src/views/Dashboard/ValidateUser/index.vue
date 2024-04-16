@@ -62,8 +62,7 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-top: 46px;
-  margin-bottom: 64px;
+  margin-top: 30px;
   .item{
     width: 40px;
     height: 40px;

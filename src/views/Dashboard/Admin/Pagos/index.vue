@@ -124,7 +124,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
         <v-col cols="12" lg="3" md="3">
           <v-text-field 
             label="Buscar por datos de Usuarios"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
             v-model="searchTextUser"
             @keyup="getDataUsers()"
           >
@@ -133,7 +133,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
         <v-col cols="12" lg="3" md="3">
           <v-text-field 
             label="Buscar por datos de Orden"
-            class="ip-form style-calendar"
+            class="ip-form inpt-general"
             v-model="searchTextOrden"
             @keyup="getDataUsers()"
           >
@@ -146,7 +146,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
                 v-model="stateUser"
                 :items="states"
                 label="Estados"
-                class="ip-form style-calendar"
+                class="ip-form inpt-general"
                 item-title="name"
                 item-value="id"
               >
@@ -164,7 +164,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
                 <template #activator="{ props }">
                   <v-text-field
                     v-model="dateStartNew"
-                    class="style-calendar"
+                    class="inpt-general"
                     label="Fecha de Inicio"
                     readonly
                     append-inner-icon="mdi-calendar"
@@ -187,7 +187,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
                 <template #activator="{ props }">
                   <v-text-field
                     v-model="dateEndNew"
-                    class="style-calendar"
+                    class="inpt-general"
                     label="Fecha de Fin"
                     readonly
                     append-inner-icon="mdi-calendar"

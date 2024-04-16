@@ -10,31 +10,36 @@ const navUser = [
     img: 'user',
     name: 'Usuarios',
     routes: 'users,user', 
-    view: 'users'
+    view: 'users',
+    format: 'svg'
   },
   {
-    img: 'orden',
+    img: 'pagos',
     name: 'Pagos',
     routes: 'pagos,pago', 
-    view: 'pagos'
+    view: 'pagos',
+    format: 'png'
   },
   {
-    img: 'orden',
-    name: 'Devolucines',
+    img: 'devolucion',
+    name: 'Devolucion',
     routes: 'devoluciones,devolucion', 
-    view: 'devoluciones'
+    view: 'devoluciones',
+    format: 'png'
   },
   {
     img: 'orden',
     name: 'Ordenes',
     routes: 'ordenes-admin,orden', 
-    view: 'ordenes-admin'
+    view: 'ordenes-admin',
+    format: 'svg'
   },
   {
-    img: 'orden',
+    img: 'estadisticas',
     name: 'Resumen',
     routes: 'resumen', 
-    view: 'resumen'
+    view: 'resumen',
+    format: 'png'
   },
 ]
 
@@ -44,11 +49,11 @@ const getImageUrl = (name) => {
 </script>
 
 <template>
-  <div class="nav-mr">
+  <div class="nav-mr admin">
     <div class="item-nav" :class="item.routes.split(',').includes(route.name) ? 'active': ''" v-for="(item, index) in navUser" :key="index">
       <router-link :to="`/dashboard/${item.view}`">
         <div>
-          <img :src="getImageUrl(`${item.img}${item.routes.split(',').includes(route.name) ? '-active': ''}.svg`)" alt="">
+          <img :src="getImageUrl(`${item.img}${item.routes.split(',').includes(route.name) ? '-active': ''}.${item.format}`)" alt="" :width="item.format === 'png'?'40':''">
           <p>{{ item.name }}</p>
         </div>
       </router-link >
@@ -76,6 +81,18 @@ const getImageUrl = (name) => {
   padding: 15px;
   border-radius: 26px;
   z-index: 99999;
+  &.admin{
+    padding: 15px 10px;
+    overflow-x: auto;
+    width: 100%;
+    gap: 12px;
+    @media screen and (max-width: 959px) {
+      padding: 15px 20px;
+    }
+    .item-nav{
+      margin-bottom: 10px;
+    }
+  }
   @media screen and (max-width: 959px) {
     bottom: 0;
     top: unset;
@@ -103,9 +120,9 @@ const getImageUrl = (name) => {
           width: 30px;
         }
       }
-      &:nth-child(4){
+      &:nth-child(1){
         img{
-          width: 23px;
+          width: 25px;
         }
       }
       margin-bottom: 0px;
@@ -169,7 +186,7 @@ const getImageUrl = (name) => {
     @media screen and (max-width: 959px) {
       display: block;
       img{
-        width: 50%;
+        width: 90% !important;
       }
     }
   }

@@ -20,7 +20,7 @@ const router = useRouter()
       color="#146489"
       flat
       height="71"
-      floating="true"
+      class="app-bar-fixed"
     >
       <template v-slot:prepend>
         <v-btn class="btn-logout" color="#fff" variant="text" v-if="authStore.isLogged" @click="authStore.logout()">
@@ -30,7 +30,7 @@ const router = useRouter()
       </template>
       <template v-slot:append>
         <div class="info-user" v-if="user">
-          Bienvenido: {{ `${user.nombres} ${user.apellidos}` }}
+          Bienvenido: {{ `${user.nombres}` }}
           <div>
             <v-icon size="22" class="icon-user">mdi-account</v-icon>
           </div>
@@ -38,7 +38,7 @@ const router = useRouter()
       </template>
     </v-app-bar>
 
-    <v-main class="relative" relative style="min-height: 300px;">
+    <v-main >
       <div>
         <img class="cuadros-top" src="@/assets/svg/cuadros-btn.svg" alt="cuadors">
         <img class="cuadros-btn" src="@/assets/svg/cuadros-top.svg" alt="cuadors">
@@ -58,6 +58,10 @@ const router = useRouter()
 
 
 <style lang="scss" scoped>
+.app-bar-fixed{
+  position: fixed !important;
+  z-index: 999999999 !important;
+}
 .v-main{
   position: relative;
   img{
