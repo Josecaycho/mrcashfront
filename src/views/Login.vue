@@ -163,6 +163,9 @@ const sendLogin	= async () => {
 					width: calc(100% - 200px);
 					height: auto;
 				}
+				@media screen and (min-width: 1441px) {
+					width: calc(100% - 300px) !important;
+				}
 				&.circle{
 					animation: EntrarLeft .9s ease;
 					margin-left: 7rem;
@@ -193,7 +196,7 @@ const sendLogin	= async () => {
 			justify-content: center;
 			align-items: center;
 
-			@media screen and (max-width: 600px) {
+			@media screen and (max-width: 959px) {
 				max-width: 318px !important;
 				padding: 30px 38px !important;
 				height: max-content;
@@ -204,7 +207,7 @@ const sendLogin	= async () => {
 				font-size: 36px;
 				color: #005E81;
 
-				@media screen and (max-width: 600px) {
+				@media screen and (max-width: 959px) {
 					font-size: 26.3px;
 				}
 			}
@@ -217,7 +220,7 @@ const sendLogin	= async () => {
 				.v-input{
 					max-width: 330px;
 					max-height: 54px;
-					@media screen and (max-width: 600px) {
+					@media screen and (max-width: 959px) {
 						max-width: 241px;
 						min-height: 39.5px;
 					}
@@ -248,7 +251,7 @@ const sendLogin	= async () => {
 			}
 			.register {
 				font-size: 17px;
-				@media screen and (max-width: 600px) {
+				@media screen and (max-width: 959px) {
 					font-size: 12.4px;
 				}
 				p{
@@ -266,7 +269,7 @@ const sendLogin	= async () => {
 				text-align: center;
 				width: 100%;
 				font-size: 20px;
-				@media screen and (max-width: 600px) {
+				@media screen and (max-width: 959px) {
 					font-size: 14.6px;
 				}
 				a{
