@@ -146,7 +146,7 @@ export const userUserStore = defineStore ('user', {
         const config = {headers: {
           'Content-Type': 'multipart/form-data'
         }}
-        const result = await axios.post(`https://qgz8k3.api.infobip.com/email/3/send`, form, config)
+        const result = await axios.post(`https://2vlx26.api.infobip.com/email/3/send`, form, config)
         if (result.status === 200) {
           localStorage.removeItem("tokenEmail")
         }

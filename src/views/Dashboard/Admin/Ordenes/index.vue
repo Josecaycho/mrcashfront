@@ -87,7 +87,7 @@ const formatDateTable = (data) => {
   let day = dt.getDate()
   let month = dt.getMonth()
   let year = dt.getFullYear()
-  return `${day}/${month + 1}/${year}`
+  return `${day + 1}/${month + 1}/${year}`
 }
 
 const formatDate = (data) => {
@@ -119,7 +119,7 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
   <div class="cont-mcas cont-mcas-inter">
     <v-container>
       <div class="title-views text-center">
-        Listas de Devoluciones
+        Listas de Ordenes
       </div>
       <v-row>
         <v-col cols="12" lg="3" md="3">

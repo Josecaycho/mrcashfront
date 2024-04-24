@@ -267,6 +267,8 @@ btn-send{
   align-items: center;
   color: #fff;
   font-weight: 400;
+  padding: 0 20px;
+  width: max-content;
   &.info{
     height: 30px !important;
   }
@@ -333,4 +335,12 @@ btn-send{
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;  
+}
+
+
+.v-pagination__item.v-pagination__item--is-active {
+  .v-btn.v-btn--icon{
+    background: #00ACAC !important;
+    color: #fff !important
+  }
 }

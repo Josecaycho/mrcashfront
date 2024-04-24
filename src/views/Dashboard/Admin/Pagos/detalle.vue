@@ -5,6 +5,8 @@ import { userUserStore } from '@/stores/user'
 import { userAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 
+import { ordenAprobada, orderFallida } from '@/plugins/email/senEmails'
+
 const adminStore = adminAdminStore()
 const userStore = userUserStore()
 const authStore = userAuthStore()
@@ -25,6 +27,7 @@ const states = ref([
 ])
 
 const routeImg = 'https://mrcash-files.s3.amazonaws.com'
+const routeImgAssets = 'https://mrcashassets.s3.amazonaws.com'
 
 onMounted(async() => {
   userStore.stateLoadingGeneral(true)
@@ -56,10 +59,34 @@ const updateOrder = async (state) => {
   }
   const result = await adminStore.updateStateOrder(dt)
   if(result.success) {
+    if(state === 5)
+      sendEmail()
+    if(state === 2)
+      sendEmailCanceled()
     getOrden(route.params.idOrden)
     textInfo.value = false
     userStore.stateLoadingGeneral(false)
   }
+}
+
+const sendEmail = async () => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App e0112c26f5836ba7fdcb26b22eb5e2a6-68b0bd1f-7933-4692-a9d9-9d9e5169a87c'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeanvargas0324@proton.me>')
+  formData.append('subject', 'Orden aprobada')
+  formData.append('to', `{"to":"${authStore.user.email}"}`)
+  formData.append('html', ordenAprobada({...dataOrden.value, create_date: formatDate(dataOrden.value.create_date), url: routeImgAssets}))
+  userStore.sendEmail(formData)
+}
+
+const sendEmailCanceled = async () => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App e0112c26f5836ba7fdcb26b22eb5e2a6-68b0bd1f-7933-4692-a9d9-9d9e5169a87c'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeanvargas0324@proton.me>')
+  formData.append('subject', `Orden Fallida N° ${dataOrden.value.codigo}`)
+  formData.append('to', `{"to":"${authStore.user.email}"}`)
+  formData.append('html', orderFallida())
+  userStore.sendEmail(formData)
 }
 
 const formatDate = (data) => {
@@ -67,7 +94,7 @@ const formatDate = (data) => {
   let day = dt.getDate()
   let month = dt.getMonth()
   let year = dt.getFullYear()
-  return `${day}/${month + 1}/${year}`
+  return `${day + 1}/${month + 1}/${year}`
 }
 
 </script>
@@ -273,11 +300,13 @@ const formatDate = (data) => {
                   :class="item.state_order === 0 ? 'nofinal': 
                           item.state_order === 1 ? 'pendiente' : 
                           item.state_order === 5 ? 'completado' : 
-                          item.state_order === 4 ? 'observado' : 'cancelado'">
+                          item.state_order === 4 ? 'observado' :
+                          item.state_order === 3 &&( route.name === 'devolucion' || route.name === 'orden') ? 'completado' :  'cancelado'">
                   {{ item.state_order === 0 ? 'nofinal': 
                           item.state_order === 1 ? 'Pendiente' : 
                           item.state_order === 5 ? 'Completado' : 
-                          item.state_order === 4 ? 'Observado' : 'Cancelado' }}
+                          item.state_order === 4 ? 'Observado' :
+                          item.state_order === 3 &&( route.name === 'devolucion' || route.name === 'orden') ? 'Aprobado por pagos' : 'Cancelado' }}
                 </div>
               </div>
             </v-col>

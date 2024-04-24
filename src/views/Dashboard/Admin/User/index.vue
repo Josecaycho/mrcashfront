@@ -16,7 +16,8 @@ const states = ref([
   {id: 0, name: "Registrado"},
   {id: 1, name: "Por Validar"},
   {id: 2, name: "Activos"},
-  {id: 3, name: "Inactivos"}
+  {id: 3, name: "Inactivos"},
+  {id: 4, name: "Desaprobados"}
 ])
 const stateUser = ref()
 const comissions = ref([])
@@ -111,6 +112,14 @@ const formatDateView = (data) => {
   return `${day}/${month + 1}/${year}`
 }
 
+const formatDateTable = (data) => {
+  let dt = new Date(data)
+  let day = dt.getDate()
+  let month = dt.getMonth()
+  let year = dt.getFullYear()
+  return `${day+1}/${month + 1}/${year}`
+}
+
 const dateStartNew = computed(() => dateStart.value !== null ? formatDateView(dateStart.value) : '');
 const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(dateEnd.value) : '')
 
@@ -168,7 +177,6 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
                 }"
                 item-value="monto"
                 placeholder="Comission"
-                return-object
               >
                 <template #item="{ item, props }">
                   <v-list-item v-bind="props">
@@ -247,10 +255,10 @@ const dateEndNew = computed(() => dateStart.value !== null ? formatDateView(date
               <td>{{ item.apellidos }}</td>
               <td>{{ item.dni }}</td>
               <td>{{ `${Number(item.comision)}%` }}</td>
-              <td>{{ formatDateView(item.creation_date) }}</td>
+              <td>{{ formatDateTable(item.creation_date) }}</td>
               <td>
-                <div class="state-order modal-order" :class="item.state === 3 ? 'inactivo' : item.state === 2 ? 'activo' : item.state === 1 ? 'por-validar' : item.state === 0 ? 'registrado' : ''">
-                  {{ item.state === 3 ? 'Inactivo' : item.state === 2 ? 'Activo' : item.state === 1 ? 'Por Validar' : item.state === 0 ? 'Registrado' : ''}}
+                <div class="state-order modal-order" :class="item.state === 3 || item.state === 4 ? 'inactivo' : item.state === 2 ? 'activo' : item.state === 1 ? 'por-validar' : item.state === 0 ? 'registrado' : ''">
+                  {{ item.state === 3 ? 'Inactivo' : item.state === 2 ? 'Activo' : item.state === 1 ? 'Por Validar' : item.state === 0 ? 'Registrado' : item.state === 4 ? 'Desaprobado' : ''}}
                 </div>
               </td>
               <td>

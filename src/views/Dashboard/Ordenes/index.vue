@@ -2,7 +2,7 @@
 import Loading from '@/components/General/Loading.vue'
 import { userUserStore } from '@/stores/user'
 import { userAuthStore } from '@/stores/auth'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 const authStore = userAuthStore()
 const userStore = userUserStore()
 const loading = ref(false)
@@ -58,11 +58,10 @@ const listOrders = async () => {
   }
 }
 
-const searchPagination = (pageIndex) => {
-  paginationActive.value = pageIndex
-  page.value = pageIndex - 1
+watch(paginationActive, (newVal) => {
+  page.value = newVal - 1
   listOrders()
-}
+})
 
 const searchMonto = () => {
   listOrders()
@@ -115,6 +114,13 @@ const selectDateStart = () => {
 const selectDateEnd = () => {
   listOrders()
 }
+
+const updatePage = (data) => {
+  console.log(data,'data')
+}
+
+
+
 </script>
 
 <template>
@@ -207,7 +213,7 @@ const selectDateEnd = () => {
         <div v-if="ordenes.length > 0">
           <v-card class="card-pagos">
             <v-card-text class="pa-0">
-              <v-row class="content-order-list">
+              <v-row class="content-order-list pb-2">
                 <v-col cols="12" lg="4" v-for="(item, i) in ordenes" :key="i">
                   <div class="content-order-list-item">
                     <div class="content-order-list-item-title">
@@ -282,7 +288,14 @@ const selectDateEnd = () => {
       </v-row>
       <!-- <Loading /> -->
       <ul class="pagination-styles">
-        <li @click="searchPagination(item)" :class="paginationActive === item ? 'active' : ''" v-for="item in pagination" :key="item">{{ item }}</li>
+        <!-- <li class="cursor-pointer" @click="searchPagination(item)" :class="paginationActive === item ? 'active' : ''" v-for="item in pagination" :key="item">{{ item }}</li> -->
+        <v-pagination 
+          v-model="paginationActive" 
+          rounded="circle"
+          :length="Number(pagination)" 
+          :total-visible="7" 
+          @input="updatePage"
+          ></v-pagination>
       </ul>
       <div class="w-100 text-center" v-if="ordenes.length === 0 && !loading">
         <div class="green-text">

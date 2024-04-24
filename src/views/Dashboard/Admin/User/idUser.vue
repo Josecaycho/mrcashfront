@@ -25,6 +25,8 @@ const states = ref([
   {id: 3, name: "Inactivo"}
 ])
 
+import { userValidate,userCanceled } from '@/plugins/email/senEmails'
+
 const routeImg = 'https://mrcash-files.s3.amazonaws.com'
 
 onMounted(async() => {
@@ -86,8 +88,32 @@ const changeStateUser = async (state) => {
   }
   const result = await adminStore.updateUser(data)
   if(result.success) {
+    if(state === 1)
+      sendEmailApprobe()
+    if(state === 4)
+      sendEmailDesaprobe()
     cancelChanges()
   }
+}
+
+const sendEmailApprobe = async () => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App e0112c26f5836ba7fdcb26b22eb5e2a6-68b0bd1f-7933-4692-a9d9-9d9e5169a87c'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeanvargas0324@proton.me>')
+  formData.append('subject', 'Activacion de Cuenta')
+  formData.append('to', `{"to":"${dataUser.value.email}","placeholders":{"firstName":"${dataUser.value.apellidos}"}}`)
+  formData.append('html', userValidate());
+  userStore.sendEmail(formData)
+}
+
+const sendEmailDesaprobe = async () => {
+  localStorage.setItem('tokenEmail', JSON.stringify('App e0112c26f5836ba7fdcb26b22eb5e2a6-68b0bd1f-7933-4692-a9d9-9d9e5169a87c'));
+  const formData = new FormData()
+  formData.append('from', 'Administracion <jeanvargas0324@proton.me>')
+  formData.append('subject', 'Error en Aprovacion de Cuenta')
+  formData.append('to', `{"to":"${dataUser.value.email}","placeholders":{"firstName":"${dataUser.value.apellidos}"}}`)
+  formData.append('html', userCanceled());
+  userStore.sendEmail(formData)
 }
 
 const nameRules = [
@@ -124,9 +150,10 @@ const emailRules = [
       <div class="mb-8" v-if="dataUser.id_rol !== 1">
         <div class="d-flex justify-end gap-4">
           <v-btn color="success" v-if="dataUser.state === 1" @click="changeStateUser(2)">Aprobar Usuario</v-btn>
-          <v-btn color="red" v-if="(dataUser.state === 1 || dataUser.state === 2) && disabledEdit" @click="changeStateUser(3)">Bloquear Usuario</v-btn>
-          <v-btn color="success" v-if="dataUser.state === 3" @click="changeStateUser(2)">Activar Usuario</v-btn>
-          <v-btn color="warning" v-if="(dataUser.state === 1 || dataUser.state === 2) && disabledEdit" @click="disabledEdit = false">Editar Cliente</v-btn>
+          <v-btn color="red" v-if="dataUser.state === 1" @click="changeStateUser(4)">Desaprobar Usuario</v-btn>
+          <v-btn color="red" v-if="(dataUser.state === 2) && disabledEdit" @click="changeStateUser(3)">Bloquear Usuario</v-btn>
+          <v-btn color="success" v-if="dataUser.state === 3 || dataUser.state === 4" @click="changeStateUser(2)">Activar Usuario</v-btn>
+          <v-btn color="warning" v-if="(dataUser.state === 2) && disabledEdit" @click="disabledEdit = false">Editar Cliente</v-btn>
           <v-btn color="#70BA44" v-if="!disabledEdit" @click="saveChanges()">Guardar</v-btn>
           <v-btn color="red" v-if="!disabledEdit" @click="cancelChanges()">Cancelar</v-btn>
         </div>
@@ -165,8 +192,8 @@ const emailRules = [
             </v-col>
             <v-col cols="6">
               <div class="w-100 h-100 d-flex justify-center align-center">
-                <div class="state-order modal-order" :class="dataUser.state === 3 ? 'inactivo' : 'activo'">
-                  {{ dataUser.state === 3 ? 'Inactivo' : 'Activo' }}
+                <div class="state-order modal-order" :class="dataUser.state === 3 ? 'inactivo' : dataUser.state === 2 ? 'activo' : dataUser.state === 1 ? 'por-validar' : dataUser.state === 0 ? 'registrado' : ''">
+                  {{ dataUser.state === 3 ? 'Inactivo' : dataUser.state === 2 ? 'Activo' : dataUser.state === 1 ? 'Por Validar' : dataUser.state === 0 ? 'Registrado' : ''}}
                 </div>
               </div>
             </v-col>
@@ -236,7 +263,7 @@ const emailRules = [
             </v-col>
             <v-col cols="12" lg="6" md="6">
               <div class="w-100 h-100 d-flex justify-center align-center">
-                <img class="img-perfil" v-if="dataUser.userFile" :src="`${routeImg}/${dataUser.userFile.photo}`" />
+                <img class="img-perfil" v-if="dataUser.userFile?.photo" :src="`${routeImg}/${dataUser.userFile.photo}`" />
               </div>
             </v-col>
           </v-row>
@@ -291,12 +318,12 @@ const emailRules = [
         <v-row class="content-info-section">
           <v-col cols="12" lg="6" md="6" class="pa-5">
             <div class="w-100 d-flex justify-center align-center">
-              <img class="img-perfil" v-if="dataUser.userFile" :src="`${routeImg}/${dataUser.userFile.dni_frontal}`" />
+              <img class="img-perfil" v-if="dataUser.userFile?.dni_frontal" :src="`${routeImg}/${dataUser.userFile.dni_frontal}`" />
             </div>
           </v-col>
           <v-col cols="12" lg="6" md="6">
             <div class="w-100 d-flex justify-center align-center">
-              <img class="img-perfil" v-if="dataUser.userFile" :src="`${routeImg}/${dataUser.userFile.dnir_later}`" />
+              <img class="img-perfil" v-if="dataUser.userFile?.dnir_later" :src="`${routeImg}/${dataUser.userFile.dnir_later}`" />
             </div>
           </v-col>
         </v-row>
@@ -427,22 +454,6 @@ const emailRules = [
           }
         }
       }
-    }
-  }
-  .state-order{
-    height: 50px;
-    width: 150px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-weight: 400;
-    &.activo{
-      background: #00A24F;
-    }
-    &.inactivo{
-      background: #DBD200;
     }
   }
   .img-perfil{

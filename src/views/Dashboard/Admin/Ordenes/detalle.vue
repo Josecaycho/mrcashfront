@@ -373,22 +373,6 @@ const cancelarOrden = () => {}
       }
     }
   }
-  .state-order{
-    height: 50px;
-    width: 150px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-weight: 400;
-    &.activo{
-      background: #00A24F;
-    }
-    &.inactivo{
-      background: #DBD200;
-    }
-  }
   .img-perfil{
     width: 80%;
   }

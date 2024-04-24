@@ -175,7 +175,7 @@ const deleteData = async (data) => {
                 </div>
               </div>
             </v-col>
-            <v-col>
+            <v-col cols="6">
               <label style="color: transparent;" class="content-title">Agregar Nueva Cuenta</label>
               <div v-if="!addBank" class="content-info content-info-add" @click="addNewBank()">
                 <div>Agregar nueva cuenta</div>

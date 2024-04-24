@@ -87,7 +87,7 @@ const formatDateTable = (data) => {
   let day = dt.getDate()
   let month = dt.getMonth()
   let year = dt.getFullYear()
-  return `${day}/${month + 1}/${year}`
+  return `${day + 1}/${month + 1}/${year}`
 }
 
 const formatDate = (data) => {
