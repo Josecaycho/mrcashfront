@@ -318,7 +318,6 @@ const router = createRouter({
 router.beforeEach(async (to,from, next) => {
   document.title = to.meta.title
   const auth = userAuthStore()
-  console.log(to.matched.some((record) => record.meta.requiresAuth))
   if(to.matched.some((record) => record.meta.requiresAuth)) {
     if(auth.user && auth.isLogged) {
       if( to.meta.rolesAllowed.split(',').includes(auth.user.rol.name)){

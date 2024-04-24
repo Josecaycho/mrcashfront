@@ -42,14 +42,12 @@ const sendLogin	= async () => {
 			setTimeout(async () => {
 				loading.value = false
 				titlebutton.value = "Bienvenido"
-				if(authStore.user.id_rol !== 1){
-					const valid = await userStore.stateUser()
-					if(valid[0].state !== 0) {
-						await router.push('/validateUser')
-					}else {
-						await router.push('/dashboard')
-					}
-				}else await router.push('/dashboard')
+				const valid = await userStore.stateUser()
+				if(valid[0].state !== 0) {
+					await router.push('/validateUser')
+				}else {
+					await router.push('/dashboard')
+				}
 			}, 4000);
 		} else {
 			if(result.message === 'Usuario No existe') {
